@@ -43,8 +43,8 @@ public class LabFiveMain extends Thread {
 		      // ask the user whether the motors should drive in a square or float
 		      t.drawString("< Drive|  Right >", 0, 0);
 		      t.drawString("       |         ", 0, 1);
-		      t.drawString("Rising |  Falling", 0, 2);
-		      t.drawString("edge   |  edge   ", 0, 3);
+		      t.drawString("       |  Falling", 0, 2);
+		      t.drawString("       |  edge   ", 0, 3);
 		      t.drawString("       | 		 ", 0, 4);
 
 		      buttonChoice = Button.waitForAnyPress();
@@ -52,24 +52,26 @@ public class LabFiveMain extends Thread {
 
 		  if (buttonChoice == Button.ID_LEFT) {
 			  
-			  OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
+			  rightMotor.forward();
+			  leftMotor.forward();
+			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
 		      odometryDisplay.start();
 		      
 		      buttonChoice = Button.waitForAnyPress();
 		      if(buttonChoice == Button.ID_LEFT){
-		    	  LightLocalization.doLightLocalization();
-		      }
-		  } else {
+		    	  LightLocalization.doLightLocalization();*/
+		      //}
+		  } //else {
 		      
-			  OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
+			  /*OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
 		      odometryDisplay.start();
 		      buttonChoice = Button.waitForAnyPress();
 		      if(buttonChoice == Button.ID_LEFT){
-		    	  LightLocalization.doLightLocalization();
-		      }
-		 }
+		    	  LightLocalization.doLightLocalization();*/
+		      //}
+		 //}
 
 		 while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		 	  System.exit(0);
