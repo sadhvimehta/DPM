@@ -95,7 +95,6 @@ public class LabFiveMain extends Thread {
             
             odometer.start();
             odometryDisplay.start();
-            
             leftMotor.setSpeed(motorHigh);
             rightMotor.setSpeed(motorHigh);
             ziplineMotor.setSpeed(motorHigh);
