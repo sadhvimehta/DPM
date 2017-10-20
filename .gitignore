@@ -1,4 +1,4 @@
 .idea
 .settings
 *.iml
-./src/META-INF
+./src/META-INF/
