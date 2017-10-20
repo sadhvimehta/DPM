@@ -27,34 +27,75 @@ public class LabFiveMain extends Thread {
     /*private static final EV3ColorSensor colorSensor =
             new EV3ColorSensor(LocalEV3.get().getPort("S1"));*/
 
-    //public static final double WHEEL_RADIUS = 2.2;
-    //public static final double TRACK = 10.7;
-    public static final int motorLow = 100; // Speed of slower rotating wheel (deg/sec)
-    public static final int motorHigh = 200; // Speed of the faster rotating wheel (deg/sec)
+    public static final double WHEEL_RADIUS = 2.2;
+    public static final double TRACK = 16.0;
+    public static final int motorLow = 100; // speed of slower rotating wheel (deg/sec)
+    public static final int motorHigh = 200; // speed of the faster rotating wheel (deg/sec)
+    private static int xPreMount = 0; // this is x0 coordinate
+    private static int yPreMount = 0; // this is y0 coordinate
 
     public static void main(String[] args) {
         int buttonChoice;
+        String preMountCoordinates = "  " + xPreMount + "       |  " + yPreMount + "     ";
 
         // set up main display and controller objects
         final TextLCD t = LocalEV3.get().getTextLCD();
-        Odometer odometer = new Odometer(leftMotor, rightMotor);
+        Odometer odometer = new Odometer(leftMotor, rightMotor, ziplineMotor);
+        OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t);
 
         do {
             // clear the display
             t.clear();
 
-            // ask the user whether the motors should drive in a square or float
-            t.drawString("< Drive|  Right >", 0, 0);
-            t.drawString("       |         ", 0, 1);
-            t.drawString("       |  Falling", 0, 2);
-            t.drawString("       |  edge   ", 0, 3);
-            t.drawString("       | 		 ", 0, 4);
+            // display default coordinates of (0,0)
+            t.drawString("< X-0:    |  Y-0: >", 0, 0);
+            t.drawString("          |        ", 0, 1);
+            t.drawString(preMountCoordinates  , 0, 2);
+            t.drawString("          |        ", 0, 3);
 
             buttonChoice = Button.waitForAnyPress();
-        } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
+        } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
+        
+        while(buttonChoice == Button.ID_LEFT || buttonChoice == Button.ID_RIGHT){
+        	if(buttonChoice == Button.ID_LEFT){
+        		if(xPreMount == 8)
+        			xPreMount = 0;
+        		else
+        			xPreMount++;
+        		
+        		// clear the display
+                t.clear();
 
-        if (buttonChoice == Button.ID_LEFT) {
+                // update coorindates
+                t.drawString("< X-0:    |  Y-0: >", 0, 0);
+                t.drawString("          |        ", 0, 1);
+                t.drawString(preMountCoordinates  , 0, 2);
+                t.drawString("          |        ", 0, 3);
+        	}
+        	
+        	if(buttonChoice == Button.ID_RIGHT){
+        		if(yPreMount == 8)
+        			yPreMount = 0;
+        		else
+        			yPreMount++;
+        		
+        		// clear the display
+                t.clear();
 
+                // update coorindates
+                t.drawString("< X-0:    |  Y-0: >", 0, 0);
+                t.drawString("          |        ", 0, 1);
+                t.drawString(preMountCoordinates  , 0, 2);
+                t.drawString("          |        ", 0, 3);
+        	}
+            buttonChoice = Button.waitForAnyPress();
+        }
+
+        if (buttonChoice == Button.ID_ENTER) {
+            
+            odometer.start();
+            odometryDisplay.start();
+            
             leftMotor.setSpeed(motorHigh);
             rightMotor.setSpeed(motorHigh);
             ziplineMotor.setSpeed(motorHigh);
@@ -62,6 +103,7 @@ public class LabFiveMain extends Thread {
             leftMotor.forward();
             rightMotor.forward();
             ziplineMotor.backward();
+            
 			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
 		      odometryDisplay.start();
