@@ -40,14 +40,17 @@ public class FallingEdgeUSLocalization{
 			if (getFilteredData()< DISTANCE_WALL+10) {
 				this.leftMotor.setSpeed(ROTATE_SPEED);
 				this.rightMotor.setSpeed(ROTATE_SPEED);	
-				this.leftMotor.rotate(navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,180),true);
-				this.rightMotor.rotate(-navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,180),false);
+				this.leftMotor.rotate(Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,180),true);
+				this.rightMotor.rotate(-Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,180),false);
 				odo.setTheta(0);
 			}
 			
 			// get two falling edge angle
 			angleA = getAngleAFallingEdge();
+			System.out.println("Angle A: " + angleA);
 			angleB = getAngleBFallingEdge();
+			System.out.println("Angle B: " + angleB);
+			
 
 			//calculate heading
 			deltaHeading =  calculateHeading(angleA,angleB);
@@ -113,7 +116,7 @@ public class FallingEdgeUSLocalization{
 		if(angleA > angleB){
 			deltaHeading = Math.abs(220 - ((angleA + angleB)/2.0));
 		} else {
-			deltaHeading = Math.abs(40 - (angleA + angleB)/2.0);
+			deltaHeading = Math.abs(40 - ((angleA + angleB)/2.0));
 		}
 		return deltaHeading;
 	}
