@@ -218,9 +218,8 @@ public class LabFiveMain extends Thread {
 		    	  LightLocalization.doLightLocalization();*/
         //}
         //}
-
-        while (Button.waitForAnyPress() != Button.ID_ESCAPE) ;
-        System.exit(0);
+       if(Button.waitForAnyPress() == Button.ID_ESCAPE)
+    	   System.exit(0);
     }
 
 }
