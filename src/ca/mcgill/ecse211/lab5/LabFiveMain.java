@@ -35,9 +35,6 @@ public class LabFiveMain{
     public static final Port rightcsPort = LocalEV3.get().getPort("S3");
 
 
-   
-    //private static final EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S2);
-
     public static final double WHEEL_RADIUS = 2.05;
     public static final double TRACK = 15.7;
     public static final int motorLow = 100; // speed of slower rotating wheel (deg/sec)
