@@ -4,18 +4,20 @@ import ca.mcgill.ecse211.lab5.LightLocalization;
 import ca.mcgill.ecse211.lab5.Odometer;
 import ca.mcgill.ecse211.lab5.OdometeryDisplay;
 import ca.mcgill.ecse211.lab5.UltrasonicLocalization;
+
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.Port;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
-public class LabFiveMain extends Thread {
+public class LabFiveMain{
 
     public static final EV3LargeRegulatedMotor leftMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
@@ -25,9 +27,10 @@ public class LabFiveMain extends Thread {
 
     public static final EV3LargeRegulatedMotor ziplineMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+    private static final Port usPort = LocalEV3.get().getPort("S1");
 
 
-    private static final EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(SensorPort.S1);
+   
     //private static final EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S2);
 
     public static final double WHEEL_RADIUS = 2.05;
@@ -48,7 +51,11 @@ public class LabFiveMain extends Thread {
         final TextLCD t = LocalEV3.get().getTextLCD();
         Odometer odometer = new Odometer(leftMotor, rightMotor, ziplineMotor);
         OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t);
-
+        
+        EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(usPort);
+        SampleProvider usValue = usSensor.getMode("Distance");
+		float[] usData = new float[usValue.sampleSize()];
+        
         do {
             // clear the display
             t.clear();
@@ -192,11 +199,16 @@ public class LabFiveMain extends Thread {
 
             odometer.start();
             odometryDisplay.start();
-
+            
+            
+            /* to call FallingEdgeUSLocalization class for test */
+//			FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor);
+//			 usl.start();			 
+			 
             Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
             //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];
-            float[] usData = new float[usSensor.sampleSize()];
+           // float[] usData = new float[usSensor.sampleSize()];
 
 
             UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
@@ -224,11 +236,14 @@ public class LabFiveMain extends Thread {
 		    	  LightLocalization.doLightLocalization();*/
         //}
         //}
+        
+        
         while (true) {
             if (Button.waitForAnyPress() == Button.ID_ENTER) {
                 System.exit(0);
             }
         }
+    
     }
 
 }
