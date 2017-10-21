@@ -51,10 +51,12 @@ public class FallingEdgeUSLocalization{
 
 			//calculate heading
 			deltaHeading =  calculateHeading(angleA,angleB);
+			System.out.println("This is delta heading before conversion: " + deltaHeading);
 			
-			System.out.println("This is delta heading: " + (Math.toRadians(deltaHeading)-Math.PI));
+			double convertedDeltaTheta = (Math.toRadians(deltaHeading) - Math.PI);
+			System.out.println("This is delta heading after conversion: " + convertedDeltaTheta);
 			//turn to origin
-			navigation.turnTo(Math.toRadians(deltaHeading)-Math.PI);
+			navigation.turnTo(convertedDeltaTheta);
 			
 			//set the theta to 0
 			odo.setTheta(0);
