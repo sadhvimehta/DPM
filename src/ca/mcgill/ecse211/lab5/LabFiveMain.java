@@ -27,7 +27,12 @@ public class LabFiveMain{
 
     public static final EV3LargeRegulatedMotor ziplineMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
-    private static final Port usPort = LocalEV3.get().getPort("S1");
+    
+    public static final Port usPort = LocalEV3.get().getPort("S1");
+
+    public static final Port leftcsPort = LocalEV3.get().getPort("S2");
+    
+    public static final Port rightcsPort = LocalEV3.get().getPort("S3");
 
 
    
