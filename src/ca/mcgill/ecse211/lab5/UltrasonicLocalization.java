@@ -319,7 +319,7 @@ public class UltrasonicLocalization {
         // dTheta depends on which of alpha and beta is larger
         if (alpha < beta && localizationType == LocalizationType.FALLING_EDGE
                 || alpha > beta && localizationType == LocalizationType.RISING_EDGE) {
-            dTheta = (5 * TAU / 8) - ((alpha + beta) / 2);
+            dTheta = (5 * TAU / 8) - ((alpha + beta) / 2); // 225 degrees minus average of angles
             Sound.setVolume(50);
             Sound.buzz();
         } else {
