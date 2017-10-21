@@ -116,7 +116,7 @@ public class Odometer extends Thread{
 		    double result;
 
 		    synchronized (lock) {
-		      result = theta*57.2598; // convert from radians to degrees;
+		      result = theta;
 		    }
 
 		    return result;
