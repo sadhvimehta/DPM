@@ -69,7 +69,7 @@ public class LabFiveMain extends Thread {
                 // update coorindates
                 t.drawString("< X-0:    |  Y-0: >", 0, 0);
                 t.drawString("          |        ", 0, 1);
-                t.drawString(preMountCoordinates  , 0, 2);
+                t.drawString("  " + xPreMount + "       |  " + yPreMount + "     " , 0, 2);
                 t.drawString("          |        ", 0, 3);
         	}
         	
@@ -85,7 +85,7 @@ public class LabFiveMain extends Thread {
                 // update coorindates
                 t.drawString("< X-0:    |  Y-0: >", 0, 0);
                 t.drawString("          |        ", 0, 1);
-                t.drawString(preMountCoordinates  , 0, 2);
+                t.drawString("  " + xPreMount + "       |  " + yPreMount + "     " , 0, 2);
                 t.drawString("          |        ", 0, 3);
         	}
             buttonChoice = Button.waitForAnyPress();
