@@ -107,7 +107,6 @@ public class LabFiveMain extends Thread {
         	} while(buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
         }
             
-        if(buttonChoice == Button.ID_RIGHT){
         	while(buttonChoice == Button.ID_RIGHT){
         		if(cornerNum == 3)
         			cornerNum = 0;
@@ -120,9 +119,8 @@ public class LabFiveMain extends Thread {
                 // choose corner
                 t.drawString("Choose corner", 0, 0);
                 t.drawString(cornerNum + " >", 0, 1);
+                buttonChoice = Button.waitForAnyPress();
         	}
-        	buttonChoice = Button.waitForAnyPress();
-        }
         	
        if (buttonChoice == Button.ID_ENTER) {
     	   do{
