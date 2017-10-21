@@ -31,8 +31,11 @@ public class LabFiveMain extends Thread {
     public static final double TRACK = 16.0;
     public static final int motorLow = 100; // speed of slower rotating wheel (deg/sec)
     public static final int motorHigh = 200; // speed of the faster rotating wheel (deg/sec)
-    private static int xPreMount = 0; // this is x0 coordinate
-    private static int yPreMount = 0; // this is y0 coordinate
+    public static int xPreMount = 0; // this is x0 coordinate
+    public static int yPreMount = 0; // this is y0 coordinate
+    public static int cornerNum = 0; // this is the corner number
+    public static int xMount = 0; // this is xC coordinate
+    public static int yMount = 0; // this is yC coordinate
 
     public static void main(String[] args) {
         int buttonChoice;
@@ -69,7 +72,7 @@ public class LabFiveMain extends Thread {
                 // update coorindates
                 t.drawString("< X-0:    |  Y-0: >", 0, 0);
                 t.drawString("          |        ", 0, 1);
-                t.drawString("  " + xPreMount + "       |  " + yPreMount + "     " , 0, 2);
+                t.drawString("  " + xPreMount + "       |  " + yPreMount + "     ", 0, 2);
                 t.drawString("          |        ", 0, 3);
         	}
         	
@@ -85,23 +88,103 @@ public class LabFiveMain extends Thread {
                 // update coorindates
                 t.drawString("< X-0:    |  Y-0: >", 0, 0);
                 t.drawString("          |        ", 0, 1);
-                t.drawString("  " + xPreMount + "       |  " + yPreMount + "     " , 0, 2);
+                t.drawString("  " + xPreMount + "       |  " + yPreMount + "     ", 0, 2);
                 t.drawString("          |        ", 0, 3);
         	}
             buttonChoice = Button.waitForAnyPress();
         }
 
         if (buttonChoice == Button.ID_ENTER) {
-            
-            odometer.start();
-            odometryDisplay.start();
-            leftMotor.setSpeed(motorHigh);
-            rightMotor.setSpeed(motorHigh);
-            ziplineMotor.setSpeed(motorHigh);
+        	
+        	do{
+        		// clear the display
+                t.clear();
 
-            leftMotor.forward();
-            rightMotor.forward();
-            ziplineMotor.backward();
+                // choose corner
+                t.drawString("Choose corner", 0, 0);
+                t.drawString(cornerNum + " >", 0, 1);
+                buttonChoice = Button.waitForAnyPress();
+        	} while(buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
+        }
+            
+        if(buttonChoice == Button.ID_RIGHT){
+        	while(buttonChoice == Button.ID_RIGHT){
+        		if(cornerNum == 3)
+        			cornerNum = 0;
+        		else
+        			cornerNum++;
+        		
+           		// clear the display
+                t.clear();
+
+                // choose corner
+                t.drawString("Choose corner", 0, 0);
+                t.drawString(cornerNum + " >", 0, 1);
+        	}
+        	buttonChoice = Button.waitForAnyPress();
+        }
+        	
+       if (buttonChoice == Button.ID_ENTER) {
+    	   do{
+                    // clear the display
+                    t.clear();
+
+                    // display default coordinates of (0,0)
+                    t.drawString("< X-C:    |  Y-C: >", 0, 0);
+                    t.drawString("          |        ", 0, 1);
+                    t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
+                    t.drawString("          |        ", 0, 3);
+
+                    buttonChoice = Button.waitForAnyPress();
+            } while(buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
+       }
+       
+       while(buttonChoice == Button.ID_LEFT || buttonChoice == Button.ID_RIGHT){
+    	   if(buttonChoice == Button.ID_LEFT){
+    		   if(xMount == 8)
+    			   xMount = 0;
+               else
+            	   xMount++;
+                		
+                // clear the display
+                t.clear();
+
+                // update coorindates
+                t.drawString("< X-C:    |  Y-C: >", 0, 0);
+                t.drawString("          |        ", 0, 1);
+                t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
+                t.drawString("          |        ", 0, 3);
+           }
+                	
+          if(buttonChoice == Button.ID_RIGHT){
+                if(yMount == 8)
+                	yMount = 0;
+                else
+                	yMount++;
+                		
+                // clear the display
+                t.clear();
+
+                // update coorindates
+                t.drawString("< X-C:    |  Y-C: >", 0, 0);
+                t.drawString("          |        ", 0, 1);
+                t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
+                t.drawString("          |        ", 0, 3);
+         }
+         buttonChoice = Button.waitForAnyPress();
+       }
+       
+       if(buttonChoice == Button.ID_ENTER){
+    	   odometer.start();
+           odometryDisplay.start();
+           leftMotor.setSpeed(motorHigh);
+           rightMotor.setSpeed(motorHigh);
+           ziplineMotor.setSpeed(motorHigh);
+
+           leftMotor.forward();
+           rightMotor.forward();
+           ziplineMotor.backward();
+       }
             
 			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
@@ -111,7 +194,7 @@ public class LabFiveMain extends Thread {
 		      if(buttonChoice == Button.ID_LEFT){
 		    	  LightLocalization.doLightLocalization();*/
             //}
-        } //else {
+         //else {
 
 			  /*OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
