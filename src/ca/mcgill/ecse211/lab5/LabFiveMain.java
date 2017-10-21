@@ -185,6 +185,9 @@ public class LabFiveMain extends Thread {
            rightMotor.forward();
            ziplineMotor.backward();*/
 
+    	   odometer.start();
+    	   odometryDisplay.start();
+
     	   Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
            //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];

@@ -313,7 +313,7 @@ public class UltrasonicLocalization {
 
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter("log.txt", true));
-                writer.write(String.valueOf(odometer.getTheta() + ", " + getFilteredData()));
+                writer.write(String.valueOf(odometer.getTheta() + ", " + getFilteredData() + "\n"));
                 writer.close();
             }
             catch (Exception e) {
