@@ -78,6 +78,46 @@ public class UltrasonicLocalization {
         }
     }
 
+    public void optLocalize() {
+
+        LocalizationType caughtEdge = null;
+
+        startTime = System.currentTimeMillis();
+
+        navigation.turnCW(360);
+
+        // this takes care of checking if a falling edge has been crossed to assign it to alpha
+        while (odometer.getTheta() < TAU) {
+            if (fallingEdgeCaught()) {
+                alpha = odometer.getTheta();
+                caughtEdge = LocalizationType.FALLING_EDGE;
+                break;
+            }
+            else if (risingEdgeCaught()) {
+                alpha = odometer.getTheta();
+                caughtEdge = LocalizationType.RISING_EDGE;
+                break;
+            }
+        }
+
+        // checks for the other falling edge to assign to beta
+        while (odometer.getTheta() < TAU) {
+            if (caughtEdge == LocalizationType.RISING_EDGE && fallingEdgeCaught()) {
+                resetMotor();
+                beta = odometer.getTheta();
+                break;
+            }
+            else if (caughtEdge == LocalizationType.FALLING_EDGE && risingEdgeCaught()) {
+                resetMotor();
+                beta = odometer.getTheta();
+                break;
+            }
+        }
+
+        // method calculates our delta theta, updates the odometer, and spins to face the 0 degree
+        updateOdometerTheta(alpha, beta);
+    }
+
     /**
      * this method gets the data from the ultrasonic and only returns values under or equal to 100
      */
@@ -306,11 +346,6 @@ public class UltrasonicLocalization {
     public void getData(){
         navigation.turnCW(360);
         while (odometer.getTheta() < 360) {
-            if(risingEdgeCaught() || fallingEdgeCaught()){
-                Sound.setVolume(30);
-                Sound.beep();
-            }
-
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter("log.txt", true));
                 writer.write(String.valueOf(odometer.getTheta() + ", " + getFilteredData() + "\n"));

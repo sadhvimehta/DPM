@@ -17,10 +17,10 @@ import lejos.robotics.SampleProvider;
 public class LabFiveMain extends Thread {
 
     public static final EV3LargeRegulatedMotor leftMotor =
-            new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
+            new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 
     public static final EV3LargeRegulatedMotor rightMotor =
-            new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
+            new EV3LargeRegulatedMotor(LocalEV3.get().getPort("A"));
 
     public static final EV3LargeRegulatedMotor ziplineMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
@@ -55,20 +55,20 @@ public class LabFiveMain extends Thread {
             // display default coordinates of (0,0)
             t.drawString("< X-0:    |  Y-0: >", 0, 0);
             t.drawString("          |        ", 0, 1);
-            t.drawString(preMountCoordinates  , 0, 2);
+            t.drawString(preMountCoordinates, 0, 2);
             t.drawString("          |        ", 0, 3);
 
             buttonChoice = Button.waitForAnyPress();
         } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
-        
-        while(buttonChoice == Button.ID_LEFT || buttonChoice == Button.ID_RIGHT){
-        	if(buttonChoice == Button.ID_LEFT){
-        		if(xPreMount == 8)
-        			xPreMount = 0;
-        		else
-        			xPreMount++;
-        		
-        		// clear the display
+
+        while (buttonChoice == Button.ID_LEFT || buttonChoice == Button.ID_RIGHT) {
+            if (buttonChoice == Button.ID_LEFT) {
+                if (xPreMount == 8)
+                    xPreMount = 0;
+                else
+                    xPreMount++;
+
+                // clear the display
                 t.clear();
 
                 // update coorindates
@@ -76,15 +76,15 @@ public class LabFiveMain extends Thread {
                 t.drawString("          |        ", 0, 1);
                 t.drawString("  " + xPreMount + "       |  " + yPreMount + "     ", 0, 2);
                 t.drawString("          |        ", 0, 3);
-        	}
-        	
-        	if(buttonChoice == Button.ID_RIGHT){
-        		if(yPreMount == 8)
-        			yPreMount = 0;
-        		else
-        			yPreMount++;
-        		
-        		// clear the display
+            }
+
+            if (buttonChoice == Button.ID_RIGHT) {
+                if (yPreMount == 8)
+                    yPreMount = 0;
+                else
+                    yPreMount++;
+
+                // clear the display
                 t.clear();
 
                 // update coorindates
@@ -92,76 +92,61 @@ public class LabFiveMain extends Thread {
                 t.drawString("          |        ", 0, 1);
                 t.drawString("  " + xPreMount + "       |  " + yPreMount + "     ", 0, 2);
                 t.drawString("          |        ", 0, 3);
-        	}
+            }
             buttonChoice = Button.waitForAnyPress();
         }
 
         if (buttonChoice == Button.ID_ENTER) {
-        	
-        	do{
-        		// clear the display
+
+            do {
+                // clear the display
                 t.clear();
 
                 // choose corner
                 t.drawString("Choose corner", 0, 0);
                 t.drawString(cornerNum + " >", 0, 1);
                 buttonChoice = Button.waitForAnyPress();
-        	} while(buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
+            } while (buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
         }
-            
-        	while(buttonChoice == Button.ID_RIGHT){
-        		if(cornerNum == 3)
-        			cornerNum = 0;
-        		else
-        			cornerNum++;
-        		
-           		// clear the display
+
+        while (buttonChoice == Button.ID_RIGHT) {
+            if (cornerNum == 3)
+                cornerNum = 0;
+            else
+                cornerNum++;
+
+            // clear the display
+            t.clear();
+
+            // choose corner
+            t.drawString("Choose corner", 0, 0);
+            t.drawString(cornerNum + " >", 0, 1);
+            buttonChoice = Button.waitForAnyPress();
+        }
+
+        if (buttonChoice == Button.ID_ENTER) {
+            do {
+                // clear the display
                 t.clear();
 
-                // choose corner
-                t.drawString("Choose corner", 0, 0);
-                t.drawString(cornerNum + " >", 0, 1);
+                // display default coordinates of (0,0)
+                t.drawString("< X-C:    |  Y-C: >", 0, 0);
+                t.drawString("          |        ", 0, 1);
+                t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
+                t.drawString("          |        ", 0, 3);
+
                 buttonChoice = Button.waitForAnyPress();
-        	}
-        	
-       if (buttonChoice == Button.ID_ENTER) {
-    	   do{
-                    // clear the display
-                    t.clear();
+            }
+            while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
+        }
 
-                    // display default coordinates of (0,0)
-                    t.drawString("< X-C:    |  Y-C: >", 0, 0);
-                    t.drawString("          |        ", 0, 1);
-                    t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
-                    t.drawString("          |        ", 0, 3);
-
-                    buttonChoice = Button.waitForAnyPress();
-            } while(buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
-       }
-       
-       while(buttonChoice == Button.ID_LEFT || buttonChoice == Button.ID_RIGHT){
-    	   if(buttonChoice == Button.ID_LEFT){
-    		   if(xMount == 8)
-    			   xMount = 0;
-               else
-            	   xMount++;
-                		
-                // clear the display
-                t.clear();
-
-                // update coorindates
-                t.drawString("< X-C:    |  Y-C: >", 0, 0);
-                t.drawString("          |        ", 0, 1);
-                t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
-                t.drawString("          |        ", 0, 3);
-           }
-                	
-          if(buttonChoice == Button.ID_RIGHT){
-                if(yMount == 8)
-                	yMount = 0;
+        while (buttonChoice == Button.ID_LEFT || buttonChoice == Button.ID_RIGHT) {
+            if (buttonChoice == Button.ID_LEFT) {
+                if (xMount == 8)
+                    xMount = 0;
                 else
-                	yMount++;
-                		
+                    xMount++;
+
                 // clear the display
                 t.clear();
 
@@ -170,11 +155,27 @@ public class LabFiveMain extends Thread {
                 t.drawString("          |        ", 0, 1);
                 t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
                 t.drawString("          |        ", 0, 3);
-         }
-         buttonChoice = Button.waitForAnyPress();
-       }
-       
-       if(buttonChoice == Button.ID_ENTER){
+            }
+
+            if (buttonChoice == Button.ID_RIGHT) {
+                if (yMount == 8)
+                    yMount = 0;
+                else
+                    yMount++;
+
+                // clear the display
+                t.clear();
+
+                // update coorindates
+                t.drawString("< X-C:    |  Y-C: >", 0, 0);
+                t.drawString("          |        ", 0, 1);
+                t.drawString("  " + xMount + "       |  " + yMount + "     ", 0, 2);
+                t.drawString("          |        ", 0, 3);
+            }
+            buttonChoice = Button.waitForAnyPress();
+        }
+
+        if (buttonChoice == Button.ID_ENTER) {
     	   /*odometer.start();
            odometryDisplay.start();
            leftMotor.setSpeed(motorHigh);
@@ -185,21 +186,22 @@ public class LabFiveMain extends Thread {
            rightMotor.forward();
            ziplineMotor.backward();*/
 
-    	   odometer.start();
-    	   odometryDisplay.start();
+            odometer.start();
+            odometryDisplay.start();
 
-    	   Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
+            Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
-           //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];
-           float[] usData = new float[usSensor.sampleSize()];
+            //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];
+            float[] usData = new float[usSensor.sampleSize()];
 
 
-           UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
+            UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
 
-           //navigation.advance((long)30.48);
-           usl.getData();
-       }
-            
+            //navigation.advance((long)30.48);
+            //usl.getData();
+            usl.optLocalize();
+        }
+
 			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
 		      odometryDisplay.start();
@@ -207,8 +209,8 @@ public class LabFiveMain extends Thread {
 		      buttonChoice = Button.waitForAnyPress();
 		      if(buttonChoice == Button.ID_LEFT){
 		    	  LightLocalization.doLightLocalization();*/
-            //}
-         //else {
+        //}
+        //else {
 
 			  /*OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
 		      odometer.start();
@@ -218,8 +220,11 @@ public class LabFiveMain extends Thread {
 		    	  LightLocalization.doLightLocalization();*/
         //}
         //}
-       if(Button.waitForAnyPress() == Button.ID_ESCAPE)
-    	   System.exit(0);
+        while (true) {
+            if (Button.waitForAnyPress() == Button.ID_ENTER) {
+                System.exit(0);
+            }
+        }
     }
 
 }
