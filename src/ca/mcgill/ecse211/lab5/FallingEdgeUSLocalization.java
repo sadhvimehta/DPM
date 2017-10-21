@@ -1,4 +1,5 @@
 package ca.mcgill.ecse211.lab5;
+
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
@@ -88,7 +89,7 @@ public class FallingEdgeUSLocalization extends Thread {
 			deltaHeading =  calculateHeading(angleA,angleB);
 			
 			//turn to origin 
-			navigation.turnTo(Math.toRadians(deltaHeading));
+			turnToDestintaionAngle(Math.toRadians(deltaHeading));
 			
 			//set theta to 0
 			odo.setTheta(0);
@@ -211,5 +212,41 @@ public class FallingEdgeUSLocalization extends Thread {
 			this.leftMotor.stop(true);
 			this.rightMotor.stop(false);
 		}
+	 
+	//method that turns the rpbot to a specific angle, so it compares between the angle we had and the angle we want to go to
+		//inputs dest angle
+		public void turnToDestintaionAngle(double angle) {
+
+			double delta = angle - this.odo.getTheta();
+		
+			if (delta < -Math.PI) {
+				delta +=2*Math.PI;
+			}
+			
+			if (delta > Math.PI) {
+				delta -= 2*Math.PI;
+			}
+			
+			if(delta ==0 || delta == 2*Math.PI) {
+				delta = 0;
+			}
+			
+			//System.out.println("\n \n \n \n \n \n \n \n turnning angle is "+ Math.toDegrees(delta));
+			this.leftMotor.setSpeed(ROTATE_SPEED);
+			this.rightMotor.setSpeed(ROTATE_SPEED);	
+
+			this.leftMotor.rotate(convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,Math.toDegrees(delta)),true);
+			this.rightMotor.rotate(-convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,Math.toDegrees(delta)),false);
+			Sound.beep();
+			
+		}
+		
+		 public static int convertDistance(double radius, double distance) {
+			    return (int) ((180.0 * distance) / (Math.PI * radius));
+		 }
+
+		 public static int convertAngle(double radius, double width, double angle) {
+			    return convertDistance(radius, Math.PI * width * angle / 360.0);
+		 }
 
 }
