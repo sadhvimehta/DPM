@@ -29,8 +29,8 @@ public class LabFiveMain extends Thread {
     private static final EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(SensorPort.S1);
     //private static final EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S2);
 
-    public static final double WHEEL_RADIUS = 2.2;
-    public static final double TRACK = 16.0;
+    public static final double WHEEL_RADIUS = 2.05;
+    public static final double TRACK = 15.7;
     public static final int motorLow = 100; // speed of slower rotating wheel (deg/sec)
     public static final int motorHigh = 200; // speed of the faster rotating wheel (deg/sec)
     public static int xPreMount = 0; // this is x0 coordinate
@@ -196,6 +196,7 @@ public class LabFiveMain extends Thread {
 
            UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
 
+           //navigation.advance((long)30.48);
            usl.getData();
        }
             
