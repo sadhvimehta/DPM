@@ -5,8 +5,11 @@ package ca.mcgill.ecse211.lab5;
 import lejos.hardware.Sound;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +36,7 @@ public class UltrasonicLocalization {
 
     public UltrasonicLocalization(
             Odometer odometer,
-            SampleProvider usSensor,
+            EV3UltrasonicSensor usSensor,
             float[] usData,
             LocalizationType localizationType,
             Navigation navigation,
@@ -51,6 +54,13 @@ public class UltrasonicLocalization {
 
         resetMotor();
         this.t = t;
+
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("log.txt"));
+            writer.close();
+        } catch (Exception e) {
+
+        }
     }
 
     /**
@@ -291,6 +301,25 @@ public class UltrasonicLocalization {
         odometer.setTheta(odometer.getTheta() + dTheta);
 
         navigation.turnTo(0);
+    }
+
+    public void getData(){
+        navigation.turnCW(360);
+        while (odometer.getTheta() < 360) {
+            if(risingEdgeCaught() || fallingEdgeCaught()){
+                Sound.setVolume(30);
+                Sound.beep();
+            }
+
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("log.txt", true));
+                writer.write(String.valueOf(odometer.getTheta() + ", " + getFilteredData()));
+                writer.close();
+            }
+            catch (Exception e) {
+
+            }
+        }
     }
 
     // Constants needed for this lab

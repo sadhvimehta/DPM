@@ -8,6 +8,7 @@ import lejos.hardware.Button;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
@@ -24,8 +25,9 @@ public class LabFiveMain extends Thread {
     public static final EV3LargeRegulatedMotor ziplineMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 
-    /*private static final EV3ColorSensor colorSensor =
-            new EV3ColorSensor(LocalEV3.get().getPort("S1"));*/
+
+    private static final EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(SensorPort.S1);
+    //private static final EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S2);
 
     public static final double WHEEL_RADIUS = 2.2;
     public static final double TRACK = 16.0;
@@ -173,7 +175,7 @@ public class LabFiveMain extends Thread {
        }
        
        if(buttonChoice == Button.ID_ENTER){
-    	   odometer.start();
+    	   /*odometer.start();
            odometryDisplay.start();
            leftMotor.setSpeed(motorHigh);
            rightMotor.setSpeed(motorHigh);
@@ -181,7 +183,17 @@ public class LabFiveMain extends Thread {
 
            leftMotor.forward();
            rightMotor.forward();
-           ziplineMotor.backward();
+           ziplineMotor.backward();*/
+
+    	   Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
+
+           //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];
+           float[] usData = new float[usSensor.sampleSize()];
+
+
+           UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
+
+           usl.getData();
        }
             
 			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);

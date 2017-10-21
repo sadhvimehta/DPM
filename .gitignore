@@ -2,3 +2,4 @@
 .settings
 *.iml
 /src/META-INF
+/bin
