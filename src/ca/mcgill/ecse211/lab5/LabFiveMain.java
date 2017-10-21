@@ -202,13 +202,12 @@ public class LabFiveMain{
             odometer.start();
             odometryDisplay.start();
             
+            Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);   
             
             /* instantiate FallingEdgeUSLocalization class */
-			FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor);
+			FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor, navigation);
 			 usl.doLocalization();			 
 			 
-            Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
-
             //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];
            // float[] usData = new float[usSensor.sampleSize()];
 

@@ -21,13 +21,14 @@ public class FallingEdgeUSLocalization{
 	private EV3LargeRegulatedMotor leftMotor,rightMotor;
 	
 	//Constructor
-	public FallingEdgeUSLocalization(Odometer odo, SampleProvider usSensor, float[] usData, LocalizationType locType,EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor) {
+	public FallingEdgeUSLocalization(Odometer odo, SampleProvider usSensor, float[] usData, LocalizationType locType,EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, Navigation navigation) {
 		this.odo = odo;
 		this.usSensor = usSensor;
 		this.usData = usData;
 		this.locType = locType;
 		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;		
+		this.rightMotor = rightMotor;
+		this.navigation = navigation;
 	}
 	
 	
