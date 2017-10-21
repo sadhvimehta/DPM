@@ -4,7 +4,7 @@ import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
-public class FallingEdgeUSLocalization extends Thread {
+public class FallingEdgeUSLocalization{
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE};
 	public static int ROTATION_SPEED = 100;
 	public static int FULL_CIRCLE = 360;
@@ -31,17 +31,8 @@ public class FallingEdgeUSLocalization extends Thread {
 	}
 	
 	
-	public void run() {
-		doLocalization();
-	}
-	
-	
 	public void doLocalization() {
 		double angleA, angleB;
-		
-		//check the localization type
-		//if the localization type is falling edge
-		if(locType == LocalizationType.FALLING_EDGE) {
 			
 			//check if the robot is face to the wall, if the robot is face to the wall
 			//turn 180 degrees
@@ -66,38 +57,6 @@ public class FallingEdgeUSLocalization extends Thread {
 			//set the theta to 0
 			odo.setTheta(0);
 			Sound.beep();
-		}
-		
-		//if the localization type is rising edge
-		else {
-
-			//check if the robot is face to the wall, if the robot is not face to the wall
-			//turn 180 degrees
-			if (getFilteredData()> DISTANCE_WALL) {
-				this.leftMotor.setSpeed(ROTATE_SPEED);
-				this.rightMotor.setSpeed(ROTATE_SPEED);	
-				this.leftMotor.rotate(navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,180),true);
-				this.rightMotor.rotate(-navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,180),false);
-				odo.setTheta(0);
-			}
-			
-			//get tow rising edge angle
-			angleA = getAngleARisingEdge();
-			angleB = getAngleBRisingEdge();
-			
-			//calculate heading
-			deltaHeading =  calculateHeading(angleA,angleB);
-			
-			//turn to origin 
-			turnToDestintaionAngle(Math.toRadians(deltaHeading));
-			
-			//set theta to 0
-			odo.setTheta(0);
-			Sound.beep();
-			
-		}
-		
-
 		
 	}
 	
@@ -142,44 +101,6 @@ public class FallingEdgeUSLocalization extends Thread {
 		usSensor.fetchSample(usData, 0);
 		float distance = usData[0]*100;	
 		return distance > 100 ? 100 : distance;
-	}
-
-	//method to get first rising edge angle
-	//Angle A - Angle where sensor detects the back wall
-	private double getAngleARisingEdge() {
-		
-		// rotate our robot counter-clockwise until a wall is detected
-		while ( getFilteredData() > DISTANCE_WALL - NOISE_MARGIN ) {
-			setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
-		}
-		while ( getFilteredData() < DISTANCE_WALL ) {
-			setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
-
-		}
-		
-		// stop the motors and return the rising edge angle
-		stopMotor();
-		Sound.beep();		
-		return  Math.toDegrees(odo.getTheta());
-	}
-	
-	//method to get second rising edge angle
-	//Angle B- Angle where sensor detects the left wall
-	private double getAngleBRisingEdge() {
-		
-		// rotate our robot clockwise until a wall is detected
-		while ( getFilteredData() > DISTANCE_WALL - NOISE_MARGIN ) {
-			setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
-		}
-
-		while ( getFilteredData() < DISTANCE_WALL ) {
-			setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
-		}
-		
-		// stop the motors and return the rising edge angle
-		stopMotor();
-		Sound.beep();
-		return Math.toDegrees(odo.getTheta());
 	}
 	
 	//method the calculate deltaHeading

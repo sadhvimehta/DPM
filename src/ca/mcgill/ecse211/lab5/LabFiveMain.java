@@ -203,9 +203,9 @@ public class LabFiveMain{
             odometryDisplay.start();
             
             
-            /* to call FallingEdgeUSLocalization class for test */
-//			FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor);
-//			 usl.start();			 
+            /* instantiate FallingEdgeUSLocalization class */
+			FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor);
+			 usl.doLocalization();			 
 			 
             Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
@@ -213,11 +213,11 @@ public class LabFiveMain{
            // float[] usData = new float[usSensor.sampleSize()];
 
 
-            UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
+            //UltrasonicLocalization usl = new UltrasonicLocalization(odometer, usSensor, usData, UltrasonicLocalization.LocalizationType.FALLING_EDGE, navigation, leftMotor, rightMotor, t);
 
             //navigation.advance((long)30.48);
             //usl.getData();
-            usl.optLocalize();
+            //usl.optLocalize();
         }
 
 			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
