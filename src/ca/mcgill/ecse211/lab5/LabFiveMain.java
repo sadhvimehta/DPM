@@ -5,6 +5,7 @@ import ca.mcgill.ecse211.lab5.Odometer;
 import ca.mcgill.ecse211.lab5.OdometeryDisplay;
 import ca.mcgill.ecse211.lab5.UltrasonicLocalization;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -176,6 +177,9 @@ public class LabFiveMain extends Thread {
         }
 
         if (buttonChoice == Button.ID_ENTER) {
+
+            Sound.setVolume(30);
+            Sound.buzz();
     	   /*odometer.start();
            odometryDisplay.start();
            leftMotor.setSpeed(motorHigh);
