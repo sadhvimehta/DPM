@@ -30,9 +30,9 @@ public class LabFiveMain{
     
     public static final Port usPort = LocalEV3.get().getPort("S1");
 
-    public static final Port leftcsPort = LocalEV3.get().getPort("S2");
+    public static final EV3ColorSensor leftcsPort = new EV3ColorSensor(SensorPort.S3);
     
-    public static final Port rightcsPort = LocalEV3.get().getPort("S3");
+    public static final EV3ColorSensor rightcsPort = new EV3ColorSensor(SensorPort.S2);
 
 
     public static final double WHEEL_RADIUS = 2.05;
@@ -57,6 +57,9 @@ public class LabFiveMain{
         EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(usPort);
         SampleProvider usValue = usSensor.getMode("Distance");
 		float[] usData = new float[usValue.sampleSize()];
+
+        float[] leftcsData = new float[leftcsPort.getRedMode().sampleSize()];
+        float[] rightcsData = new float[rightcsPort.getRedMode().sampleSize()];
         
         do {
             // clear the display
@@ -206,8 +209,15 @@ public class LabFiveMain{
             
             /* instantiate FallingEdgeUSLocalization class */
 			FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor, navigation);
-			 usl.doLocalization();			 
-			 
+			 /*usl.doLocalization();*/
+
+			 //
+            OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, t, leftcsPort, rightcsPort, leftcsData, rightcsData, navigation);
+			 navigation.turnTo((Math.PI*2)/8);
+			 navigation.advance((long)30.48, true);
+            odometryCorrection.start();
+            //
+
             //float[] colorData = new float[colorSensor.getRedMode().sampleSize()];
            // float[] usData = new float[usSensor.sampleSize()];
 
@@ -244,7 +254,7 @@ public class LabFiveMain{
                 System.exit(0);
             }
         }
-    
+
     }
 
 }

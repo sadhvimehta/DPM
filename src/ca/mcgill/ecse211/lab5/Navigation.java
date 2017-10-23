@@ -171,8 +171,8 @@ public class Navigation {
                 convertAngle(LabFiveMain.WHEEL_RADIUS, LabFiveMain.TRACK, degree), true);
     }
 
-    public void advance(long distance) {
+    public void advance(long distance, boolean immediateReturn) {
         leftMotor.rotate(convertDistance(wheelRadius, distance), true);
-        rightMotor.rotate(convertDistance(wheelRadius, distance), false);
+        rightMotor.rotate(convertDistance(wheelRadius, distance), immediateReturn);
     }
 }
