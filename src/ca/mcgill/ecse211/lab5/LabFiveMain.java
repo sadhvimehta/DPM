@@ -1,14 +1,5 @@
 package ca.mcgill.ecse211.lab5;
 
-import ca.mcgill.ecse211.lab5.FallingEdgeUSLocalization;
-import ca.mcgill.ecse211.lab5.OdometryCorrection;
-import ca.mcgill.ecse211.lab5.FallingEdgeUSLocalization.LocalizationType;
-import ca.mcgill.ecse211.lab5.LightLocalization;
-import ca.mcgill.ecse211.lab5.Navigation;
-import ca.mcgill.ecse211.lab5.Odometer;
-import ca.mcgill.ecse211.lab5.OdometeryDisplay;
-import ca.mcgill.ecse211.lab5.ZipLineTraversal;
-
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -21,7 +12,7 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
-public class LabFiveMain{
+public class LabFiveMain {
 
     public static final EV3LargeRegulatedMotor leftMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
@@ -31,11 +22,12 @@ public class LabFiveMain{
 
     public static final EV3LargeRegulatedMotor ziplineMotor =
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
-    
+
     public static final Port usPort = LocalEV3.get().getPort("S1");
 
-    public static Port csPort = LocalEV3.get().getPort("S2");
-    //public static final EV3ColorSensor csPort = new EV3ColorSensor(SensorPort.S2);
+    public static final Port csPort = LocalEV3.get().getPort("S2");
+
+    //public static final Port rightcsPort = LocalEV3.get().getPort("S3");
 
 
     public static final double WHEEL_RADIUS = 2.05;
@@ -56,22 +48,15 @@ public class LabFiveMain{
         final TextLCD t = LocalEV3.get().getTextLCD();
         Odometer odometer = new Odometer(leftMotor, rightMotor, ziplineMotor);
         OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t);
-        
+
         EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(usPort);
         SampleProvider usValue = usSensor.getMode("Distance");
-		float[] usData = new float[usValue.sampleSize()];
+        float[] usData = new float[usValue.sampleSize()];
 
-		EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
-		SampleProvider csValue = csSensor.getRedMode();
-		float[] csData = new float[csValue.sampleSize()];
-		
-		
-		Navigation navigation = new Navigation(odometer, leftMotor, rightMotor,WHEEL_RADIUS,TRACK);
-	    OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
-	    LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData); //todo
-	    FallingEdgeUSLocalization fallingEdge = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor, navigation);
-        ZipLineTraversal ziplineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor,ziplineMotor,usValue,usData);
-	    
+        EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
+        SampleProvider csValue = csSensor.getRedMode();
+        float[] csData = new float[csValue.sampleSize()];
+
         do {
             // clear the display
             t.clear();
@@ -203,19 +188,37 @@ public class LabFiveMain{
 
             Sound.setVolume(30);
             Sound.buzz();
-    	   
-            
-            //first, do us localizaion
-            fallingEdge.doLocalization();
-            
-            //second, do light localization
+    	   /*odometer.start();
+           odometryDisplay.start();
+           leftMotor.setSpeed(motorHigh);
+           rightMotor.setSpeed(motorHigh);
+           ziplineMotor.setSpeed(motorHigh);
+
+           leftMotor.forward();
+           rightMotor.forward();
+           ziplineMotor.backward();*/
+
+            odometer.start();
+            odometryDisplay.start();
+
+            Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
+
+            /* instantiate FallingEdgeUSLocalization class */
+            FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
+            OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
+            LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
+            ZipLineTraversal zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
+
+            usl.doLocalization();
+
             lightLocalization.doLocalization();
-            
-           //third, travel to with correction            
+
             odometryCorrection.start();
-            ziplineTraversal.doTraversal();
+            zipLineTraversal.doTraversal();
         }
-        
+
+
+
         while (true) {
             if (Button.waitForAnyPress() == Button.ID_ENTER) {
                 System.exit(0);
@@ -223,4 +226,5 @@ public class LabFiveMain{
         }
 
     }
+
 }

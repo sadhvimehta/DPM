@@ -47,17 +47,13 @@ public class FallingEdgeUSLocalization{
 			
 			// get two falling edge angle
 			angleA = getAngleAFallingEdge();
-			System.out.println("Angle A: " + angleA);
 			angleB = getAngleBFallingEdge();
-			System.out.println("Angle B: " + angleB);
-			
+
 
 			//calculate heading
 			deltaHeading =  calculateHeading(angleA,angleB);
-			System.out.println("This is delta heading before conversion: " + deltaHeading);
-			
+
 			double convertedDeltaTheta = (Math.toRadians(deltaHeading) - Math.PI);
-			System.out.println("This is delta heading after conversion: " + convertedDeltaTheta);
 			//turn to origin
 			navigation.turnTo(convertedDeltaTheta);
 			
