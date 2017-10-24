@@ -15,11 +15,10 @@ public class OdometryCorrection extends Thread {
   private static final double DISTANCE_WHEEL_SENSOR = 14.0;
   private Odometer odometer;
   private float lightValueCurrent,lightValuePrev;
-  private SampleProvider samples;
+  private SampleProvider csSensor;
+  private float[] csData;
   private double error = 18.0;
-  private static Port csPort = LocalEV3.get().getPort("S2");
-  private SensorModes csSensor;
-  private float[] data;
+
   private int counterX;
   private int counterY;
   private double DeltaY2;
@@ -28,12 +27,11 @@ public class OdometryCorrection extends Thread {
   
 
   // constructor
-  public OdometryCorrection(Odometer odometer) {
+  public OdometryCorrection(Odometer odometer, SampleProvider csSensor, float[] csData) {
 	  this.odometer = odometer;
-	  this.csSensor= new EV3ColorSensor(csPort);
-	  this.samples = csSensor.getMode("Red"); //red light sensor because we need to measure the intensity of the reflected red light (black vs light wood)
-	  this.data = new float[csSensor.sampleSize()];
-	  
+	  this.csSensor = csSensor;
+	  this.csData = csData;
+
 	  counterX = 0;
 	  counterY= 0;
   }
@@ -41,14 +39,14 @@ public class OdometryCorrection extends Thread {
   // run method (required for Thread)
   public void run() {
     long correctionStart, correctionEnd;
-    samples.fetchSample(data, 0); //get data from the sensor
-	lightValuePrev = data[0]; //save previous value
+    csSensor.fetchSample(csData, 0); //get csData from the sensor
+	lightValuePrev = csData[0]; //save previous value
 
     while (true) {
       correctionStart = System.currentTimeMillis();
 
-      samples.fetchSample(data,0); //get data everytime
-		lightValueCurrent = data[0]; //save new value
+      csSensor.fetchSample(csData,0); //get csData everytime
+		lightValueCurrent = csData[0]; //save new value
 		
 			if (Math.abs(lightValueCurrent-lightValuePrev) >= 0.08){
 				Sound.beep();//if detects a black line

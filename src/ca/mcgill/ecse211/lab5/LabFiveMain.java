@@ -33,8 +33,9 @@ public class LabFiveMain{
             new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
     
     public static final Port usPort = LocalEV3.get().getPort("S1");
-    
-    public static final EV3ColorSensor csPort = new EV3ColorSensor(SensorPort.S2);
+
+    public static Port csPort = LocalEV3.get().getPort("S2");
+    //public static final EV3ColorSensor csPort = new EV3ColorSensor(SensorPort.S2);
 
 
     public static final double WHEEL_RADIUS = 2.05;
@@ -59,11 +60,15 @@ public class LabFiveMain{
         EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(usPort);
         SampleProvider usValue = usSensor.getMode("Distance");
 		float[] usData = new float[usValue.sampleSize()];
+
+		EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
+		SampleProvider csValue = csSensor.getRedMode();
+		float[] csData = new float[csValue.sampleSize()];
 		
 		
 		Navigation navigation = new Navigation(odometer, leftMotor, rightMotor,WHEEL_RADIUS,TRACK);
-	    OdometryCorrection odometryCorrection = new OdometryCorrection(odometer);
-	    LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor);
+	    OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
+	    LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData); //todo
 	    FallingEdgeUSLocalization fallingEdge = new FallingEdgeUSLocalization(odometer,usValue,usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE,leftMotor,rightMotor, navigation);
         ZipLineTraversal ziplineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor,ziplineMotor,usValue,usData);
 	    

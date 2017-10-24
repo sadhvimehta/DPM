@@ -7,6 +7,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 
@@ -14,17 +15,15 @@ public class LightLocalization extends Thread{
 
 	private Navigation navigation;
 	private Odometer odo;
-	private SampleProvider colorValue;
-	private SensorModes csSensor;
-	private float[] colorData;
+    private SampleProvider csSensor;
+    private float[] csData;
 	private double lightValueCurrent, lightValuePrev;
 	private double thetaX;
 	private double thetaY;
 	private double positionX;
 	private double positionY;
 	private double dT;
-	private static Port csPort = LocalEV3.get().getPort("S2");
-	
+
 	
 	private boolean atApproxOrigin = false; 
 	
@@ -39,14 +38,13 @@ public class LightLocalization extends Thread{
 	private EV3LargeRegulatedMotor leftMotor,rightMotor;
 
 	
-	public LightLocalization(Navigation navigation, Odometer odo, EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor) {
+	public LightLocalization(Navigation navigation, Odometer odo, EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, SampleProvider csSensor, float[] csData) {
 		this.odo = odo;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.navigation = navigation;
-		this.csSensor= new EV3ColorSensor(csPort);
-		this.colorValue = csSensor.getMode("Red"); //red light sensor because we need to measure the intensity of the reflected red light (black vs light wood)
-		this.colorData = new float[csSensor.sampleSize()];
+		this.csSensor = csSensor;
+		this.csData = csData;
 		  
 		
 	}
@@ -71,8 +69,8 @@ public class LightLocalization extends Thread{
 	
 	//Polls the color sensor
 		private float getData() {
-			colorValue.fetchSample(colorData, 0);
-			float color = colorData[0] * 1000;
+			csSensor.fetchSample(csData, 0);
+			float color = csData[0] * 1000;
 					
 			return color;
 		}
@@ -81,15 +79,18 @@ public class LightLocalization extends Thread{
 			
 			//turn 45 degrees to face origin
 			this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
-			this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);	
-			this.leftMotor.rotate(Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,45),true);
-			this.rightMotor.rotate(-Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS,LabFiveMain.TRACK,45),false);
-			
-			//then go straight
+			this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
+            this.leftMotor.rotate(Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS, LabFiveMain.TRACK, 45), true);
+            this.rightMotor.rotate(-Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS, LabFiveMain.TRACK, 45), false);
+
+
+            //then go straight
 			this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
-			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);	
+			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
+			this.leftMotor.synchronizeWith(new RegulatedMotor[]{rightMotor});
 			this.leftMotor.forward();
 			this.rightMotor.forward();
+			leftMotor.endSynchronization();
 			
 			lightValuePrev = getData();    //save previous value, aka bord colour
 					
@@ -99,9 +100,9 @@ public class LightLocalization extends Thread{
 				//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
 				if(lightValueCurrent <= 350){ //if we detect a line
 					//Sound.beep();
-					this.leftMotor.setSpeed(0);
-					this.rightMotor.setSpeed(0);		//stop
-					atApproxOrigin = true;
+                    leftMotor.stop(true);
+                    rightMotor.stop(true);
+                    atApproxOrigin = true;
 					Sound.beep();
 				}
 				lightValuePrev = lightValueCurrent;
@@ -129,33 +130,33 @@ public class LightLocalization extends Thread{
 			this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);	
 			this.leftMotor.rotate(Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS, LabFiveMain.TRACK, 360), true);
 			this.rightMotor.rotate(-Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS, LabFiveMain.TRACK, 360), true);
-			
-			
-					//Runs until it has detected 4 lines
-					while(lineCounter < 4){
-						lightValueCurrent = getData();  
-						//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-						if(lightValueCurrent <= 350) 	
-						{
-							//Store angles in variable for future calculations
-							//saveLineAngles[lineCounter] = saveLinePosition[2];
-							saveLineAngles[lineCounter] = this.odo.getTheta();
-							
-							Sound.beep();
-							
-							lineCounter++;
-							
-							//Makes the thread sleep as to not detect the same line twice
-							sleepThread();
-							
-						}
-											
-					}
-					
-					this.leftMotor.setSpeed(0);
-					this.rightMotor.setSpeed(0);
-			
-		}
+
+            //Runs until it has detected 4 lines
+            while (lineCounter < 4) {
+                lightValueCurrent = getData();
+                //If the difference in colour intensity is bigger than a chosen threshold, a line was detected
+                if (lightValueCurrent <= 350) {
+                    //Store angles in variable for future calculations
+                    //saveLineAngles[lineCounter] = saveLinePosition[2];
+                    saveLineAngles[lineCounter] = this.odo.getTheta();
+
+                    Sound.beep();
+
+                    lineCounter++;
+
+                    //Makes the thread sleep as to not detect the same line twice
+                    try {
+                        sleep(1000);
+                    } catch (Exception e) {
+                    }
+                }
+
+            }
+
+            leftMotor.stop(true);
+            rightMotor.stop(true);
+
+        }
 		
 		private void calculatePosition(){
 			//Trigonometry calculations from tutorial
@@ -168,8 +169,8 @@ public class LightLocalization extends Thread{
 			//positionX = -SENSOR_TO_WHEEL*Math.cos(Math.PI*thetaX/(360));
 			//positionY = -SENSOR_TO_WHEEL*Math.cos(Math.PI*thetaY/(360));
 			
-			positionX = -SENSOR_TO_WHEEL*Math.cos((thetaX)/2);
-			positionY = -SENSOR_TO_WHEEL*Math.cos((thetaY)/2);
+			positionX = -SENSOR_TO_WHEEL*Math.cos((thetaY)/2);
+			positionY = -SENSOR_TO_WHEEL*Math.cos((thetaX)/2);
 					
 			
 			dT = 270 + (thetaY/2) - saveLineAngles[3]; //y-
