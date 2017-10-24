@@ -27,7 +27,8 @@ public class ZipLineTraversal {
 }
 
 	public void doTraversal() {
-		//first go to the premount
+		//first go to the premount in a rectangular fashion
+		navigation.travelTo(LabFiveMain.xPreMount, odometer.getY());
 		navigation.travelTo(LabFiveMain.xPreMount, LabFiveMain.yPreMount);
 		
 		//then go to face the mount
