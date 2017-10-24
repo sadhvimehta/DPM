@@ -33,7 +33,7 @@ public class OdometryCorrection extends Thread {
     private float radOff;
     private double[] XYOff;
 
-    private float ds;
+    private double ds;
     private double tandssd;
 
     private Navigation navigation;
@@ -212,30 +212,29 @@ public class OdometryCorrection extends Thread {
 
     public double calculateRadOff() {
         if (firstWheel() == LabFiveMain.rightMotor) {
-            ds = Math.abs((System.currentTimeMillis() - startTime) / 1000 - lastRightLine[0]) * (float) (firstWheel().getSpeed() * LabFiveMain.WHEEL_RADIUS * TAU/ 360);
+            ds = Math.abs((System.currentTimeMillis() - startTime) - lastRightLine[0]) / 10000 * (firstWheel().getSpeed() * LabFiveMain.WHEEL_RADIUS * TAU/ 360);
         }
         else {
-            ds = Math.abs((System.currentTimeMillis() - startTime) / 1000 - lastLeftLine[0]) * (float) (firstWheel().getSpeed() * LabFiveMain.WHEEL_RADIUS * TAU / 360);
+            ds = Math.abs((System.currentTimeMillis() - startTime) - lastLeftLine[0]) / 10000 * (firstWheel().getSpeed() * LabFiveMain.WHEEL_RADIUS * TAU / 360);
         }
 
-        tandssd = Math.atan(ds/ SENSOR_DISTANCE);
-        double offset;
-        if (isCloseXYAxis()) {
-            offset = /*TAU / 8*/0;
+        tandssd = Math.atan( ds/ SENSOR_DISTANCE);
+        if (firstWheel() == LabFiveMain.rightMotor) {
+            //offset = /*TAU / 8*/0;
         }
         else {
-            offset = 0;
+            tandssd = TAU/4 - tandssd;
         }
 
         try {
             BufferedWriter writertemp = new BufferedWriter(new FileWriter("log.txt", true));
-            writertemp.append("deltas: " + ds + " tandssd: "+ tandssd + "\n"); // writes to the log file the time and the brightness
+            writertemp.append("deltas: " + ds + " tandssd: "+ tandssd + " time between line and now: " + Math.abs((System.currentTimeMillis() - startTime) - lastRightLine[0]) / 10000 + "cm per s: " + (firstWheel().getSpeed() * LabFiveMain.WHEEL_RADIUS * TAU / 360) +"\n"); // writes to the log file the time and the brightness
             writertemp.close();
         } catch (IOException e) {
             System.console().printf("no error here!");
         }
 
-        return tandssd + offset;
+        return tandssd;
     }
 
     public double[] calculateXYOff() {
