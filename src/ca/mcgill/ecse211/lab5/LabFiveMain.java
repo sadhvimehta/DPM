@@ -3,7 +3,7 @@ package ca.mcgill.ecse211.lab5;
 import ca.mcgill.ecse211.lab5.LightLocalization;
 import ca.mcgill.ecse211.lab5.Odometer;
 import ca.mcgill.ecse211.lab5.OdometeryDisplay;
-import ca.mcgill.ecse211.lab5.UltrasonicLocalization;
+//import ca.mcgill.ecse211.lab5.UltrasonicLocalization;
 
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
@@ -190,18 +190,6 @@ public class LabFiveMain{
 
         if (buttonChoice == Button.ID_ENTER) {
 
-            Sound.setVolume(30);
-            Sound.buzz();
-    	   /*odometer.start();
-           odometryDisplay.start();
-           leftMotor.setSpeed(motorHigh);
-           rightMotor.setSpeed(motorHigh);
-           ziplineMotor.setSpeed(motorHigh);
-
-           leftMotor.forward();
-           rightMotor.forward();
-           ziplineMotor.backward();*/
-
             odometer.start();
             odometryDisplay.start();
             
@@ -228,25 +216,6 @@ public class LabFiveMain{
             //usl.getData();
             //usl.optLocalize();
         }
-
-			 /* OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
-		      odometer.start();
-		      odometryDisplay.start();
-
-		      buttonChoice = Button.waitForAnyPress();
-		      if(buttonChoice == Button.ID_LEFT){
-		    	  LightLocalization.doLightLocalization();*/
-        //}
-        //else {
-
-			  /*OdometeryDisplay odometryDisplay = new OdometeryDisplay(odometer, t, usLocalizer);
-		      odometer.start();
-		      odometryDisplay.start();
-		      buttonChoice = Button.waitForAnyPress();
-		      if(buttonChoice == Button.ID_LEFT){
-		    	  LightLocalization.doLightLocalization();*/
-        //}
-        //}
         
         
         while (true) {

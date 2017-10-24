@@ -47,17 +47,12 @@ public class FallingEdgeUSLocalization{
 			
 			// get two falling edge angle
 			angleA = getAngleAFallingEdge();
-			System.out.println("Angle A: " + angleA);
-			angleB = getAngleBFallingEdge();
-			System.out.println("Angle B: " + angleB);
-			
+			angleB = getAngleBFallingEdge();			
 
 			//calculate heading
 			deltaHeading =  calculateHeading(angleA,angleB);
-			System.out.println("This is delta heading before conversion: " + deltaHeading);
 			
 			double convertedDeltaTheta = (Math.toRadians(deltaHeading) - Math.PI);
-			System.out.println("This is delta heading after conversion: " + convertedDeltaTheta);
 			//turn to origin
 			navigation.turnTo(convertedDeltaTheta);
 			
@@ -159,7 +154,6 @@ public class FallingEdgeUSLocalization{
 				delta = 0;
 			}
 			
-			//System.out.println("\n \n \n \n \n \n \n \n turnning angle is "+ Math.toDegrees(delta));
 			this.leftMotor.setSpeed(ROTATE_SPEED);
 			this.rightMotor.setSpeed(ROTATE_SPEED);	
 

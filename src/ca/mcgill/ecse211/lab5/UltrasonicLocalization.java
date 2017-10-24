@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.lab5;
+/*package ca.mcgill.ecse211.lab5;
 
 // imports needed for this lab
 
@@ -63,9 +63,9 @@ public class UltrasonicLocalization {
         }
     }
 
-    /**
+    *//**
      * the main method which localizes the robot through ultrasonic
-     */
+     *//*
     public void localize() {
         // checks the time at which the localization starts
         startTime = System.currentTimeMillis();
@@ -118,9 +118,9 @@ public class UltrasonicLocalization {
         updateOdometerTheta(alpha, beta);
     }
 
-    /**
+    *//**
      * this method gets the data from the ultrasonic and only returns values under or equal to 100
-     */
+     *//*
     private float getFilteredData() {
         correctionStart = System.currentTimeMillis();
 
@@ -147,9 +147,9 @@ public class UltrasonicLocalization {
         return returnedDistance;
     }
 
-    /**
+    *//**
      * this method finds the alpha and beta for the falling edges, and updates the odometer
-     */
+     *//*
     public void findFallingEdge() {
         navigation.turnCW(360);
 
@@ -182,9 +182,9 @@ public class UltrasonicLocalization {
         updateOdometerTheta(alpha, beta);
     }
 
-    /**
+    *//**
      * this method indicates whether a falling edge has actually been crossed
-     */
+     *//*
     public boolean fallingEdgeCaught() {
         // adds the latest data to an array which then sets the biggest value and the smallest value
         lastNValueAdd(getFilteredData());
@@ -203,9 +203,9 @@ public class UltrasonicLocalization {
         }
     }
 
-    /**
+    *//**
      * method finds the alpha and beta for the rising edges edges, and updates the odometer
-     */
+     *//*
     public void findRisingEdge() {
         navigation.turnCW(360);
 
@@ -237,9 +237,9 @@ public class UltrasonicLocalization {
         updateOdometerTheta(alpha, beta);
     }
 
-    /**
+    *//**
      * this method indicates whether a rising edge has actually been crossed
-     */
+     *//*
     public boolean risingEdgeCaught() {
         // adds the latest data to an array which then sets the biggest value and the smallest value
         lastNValueAdd(getFilteredData());
@@ -257,9 +257,9 @@ public class UltrasonicLocalization {
         }
     }
 
-    /**
+    *//**
      * method sets the biggest value and the smallest value, and their time in the last n value
-     */
+     *//*
     public void lastNValueFind() {
         biggest = -200;
         smallest = 200;
@@ -278,9 +278,9 @@ public class UltrasonicLocalization {
         }
     }
 
-    /**
+    *//**
      * method adds in values to the array with logic
-     */
+     *//*
     public void lastNValueAdd(double value) {
         Double[] entry = {value, (double) System.currentTimeMillis() - startTime};
         // the array doesnt take chucks of the values and risk to miss a big difference.
@@ -295,9 +295,9 @@ public class UltrasonicLocalization {
         }
     }
 
-    /**
+    *//**
      * method resets the motors
-     */
+     *//*
     private void resetMotor() {
         leftMotor.stop(true);
         rightMotor.stop(true);
@@ -309,10 +309,10 @@ public class UltrasonicLocalization {
         }
     }
 
-    /**
+    *//**
      * method which uses alpha and beta to calculate delta theta, update odometer's theta, and turn to
      * face the 0 degree
-     */
+     *//*
     private void updateOdometerTheta(double alpha, double beta) {
         double dTheta;
 
@@ -362,4 +362,4 @@ public class UltrasonicLocalization {
         FALLING_EDGE,
         RISING_EDGE
     }
-}
+}*/
