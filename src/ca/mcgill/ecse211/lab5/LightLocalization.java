@@ -77,7 +77,7 @@ public class LightLocalization extends Thread{
 
 		private void goToEstimateOrigin(){
 			
-			//turn 45 degrees to face origin
+			//turn 45 degrees to face origin (0,0)
 			this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
 			this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
             this.leftMotor.rotate(Navigation.convertAngle(LabFiveMain.WHEEL_RADIUS, LabFiveMain.TRACK, 45), true);
@@ -145,16 +145,13 @@ public class LightLocalization extends Thread{
                     lineCounter++;
 
                     //Makes the thread sleep as to not detect the same line twice
-                    try {
-                        sleep(1000);
-                    } catch (Exception e) {
-                    }
+                    sleepThread();
                 }
 
             }
 
-            leftMotor.stop(true);
-            rightMotor.stop(true);
+            this.leftMotor.stop(true);
+            this.rightMotor.stop(true);
 
         }
 		
@@ -169,8 +166,8 @@ public class LightLocalization extends Thread{
 			//positionX = -SENSOR_TO_WHEEL*Math.cos(Math.PI*thetaX/(360));
 			//positionY = -SENSOR_TO_WHEEL*Math.cos(Math.PI*thetaY/(360));
 			
-			positionX = -SENSOR_TO_WHEEL*Math.cos((thetaY)/2);
-			positionY = -SENSOR_TO_WHEEL*Math.cos((thetaX)/2);
+			positionX = -SENSOR_TO_WHEEL*Math.cos((thetaX)/2);
+			positionY = -SENSOR_TO_WHEEL*Math.cos((thetaY)/2);
 					
 			
 			dT = 270 + (thetaY/2) - saveLineAngles[3]; //y-
@@ -195,7 +192,7 @@ public class LightLocalization extends Thread{
 		private void goToOrigin(){
 			
 			
-			navigation.travelTo(0, 0);			
+			//navigation.travelTo(0, 0);			
 			Sound.beep();
 			//Turn to 0deg
 			/*this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
@@ -203,7 +200,8 @@ public class LightLocalization extends Thread{
 			this.leftMotor.rotate(Navigation.convertAngle(LocalizationLab.WHEEL_RADIUS,LocalizationLab.TRACK,0),true);
 			this.rightMotor.rotate(-Navigation.convertAngle(LocalizationLab.WHEEL_RADIUS,LocalizationLab.TRACK,0),false);
 				*/
-			navigation.turnTo(0);
+			
+			
 			
 			
 		}
