@@ -14,7 +14,7 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 
-public class LightLocalization extends Thread{
+public class LightLocalization{
 
 	private Navigation navigation;
 	private Odometer odo;
@@ -50,10 +50,6 @@ public class LightLocalization extends Thread{
 		this.csData = csData;
 		  
 		
-	}
-	
-	public void run() {
-		doLocalization();
 	}
 
 	public void doLocalization() {	
