@@ -98,7 +98,7 @@ public class LightLocalization{
 				lightValueCurrent = getData(); //update data
 
 				//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-				if(lightValueCurrent <= 350){ //if we detect a line
+				if(lightValueCurrent <= 380){ //if we detect a line
 					//Sound.beep();
                     leftMotor.stop(true);
                     rightMotor.stop(true);
@@ -137,7 +137,7 @@ public class LightLocalization{
             while (lineCounter < 4) {
                 lightValueCurrent = getData();
                 //If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-                if (lightValueCurrent <= 350) {
+                if (lightValueCurrent <= 380) {
                     //Store angles in variable for future calculations
                     //saveLineAngles[lineCounter] = saveLinePosition[2];
                     saveLineAngles[lineCounter] = this.odo.getTheta();
@@ -184,7 +184,10 @@ public class LightLocalization{
 			this.odo.setY(positionY);
 			//this.odo.setTheta(Math.atan2(positionY, positionX)+180);
 			this.odo.setTheta(this.odo.getTheta() + dT);
-						
+			System.out.println("dt:" + dT);
+			System.out.println("x:" + this.odo.getX());
+			System.out.println("y:" + this.odo.getY());
+			
 			//Sound.twoBeeps();
 			//Travel to origin	
 			
