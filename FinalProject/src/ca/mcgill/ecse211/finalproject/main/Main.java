@@ -158,14 +158,13 @@ public class Main {
             FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
             //TODO:uncomment below
             //OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
-            //LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
+            LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
             // TODO: uncomment below
             //ZipLineTraversal zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
             usl.doLocalization();
             
-            //TODO: uncomment below
-            //lightLocalization.doLocalization();
+            lightLocalization.doLocalization();
             
             //TODO: uncomment below
             //odometryCorrection.start();
