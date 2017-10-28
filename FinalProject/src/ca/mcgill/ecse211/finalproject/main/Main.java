@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.finalproject.main;
 
 import ca.mcgill.ecse211.finalproject.drive.Navigation;
 import ca.mcgill.ecse211.finalproject.localization.FallingEdgeUSLocalization;
+import ca.mcgill.ecse211.finalproject.localization.LightLocalization;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.odometry.OdometryDisplay;
 import lejos.hardware.Button;
