@@ -107,11 +107,8 @@ public class LightLocalization{
             //then go straight
 			this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
 			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
-			this.leftMotor.synchronizeWith(new RegulatedMotor[]{rightMotor});
-			leftMotor.startSynchronization();
 			this.leftMotor.forward();
 			this.rightMotor.forward();
-			leftMotor.endSynchronization();
 								
 			while(!atApproxOrigin){ //boolean to check if we have arrived or not
 				lightValueCurrent = getData(); //update data

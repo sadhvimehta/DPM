@@ -11,7 +11,6 @@ public class Navigation {
     private static final double SIDE_SQUARE = 30.48;
     public static final int FORWARD_SPEED = 250;
     public static final int ROTATE_SPEED = 100;
-
     private double theta;
     private static double WHEEL_RADIUS;
     private static double TRACK;
