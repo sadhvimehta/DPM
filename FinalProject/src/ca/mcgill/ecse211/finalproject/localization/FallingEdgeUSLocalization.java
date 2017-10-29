@@ -158,7 +158,6 @@ public class FallingEdgeUSLocalization{
 				delta = 0;
 			}
 			
-			//System.out.println("\n \n \n \n \n \n \n \n turnning angle is "+ Math.toDegrees(delta));
 			this.leftMotor.setSpeed(ROTATE_SPEED);
 			this.rightMotor.setSpeed(ROTATE_SPEED);	
 
