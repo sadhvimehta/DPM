@@ -42,7 +42,6 @@ public class LightLocalization{
 	private final float LIGHT_DIFF_THRESHOLD = 40;
 	private static final int WAIT_PERIOD = 1000; //in milliseconds
 	private final double SENSOR_TO_WHEEL = 14.0; //distance between the wheels and the sensor
-	private final double LINE_OFFSET = SENSOR_TO_WHEEL * 1.5;
 	private static final long LOOP_TIME = 10;
 	private boolean firstpass = true;
 	
@@ -107,17 +106,14 @@ public class LightLocalization{
             //then go straight
 			this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
 			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
-			this.leftMotor.synchronizeWith(new RegulatedMotor[]{rightMotor});
-			leftMotor.startSynchronization();
 			this.leftMotor.forward();
 			this.rightMotor.forward();
-			leftMotor.endSynchronization();
-								
+			
 			while(!atApproxOrigin){ //boolean to check if we have arrived or not
 				lightValueCurrent = getData(); //update data
 
 				//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-				if(lightValueCurrent <= 380){
+				if(lightValueCurrent <= 38){
                     leftMotor.stop(true);
                     rightMotor.stop(true);
                     atApproxOrigin = true;
@@ -128,8 +124,8 @@ public class LightLocalization{
 			this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
 			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
 			
-			this.leftMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, LINE_OFFSET),true);
-			this.rightMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, LINE_OFFSET),false);
+			this.leftMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, SENSOR_TO_WHEEL),true);
+			this.rightMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, SENSOR_TO_WHEEL),false);
 			System.out.println("Reversing from origin " + odo.getX() + " " + odo.getY());
 			System.out.println("Theta: " + odo.getTheta());
 			
