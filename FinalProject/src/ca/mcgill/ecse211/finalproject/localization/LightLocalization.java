@@ -30,6 +30,7 @@ public class LightLocalization{
 	private double dT;
 	private long startTime;
 	private double dCdt; // store difference b/w prev and current cs
+	private long correctionStart, correctionEnd;
 	private ArrayList<Double> lastNValue = new ArrayList<>(); // stores last 40 cs readings
 
 	
@@ -42,6 +43,7 @@ public class LightLocalization{
 	private static final int WAIT_PERIOD = 1000; //in milliseconds
 	private final double SENSOR_TO_WHEEL = 14.0; //distance between the wheels and the sensor
 	private final double LINE_OFFSET = SENSOR_TO_WHEEL * 1.5;
+	private static final long LOOP_TIME = 10;
 	private boolean firstpass = true;
 	
 	private EV3LargeRegulatedMotor leftMotor,rightMotor;
@@ -74,11 +76,23 @@ public class LightLocalization{
 	
 	//Polls the color sensor
 		private float getData() {
+			
+		    correctionStart = System.currentTimeMillis();
 
-			csSensor.fetchSample(csData, 0);
-			float color = csData[0] * 1000;
-					
-			return color;
+		    csSensor.fetchSample(csData, 0);
+			float color = csData[0] * 100;
+
+		    // the correctionstart and corredtionend are to make sure that a value is taken once every
+		    // LOOP_TIME
+		    correctionEnd = System.currentTimeMillis();
+		    if (correctionEnd - correctionStart < LOOP_TIME) {
+		      try {
+		        Thread.sleep(LOOP_TIME - (correctionEnd - correctionStart));
+		      } catch (InterruptedException e) {
+		      }
+		    }
+
+		    return color;
 		}
 
 		private void goToEstimateOrigin(){
