@@ -1,5 +1,7 @@
 package ca.mcgill.ecse211.finalproject.localization;
 
+import java.util.ArrayList;
+
 import ca.mcgill.ecse211.finalproject.drive.Navigation;
 import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
@@ -20,12 +22,15 @@ public class LightLocalization{
 	private Odometer odo;
     private SampleProvider csSensor;
     private float[] csData;
-	private double lightValueCurrent, lightValuePrev;
+	private double lightValueCurrent, lightValuePrev; // store current cs value, previous cs value
 	private double thetaX;
 	private double thetaY;
 	private double positionX;
 	private double positionY;
 	private double dT;
+	private long startTime;
+	private double dCdt; // store difference b/w prev and current cs
+	private ArrayList<Double> lastNValue = new ArrayList<>(); // stores last 40 cs readings
 
 	
 	private boolean atApproxOrigin = false; 
@@ -37,6 +42,7 @@ public class LightLocalization{
 	private static final int WAIT_PERIOD = 1000; //in milliseconds
 	private final double SENSOR_TO_WHEEL = 14.0; //distance between the wheels and the sensor
 	private final double LINE_OFFSET = SENSOR_TO_WHEEL * 1.5;
+	private boolean firstpass = true;
 	
 	private EV3LargeRegulatedMotor leftMotor,rightMotor;
 
@@ -68,6 +74,7 @@ public class LightLocalization{
 	
 	//Polls the color sensor
 		private float getData() {
+
 			csSensor.fetchSample(csData, 0);
 			float color = csData[0] * 1000;
 					
@@ -91,24 +98,18 @@ public class LightLocalization{
 			this.leftMotor.forward();
 			this.rightMotor.forward();
 			leftMotor.endSynchronization();
-			
-			lightValuePrev = getData();    //save previous value, aka bord colour
-					
+								
 			while(!atApproxOrigin){ //boolean to check if we have arrived or not
 				lightValueCurrent = getData(); //update data
 
 				//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-				if(lightValueCurrent <= 380){ //if we detect a line
-					//Sound.beep();
+				if(lightValueCurrent <= 380){
                     leftMotor.stop(true);
                     rightMotor.stop(true);
                     atApproxOrigin = true;
 					Sound.beep();
-				}
-				lightValuePrev = lightValueCurrent;
-			
+				}			
 			}
-			//Sound.beep();
 			//go backwards so the front wheels are at the origin and not the sensor
 			this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
 			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
@@ -127,7 +128,7 @@ public class LightLocalization{
 			lineCounter = 0;
 			saveLineAngles = new double[4];
 			
-			
+		    startTime = System.currentTimeMillis();
 			this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
 			this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);	
 			this.leftMotor.rotate(Navigation.convertAngle(Main.WHEEL_RADIUS, Main.TRACK, 360), true);
@@ -136,8 +137,27 @@ public class LightLocalization{
             //Runs until it has detected 4 lines
             while (lineCounter < 4) {
                 lightValueCurrent = getData();
+                
+                if (firstpass) {
+                    lightValuePrev = lightValueCurrent;
+                    firstpass = false;
+                  }
+                // rather than check the value of light captured, we are checking the instaneous
+                // differentiation
+                dCdt = lightValueCurrent - lightValuePrev;
+                lightValuePrev = lightValueCurrent;
+
+                // add the differentiation of the color to the array
+                lastNValueAdd(dCdt);
+                if (pastline()) {
+                	//Store angles in variable for future calculations
+                    //saveLineAngles[lineCounter] = saveLinePosition[2];
+                    saveLineAngles[lineCounter] = this.odo.getTheta();
+                    Sound.beep();
+                    lineCounter++;
+                }
                 //If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-                if (lightValueCurrent <= 380) {
+                /*if (lightValueCurrent <= 380) {
                     //Store angles in variable for future calculations
                     //saveLineAngles[lineCounter] = saveLinePosition[2];
                     saveLineAngles[lineCounter] = this.odo.getTheta();
@@ -148,7 +168,7 @@ public class LightLocalization{
 
                     //Makes the thread sleep as to not detect the same line twice
                     sleepThread();
-                }
+                }*/
 
             }
 
@@ -206,10 +226,52 @@ public class LightLocalization{
 			this.rightMotor.rotate(-Navigation.convertAngle(LocalizationLab.WHEEL_RADIUS,LocalizationLab.TRACK,0),false);
 				*/
 			
-			
-			
-			
 		}
+		
+		/** method adds in values to the array with logic */
+		public void lastNValueAdd(double value) {
+			// the array does not take chucks of the values and risk to miss a big difference.
+		    // Instead we slide along
+		    if (this.lastNValue.size() > 40) {
+		      // the oldest value is removed to make space
+
+		      this.lastNValue.remove(0);
+		      this.lastNValue.add(value);
+		    } else {
+		      // if the array happens to be less that, simply add them
+
+		      this.lastNValue.add(value);
+		    }
+		}
+
+		/** this method indicates whether a line has actually been passed over */
+		  public boolean pastline() {
+		    double biggest = -100;
+		    double smallest = 100;
+
+		    // since crossing a line causes a drop and a rise in the derivative, the filter
+		    // only considers a line crossed if the biggest value is higher than some threshold
+		    for (int i = 0; i < this.lastNValue.size(); i++) {
+		      // and the reverse for the lowest value, thus creating one beep per line
+		      if (this.lastNValue.get(i) > biggest) {
+		        biggest = this.lastNValue.get(i);
+		      }
+		      if (this.lastNValue.get(i) < smallest) {
+		        smallest = this.lastNValue.get(i);
+		      }
+		    }
+
+		    // if a sample is considered to be a line, the array is cleared as to not retrigger an other
+		    // time
+		    if (biggest > 5 && smallest < -3) {
+		      this.lastNValue.clear();
+		      Sound.setVolume(30);
+		      Sound.beep();
+		      return true;
+		    } else {
+		      return false;
+		    }
+		  }
 		
 		public static void sleepThread() {
 			try {
