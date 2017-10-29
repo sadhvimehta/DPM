@@ -68,8 +68,6 @@ public class LightLocalization{
 		checkLines();
 		
 		calculatePosition();
-	
-		//goToOrigin();
 		
 	}		
 	
@@ -108,16 +106,12 @@ public class LightLocalization{
 			this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
 			this.leftMotor.forward();
 			this.rightMotor.forward();
-<<<<<<< HEAD
-								
-=======
-			
->>>>>>> 7b7b105e52fd511f09328752cd56dc4fa8e525a5
+
 			while(!atApproxOrigin){ //boolean to check if we have arrived or not
 				lightValueCurrent = getData(); //update data
 
 				//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-				if(lightValueCurrent <= 38){
+				if(lightValueCurrent <= 38){ //TODO: change this to a non absolute value
                     leftMotor.stop(true);
                     rightMotor.stop(true);
                     atApproxOrigin = true;
@@ -165,24 +159,10 @@ public class LightLocalization{
                 lastNValueAdd(dCdt);
                 if (pastline()) {
                 	//Store angles in variable for future calculations
-                    //saveLineAngles[lineCounter] = saveLinePosition[2];
                     saveLineAngles[lineCounter] = this.odo.getTheta();
                     Sound.beep();
                     lineCounter++;
                 }
-                //If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-                /*if (lightValueCurrent <= 380) {
-                    //Store angles in variable for future calculations
-                    //saveLineAngles[lineCounter] = saveLinePosition[2];
-                    saveLineAngles[lineCounter] = this.odo.getTheta();
-
-                    Sound.beep();
-
-                    lineCounter++;
-
-                    //Makes the thread sleep as to not detect the same line twice
-                    sleepThread();
-                }*/
 
             }
 
@@ -196,49 +176,20 @@ public class LightLocalization{
 			thetaY = saveLineAngles[3] - saveLineAngles[1]; //Y+ - Y-
 			thetaX = saveLineAngles[2] - saveLineAngles[0];	//X+ - X-
 			
-			//positionY = LINE_OFFSET *Math.cos(Math.toRadians(thetaY/2));
-			//positionX = LINE_OFFSET *Math.cos(Math.toRadians(thetaX/2));
-			
-			//positionX = -SENSOR_TO_WHEEL*Math.cos(Math.PI*thetaX/(360));
-			//positionY = -SENSOR_TO_WHEEL*Math.cos(Math.PI*thetaY/(360));
-			
 			positionX = -SENSOR_TO_WHEEL*Math.cos((thetaY)/2);
 			positionY = -SENSOR_TO_WHEEL*Math.cos((thetaX)/2);
 					
 			
 			dT = Math.toRadians(270.00) + (thetaY/2) - saveLineAngles[3]; //y-
 			
-			//Wraps the angle for positive Y axis
-			//if (dT > 180) {
-			//	dT += 180;
-			//}
-			
 			//Updates odometer to actual values
 			this.odo.setX(positionX);
 			this.odo.setY(positionY);
-			//this.odo.setTheta(Math.atan2(positionY, positionX)+180);
 			this.odo.setTheta(this.odo.getTheta() + dT);
+			//TODO: remove these prints
 			System.out.println("dt:" + dT);
 			System.out.println("x:" + this.odo.getX());
-			System.out.println("y:" + this.odo.getY());
-			
-			//Sound.twoBeeps();
-			//Travel to origin	
-			
-		}
-		
-		
-		private void goToOrigin(){
-			
-			
-			//navigation.travelTo(0, 0);			
-			Sound.beep();
-			//Turn to 0deg
-			/*this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
-			this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);	
-			this.leftMotor.rotate(Navigation.convertAngle(LocalizationLab.WHEEL_RADIUS,LocalizationLab.TRACK,0),true);
-			this.rightMotor.rotate(-Navigation.convertAngle(LocalizationLab.WHEEL_RADIUS,LocalizationLab.TRACK,0),false);
-				*/
+			System.out.println("y:" + this.odo.getY());	
 			
 		}
 		

@@ -138,18 +138,6 @@ public class Main {
 
         if (buttonChoice == Button.ID_ENTER) {
 
-            Sound.setVolume(30);
-            Sound.buzz();
-    	   /*odometer.start();
-           odometryDisplay.start();
-           leftMotor.setSpeed(motorHigh);
-           rightMotor.setSpeed(motorHigh);
-           ziplineMotor.setSpeed(motorHigh);
-
-           leftMotor.forward();
-           rightMotor.forward();
-           ziplineMotor.backward();*/
-
             odometer.start();
             odometryDisplay.start();
             
