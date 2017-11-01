@@ -1,7 +1,8 @@
 .idea
-.settings
+FinalProject/.settings/
 *.iml
-src/META-INF/
+FinalProject/src/META-INF/
 bin/
 classes/
 Team15_Lab5_Lam_Grosdidier_Mehta_Huang_Yamak_MohdNazarudin.zip
+
