@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.finalproject.odometry;
+package ca.mcgill.ecse211.finalproject.display;
 
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 //import ca.mcgill.ecse211.lab5.UltrasonicController;

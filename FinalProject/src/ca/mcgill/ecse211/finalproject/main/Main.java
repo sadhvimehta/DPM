@@ -1,10 +1,11 @@
 package ca.mcgill.ecse211.finalproject.main;
 
-import ca.mcgill.ecse211.finalproject.drive.Navigation;
-import ca.mcgill.ecse211.finalproject.localization.FallingEdgeUSLocalization;
-import ca.mcgill.ecse211.finalproject.localization.LightLocalization;
+import ca.mcgill.ecse211.finalproject.controller.FallingEdgeUSLocalization;
+import ca.mcgill.ecse211.finalproject.controller.LightLocalization;
+import ca.mcgill.ecse211.finalproject.controller.Navigation;
+import ca.mcgill.ecse211.finalproject.display.MainMenuDisplay;
+import ca.mcgill.ecse211.finalproject.display.OdometryDisplay;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
-import ca.mcgill.ecse211.finalproject.odometry.OdometryDisplay;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;

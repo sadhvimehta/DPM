@@ -1,6 +1,5 @@
-package ca.mcgill.ecse211.finalproject.localization;
+package ca.mcgill.ecse211.finalproject.controller;
 
-import ca.mcgill.ecse211.finalproject.drive.Navigation;
 import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.Sound;

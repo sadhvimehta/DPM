@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.finalproject.drive;
+package ca.mcgill.ecse211.finalproject.controller;
 
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 

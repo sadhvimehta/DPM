@@ -1,4 +1,4 @@
-package ca.mcgill.ecse211.finalproject.main;
+package ca.mcgill.ecse211.finalproject.display;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.TextLCD;
