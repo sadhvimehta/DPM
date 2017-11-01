@@ -1,4 +1,5 @@
-ca.mcgill.ecse211.finalproject.drive
-ca.mcgill.ecse211.finalproject.localization
+ca.mcgill.ecse211.finalproject.controller
+ca.mcgill.ecse211.finalproject.display
 ca.mcgill.ecse211.finalproject.main
 ca.mcgill.ecse211.finalproject.odometry
+ca.mcgill.ecse211.finalproject.sensor

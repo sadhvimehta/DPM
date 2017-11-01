@@ -19,6 +19,13 @@ import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
+
+/**
+ * <h1>Design Principle Methods Team 15 Final Project</h1>
+ *
+ * blah blah blah
+ *
+ */
 public class Main {
 
     public static final EV3LargeRegulatedMotor leftMotor =
