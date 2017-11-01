@@ -8,7 +8,7 @@ import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
-public class Navigation implements UltrasonicController{
+public class Navigation{
     private static final double SIDE_SQUARE = 30.48;
     public static final int FORWARD_SPEED = 250;
     public static final int ROTATE_SPEED = 100;
@@ -178,16 +178,4 @@ public class Navigation implements UltrasonicController{
         leftMotor.rotate(convertDistance(WHEEL_RADIUS, distance), true);
         rightMotor.rotate(convertDistance(WHEEL_RADIUS, distance), immediateReturn);
     }
-
-	@Override
-	public void processUSData(float usData) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int readLSData() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }

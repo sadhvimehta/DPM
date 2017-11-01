@@ -12,7 +12,7 @@ public class BlockDetection implements UltrasonicController, LightController{
 	}
 
 	@Override
-	public int readLSDistance() {
+	public float readLSData() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -24,7 +24,7 @@ public class BlockDetection implements UltrasonicController, LightController{
 	}
 
 	@Override
-	public int readLSData() {
+	public float readUSData() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

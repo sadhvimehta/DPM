@@ -11,7 +11,7 @@ public class OdometryCorrection extends Thread implements LightController{
 	}
 
 	@Override
-	public int readLSDistance() {
+	public float readLSData() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
