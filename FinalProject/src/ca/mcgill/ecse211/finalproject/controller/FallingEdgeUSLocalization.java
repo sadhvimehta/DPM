@@ -2,11 +2,12 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
+import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
-public class FallingEdgeUSLocalization{
+public class FallingEdgeUSLocalization implements UltrasonicController{ 
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE};
 	public static int ROTATION_SPEED = 100;
 	public static int FULL_CIRCLE = 360;
@@ -140,38 +141,50 @@ public class FallingEdgeUSLocalization{
 		}
 	 
 	//method that turns the rpbot to a specific angle, so it compares between the angle we had and the angle we want to go to
-		//inputs dest angle
-		public void turnToDestintaionAngle(double angle) {
+	//inputs dest angle
+	public void turnToDestintaionAngle(double angle) {
 
-			double delta = angle - this.odo.getTheta();
+		double delta = angle - this.odo.getTheta();
 		
-			if (delta < -Math.PI) {
-				delta +=2*Math.PI;
-			}
-			
-			if (delta > Math.PI) {
-				delta -= 2*Math.PI;
-			}
-			
-			if(delta ==0 || delta == 2*Math.PI) {
-				delta = 0;
-			}
-			
-			this.leftMotor.setSpeed(ROTATE_SPEED);
-			this.rightMotor.setSpeed(ROTATE_SPEED);	
-
-			this.leftMotor.rotate(convertAngle(Main.WHEEL_RADIUS,Main.TRACK,Math.toDegrees(delta)),true);
-			this.rightMotor.rotate(-convertAngle(Main.WHEEL_RADIUS,Main.TRACK,Math.toDegrees(delta)),false);
-			Sound.beep();
-			
+		if (delta < -Math.PI) {
+			delta +=2*Math.PI;
 		}
-		
-		 public static int convertDistance(double radius, double distance) {
-			    return (int) ((180.0 * distance) / (Math.PI * radius));
-		 }
+			
+		if (delta > Math.PI) {
+			delta -= 2*Math.PI;
+		}
+			
+		if(delta ==0 || delta == 2*Math.PI) {
+			delta = 0;
+		}
+			
+		this.leftMotor.setSpeed(ROTATE_SPEED);
+		this.rightMotor.setSpeed(ROTATE_SPEED);	
 
-		 public static int convertAngle(double radius, double width, double angle) {
-			    return convertDistance(radius, Math.PI * width * angle / 360.0);
-		 }
+		this.leftMotor.rotate(convertAngle(Main.WHEEL_RADIUS,Main.TRACK,Math.toDegrees(delta)),true);
+		this.rightMotor.rotate(-convertAngle(Main.WHEEL_RADIUS,Main.TRACK,Math.toDegrees(delta)),false);
+		Sound.beep();
+			
+	}
+		
+	public static int convertDistance(double radius, double distance) {
+		return (int) ((180.0 * distance) / (Math.PI * radius));
+	}
+
+	public static int convertAngle(double radius, double width, double angle) {
+		return convertDistance(radius, Math.PI * width * angle / 360.0);
+	}
+
+
+	@Override
+	public void processUSData(float usData) {
+		// TODO Auto-generated method stub	
+	}
+
+	@Override
+	public int readLSData() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
