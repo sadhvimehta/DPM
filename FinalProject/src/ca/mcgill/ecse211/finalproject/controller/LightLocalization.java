@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
+import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -15,7 +16,7 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 
-public class LightLocalization {
+public class LightLocalization implements LightController {
 
     private Navigation navigation;
     private Odometer odo;
@@ -55,7 +56,6 @@ public class LightLocalization {
         this.csSensor = csSensor;
         this.csData = csData;
 
-
     }
 
     public void doLocalization() {
@@ -70,27 +70,6 @@ public class LightLocalization {
 
         navigation.travelTo(0, 0);
 
-    }
-
-    //Polls the color sensor
-    private float getData() {
-
-        correctionStart = System.currentTimeMillis();
-
-        csSensor.fetchSample(csData, 0);
-        float color = csData[0] * 100;
-
-        // the correctionstart and corredtionend are to make sure that a value is taken once every
-        // LOOP_TIME
-        correctionEnd = System.currentTimeMillis();
-        if (correctionEnd - correctionStart < LOOP_TIME) {
-            try {
-                Thread.sleep(LOOP_TIME - (correctionEnd - correctionStart));
-            } catch (InterruptedException e) {
-            }
-        }
-
-        return color;
     }
 
     private void goToEstimateOrigin() {
@@ -109,7 +88,7 @@ public class LightLocalization {
         this.rightMotor.forward();
 
         while (!atApproxOrigin) { //boolean to check if we have arrived or not
-            lightValueCurrent = getData(); //update data
+            lightValueCurrent = readLSData(); //update data
 
             //If the difference in colour intensity is bigger than a chosen threshold, a line was detected
             if (lightValueCurrent <= 38) { //TODO: change this to a non absolute value
@@ -145,7 +124,7 @@ public class LightLocalization {
 
         //Runs until it has detected 4 lines
         while (lineCounter < 4) {
-            lightValueCurrent = getData();
+            lightValueCurrent = readLSData();
 
             if (firstpass) {
                 lightValuePrev = lightValueCurrent;
@@ -242,12 +221,31 @@ public class LightLocalization {
         }
     }
 
-    public static void sleepThread() {
-        try {
-            Thread.sleep(WAIT_PERIOD);
-        } catch (InterruptedException e) {
+	@Override
+	public void processLSData(float lsData) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float readLSData() {
+        correctionStart = System.currentTimeMillis();
+
+        csSensor.fetchSample(csData, 0);
+        float color = csData[0] * 100;
+
+        // the correctionstart and corredtionend are to make sure that a value is taken once every
+        // LOOP_TIME
+        correctionEnd = System.currentTimeMillis();
+        if (correctionEnd - correctionStart < LOOP_TIME) {
+            try {
+                Thread.sleep(LOOP_TIME - (correctionEnd - correctionStart));
+            } catch (InterruptedException e) {
+            }
         }
-    }
+
+        return color;
+	}
 
 
 }

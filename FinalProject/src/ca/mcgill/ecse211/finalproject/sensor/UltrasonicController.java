@@ -4,5 +4,5 @@ public interface UltrasonicController {
 
 	  public void processUSData(float usData);
 
-	  public int readLSData();
+	  public float readUSData();
 	}

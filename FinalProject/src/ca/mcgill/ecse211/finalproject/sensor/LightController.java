@@ -4,5 +4,5 @@ public interface LightController {
 	
 	  public void processLSData(float lsData);
 
-	  public int readLSDistance();
+	  public float readLSData();
 }

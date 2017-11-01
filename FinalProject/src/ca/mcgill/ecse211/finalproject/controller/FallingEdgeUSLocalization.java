@@ -40,14 +40,14 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			
 			//check if the robot is face to the wall, if the robot is face to the wall
 			//turn 180 degrees
-			if (getFilteredData()< DISTANCE_WALL+10) {
+			if (readUSData()< DISTANCE_WALL+10) {
 				this.leftMotor.setSpeed(ROTATE_SPEED);
 				this.rightMotor.setSpeed(ROTATE_SPEED);	
 				this.leftMotor.rotate(Navigation.convertAngle(Main.WHEEL_RADIUS,Main.TRACK,180),true);
 				this.rightMotor.rotate(-Navigation.convertAngle(Main.WHEEL_RADIUS,Main.TRACK,180),false);
 				odo.setTheta(0);
 			}
-			
+
 			// get two falling edge angle
 			angleA = getAngleAFallingEdge();
 			angleB = getAngleBFallingEdge();
@@ -71,10 +71,10 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	private double getAngleAFallingEdge() {
 		
 		//rotate our robot clockwise until a wall is detected
-		while(getFilteredData()< DISTANCE_WALL+NOISE_MARGIN) {
+		while(readUSData()< DISTANCE_WALL+NOISE_MARGIN) {
 			setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
 		}
-		while(getFilteredData()> DISTANCE_WALL) {
+		while(readUSData()> DISTANCE_WALL) {
 			setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);			
 		}
 		
@@ -89,10 +89,10 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	private double getAngleBFallingEdge() {
 		
 		//rotate our robot counter-clockwise until a wall is detected
-		while(getFilteredData()< DISTANCE_WALL+NOISE_MARGIN) {
+		while(readUSData()< DISTANCE_WALL+NOISE_MARGIN) {
 			setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
 		}
-		while(getFilteredData()> DISTANCE_WALL) {
+		while(readUSData()> DISTANCE_WALL) {
 			setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);			
 		}
 		
@@ -100,13 +100,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		stopMotor();
 		Sound.beep();
 		return Math.toDegrees(odo.getTheta());
-	}
-		
-	// method to get distance from the wall
-	private float getFilteredData() {
-		usSensor.fetchSample(usData, 0);
-		float distance = usData[0]*100;	
-		return distance > 100 ? 100 : distance;
 	}
 	
 	//method the calculate deltaHeading
@@ -178,13 +171,14 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 
 	@Override
 	public void processUSData(float usData) {
-		// TODO Auto-generated method stub	
+		//TODO: add body
 	}
 
 	@Override
-	public int readLSData() {
-		// TODO Auto-generated method stub
-		return 0;
+	public float readUSData() {
+		usSensor.fetchSample(usData, 0);
+		float distance = usData[0]*100;	
+		return distance > 100 ? 100 : distance;
 	}
 
 }
