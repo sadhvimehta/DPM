@@ -28,6 +28,7 @@ public class Navigation{
             EV3LargeRegulatedMotor rightMotor,
             double WHEEL_RADIUS,
             double TRACK) {
+
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.odometer = odometer;

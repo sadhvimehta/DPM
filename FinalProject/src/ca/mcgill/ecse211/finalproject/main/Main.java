@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.finalproject.main;
 
+import ca.mcgill.ecse211.finalproject.controller.Controller;
 import ca.mcgill.ecse211.finalproject.controller.FallingEdgeUSLocalization;
 import ca.mcgill.ecse211.finalproject.controller.LightLocalization;
 import ca.mcgill.ecse211.finalproject.controller.Navigation;
@@ -51,6 +52,7 @@ public class Main {
         Odometer odometer = new Odometer(leftMotor, rightMotor, ziplineMotor);
         OdometryDisplay odometryDisplay = new OdometryDisplay(odometer, t);
 
+
         EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(usPort);
         SampleProvider usValue = usSensor.getMode("Distance");
         float[] usData = new float[usValue.sampleSize()];
@@ -58,8 +60,10 @@ public class Main {
         EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
         SampleProvider csValue = csSensor.getRedMode();
         float[] csData = new float[csValue.sampleSize()];
-        
-	    MainMenuDisplay mainMenu = new MainMenuDisplay(t);
+
+        Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor, WHEEL_RADIUS, TRACK);
+
+        MainMenuDisplay mainMenu = new MainMenuDisplay(t);
 
         do {
            
@@ -142,23 +146,18 @@ public class Main {
             odometer.start();
             odometryDisplay.start();
             
-            Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
+           /* Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
-            /* instantiate FallingEdgeUSLocalization class */
+            *//* instantiate FallingEdgeUSLocalization class *//*
             FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
             //TODO:uncomment below
             //OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
             LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
             // TODO: uncomment below
-            //ZipLineTraversal zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
+            //ZipLineTraversal zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);*/
 
-            usl.doLocalization();
-            
-            lightLocalization.doLocalization();
-            
-            //TODO: uncomment below
-            //odometryCorrection.start();
-            //zipLineTraversal.doTraversal();
+
+            controller.start();
         }
 
 
