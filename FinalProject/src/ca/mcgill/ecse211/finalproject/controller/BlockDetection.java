@@ -3,6 +3,11 @@ package ca.mcgill.ecse211.finalproject.controller;
 import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
+/**
+ * <h1>BlockDetection</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class BlockDetection implements UltrasonicController, LightController{
 
 	@Override

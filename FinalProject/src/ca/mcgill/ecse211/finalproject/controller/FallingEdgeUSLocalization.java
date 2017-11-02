@@ -7,8 +7,14 @@ import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
+/**
+ * <h1>FallingEdgeUSLocalization</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class FallingEdgeUSLocalization implements UltrasonicController{ 
-	public enum LocalizationType { FALLING_EDGE, RISING_EDGE};
+	public enum LocalizationType { FALLING_EDGE, RISING_EDGE}
+	public enum AngleType {ALPHA, BETA}
 	public static int ROTATION_SPEED = 100;
 	public static int FULL_CIRCLE = 360;
 	private static final double DISTANCE_WALL = 30, NOISE_MARGIN = 3;
@@ -33,8 +39,8 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		this.rightMotor = rightMotor;
 		this.navigation = navigation;
 	}
-	
-	
+
+
 	public void doLocalization() {
 		double angleA, angleB;
 			
@@ -49,8 +55,8 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			}
 
 			// get two falling edge angle
-			angleA = getAngleAFallingEdge();
-			angleB = getAngleBFallingEdge();
+			angleA = getAngleFallingEdge(AngleType.ALPHA);
+			angleB = getAngleFallingEdge(AngleType.BETA);
 
 
 			//calculate heading
@@ -65,37 +71,30 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			Sound.beep();
 		
 	}
-	
+
 	//method to get first falling edge angle
 	//Angle A - Angle where sensor first detects the back wall
-	private double getAngleAFallingEdge() {
-		
-		//rotate our robot clockwise until a wall is detected
-		while(readUSData()< DISTANCE_WALL+NOISE_MARGIN) {
-			setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
+	private double getAngleFallingEdge(AngleType angleType) {
+
+		if (angleType == AngleType.ALPHA){
+			//rotate our robot clockwise until a wall is detected
+			while (readUSData() < DISTANCE_WALL + NOISE_MARGIN) {
+				setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
+			}
+			while (readUSData() > DISTANCE_WALL) {
+				setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
+			}
 		}
-		while(readUSData()> DISTANCE_WALL) {
-			setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);			
+		else if (angleType == AngleType.BETA) {
+			//rotate our robot counter-clockwise until a wall is detected
+			while (readUSData() < DISTANCE_WALL + NOISE_MARGIN) {
+				setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
+			}
+			while (readUSData() > DISTANCE_WALL) {
+				setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
+			}
 		}
-		
-		//stop the motors and return the falling edge angle
-		stopMotor();
-		Sound.beep();
-		return Math.toDegrees(odo.getTheta());
-	}
-	
-	//method to get second falling edge angle
-	//Angle B - Angle where sensor detects the left wall
-	private double getAngleBFallingEdge() {
-		
-		//rotate our robot counter-clockwise until a wall is detected
-		while(readUSData()< DISTANCE_WALL+NOISE_MARGIN) {
-			setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
-		}
-		while(readUSData()> DISTANCE_WALL) {
-			setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);			
-		}
-		
+
 		//stop the motors and return the falling edge angle
 		stopMotor();
 		Sound.beep();

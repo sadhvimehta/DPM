@@ -4,6 +4,11 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 //import ca.mcgill.ecse211.lab5.UltrasonicController;
 import lejos.hardware.lcd.TextLCD;
 
+/**
+ * <h1>OdometryDisplay</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class OdometryDisplay extends Thread{
 	  private static final long DISPLAY_PERIOD = 250;
 	  private Odometer odometer;

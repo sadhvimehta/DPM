@@ -3,6 +3,11 @@ package ca.mcgill.ecse211.finalproject.odometry;
 import ca.mcgill.ecse211.finalproject.main.Main;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+/**
+ * <h1>Odometer</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class Odometer extends Thread{
 	
 	  // robot position

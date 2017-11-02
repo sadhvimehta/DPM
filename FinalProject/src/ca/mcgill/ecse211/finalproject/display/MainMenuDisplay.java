@@ -3,6 +3,11 @@ package ca.mcgill.ecse211.finalproject.display;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.TextLCD;
 
+/**
+ * <h1>MainMenuDisplay</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class MainMenuDisplay {
 	
 	private final TextLCD t;

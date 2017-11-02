@@ -186,15 +186,12 @@ public class Main {
 
             odometer.start();
             odometryDisplay.start();
-            
-           /* Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
-            *//* instantiate FallingEdgeUSLocalization class *//*
+            //TODO: make sure that controller thread does this stuff before removing
+            /*Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
             FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
-            //TODO:uncomment below
             //OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
             LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
-            // TODO: uncomment below
             //ZipLineTraversal zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);*/
 
 

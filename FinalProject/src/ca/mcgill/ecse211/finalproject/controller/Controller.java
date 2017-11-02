@@ -6,6 +6,11 @@ import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
+/**
+ * <h1>Controller</h1>
+
+ * <p style="text-indent: 30px">
+ */
 public class Controller extends Thread implements UltrasonicController{
     private Navigation navigation;
     private FallingEdgeUSLocalization usl;

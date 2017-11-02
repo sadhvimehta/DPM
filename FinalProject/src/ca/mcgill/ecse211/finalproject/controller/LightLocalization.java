@@ -16,6 +16,11 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 
+/**
+ * <h1>LightLocalization</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class LightLocalization implements LightController {
 
     private Navigation navigation;

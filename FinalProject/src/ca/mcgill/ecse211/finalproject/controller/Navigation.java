@@ -8,7 +8,13 @@ import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
+/**
+ * <h1>Navigation</h1>
+ *
+ * <p style="text-indent: 30px">
+ */
 public class Navigation{
+
     private static final double SIDE_SQUARE = 30.48;
     public static final int FORWARD_SPEED = 250;
     public static final int ROTATE_SPEED = 100;
