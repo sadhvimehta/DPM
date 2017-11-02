@@ -5,17 +5,26 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.lcd.TextLCD;
 
 /**
- * <h1>OdometryDisplay</h1>
+ * Displays robot X, Y, and Theta positional parameters on LCD.
  *
- * <p style="text-indent: 30px">
+ *
  */
 public class OdometryDisplay extends Thread{
+	
+	/**
+	 * Duration to display info before refreshing.
+	 */
 	  private static final long DISPLAY_PERIOD = 250;
+	  /**
+	   * Odometer whose position must be displayed.
+	   */
 	  private Odometer odometer;
+	  /**
+	   * LCD display
+	   */
 	  private TextLCD t;
 	  //private UltrasonicController cont;
 
-	  // constructor
 	  public OdometryDisplay(Odometer odometer, TextLCD t) {
 	    this.odometer = odometer;
 	    this.t = t;
@@ -29,7 +38,9 @@ public class OdometryDisplay extends Thread{
 	    this.t = t;
 	  }*/
 
-	  // run method (required for Thread)
+	  /**
+	   * Run method required for thread.
+	   */
 	  public void run() {
 	    long displayStart, displayEnd;
 	    double[] position = new double[3];
@@ -70,7 +81,13 @@ public class OdometryDisplay extends Thread{
 	      }
 	    }
 	  }
-
+	  
+	  /**
+	   * Converts numeric positions into string to display on LCD of robot.
+	   * @param x parameter corresponding to either x, y, or theta position of robot.
+	   * @param places index of parameter within array storing position of robot
+	   * @return
+	   */
 	  private static String formattedDoubleToString(double x, int places) {
 	    String result = "";
 	    String stack = "";

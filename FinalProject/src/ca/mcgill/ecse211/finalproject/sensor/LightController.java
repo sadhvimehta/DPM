@@ -1,13 +1,20 @@
 package ca.mcgill.ecse211.finalproject.sensor;
 
 /**
- * <h1>LightController</h1>
+ * Interface for reading/processing light sensor data
  *
- * <p style="text-indent: 30px">
  */
 public interface LightController {
 	
+	/**
+	 * Performs any processing of light sensor data. 
+	 * @param lsData light intensity reading
+	 */
 	  public void processLSData(float lsData);
-
+	  
+	  /**
+	   * Retrieves intensity read by light sensor
+	   * @return light sensor reading
+	   */
 	  public float readLSData();
 }

@@ -4,27 +4,61 @@ import ca.mcgill.ecse211.finalproject.main.Main;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
- * <h1>Odometer</h1>
+ * Calculates robot position using odometry
  *
- * <p style="text-indent: 30px">
  */
 public class Odometer extends Thread{
 	
-	  // robot position
+	  /**
+	   * X positional parameter
+	   */
 	  private double x;
+	  /**
+	   * Y positional parameter
+	   */
 	  private double y;
+	  /**
+	   * Theta positional parameter
+	   */
 	  private double theta;
+	  /**
+	   * Current left motor tacho count used for odometry calculation
+	   */
 	  private int currentLeftMotorTachoCount;
+	  /**
+	   * Current right motor tacho count used for odometry calculation
+	   */
 	  private int currentRightMotorTachoCount;
+	  /**
+	   * Previous left motor tacho count used for odometry calculation
+	   */
 	  private int lastLeftMotorTachoCount;
+	  /**
+	   * previous left motor tacho count used for odometry calculation
+	   */
 	  private int lastRightMotorTachoCount;
+	  /**
+	   * Left motor from {@link Main}
+	   */
 	  private EV3LargeRegulatedMotor leftMotor;
+	  /**
+	   * Right motor from {@link Main}
+	   */
 	  private EV3LargeRegulatedMotor rightMotor;
+	  /**
+	   * Motor used to traverse zipline from {@link Main}
+	   */
 	  private EV3LargeRegulatedMotor ziplineMotor;
-
+	  
+	  /**
+	   * Duration of period after which odometer must recalculate position
+	   */
 	  private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
-
-	  private Object lock; /*lock object for mutual exclusion*/
+	  
+	  /**
+	   * Lock object for mutual exclusion
+	   */
+	  private Object lock; 
 
 	  // default constructor
 	  public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
@@ -41,6 +75,9 @@ public class Odometer extends Thread{
 	    lock = new Object();
 	  }
 	  
+	  /**
+	   * Run method required for thread
+	   */
 	  public void run() {
 		    long updateStart, updateEnd;
 
