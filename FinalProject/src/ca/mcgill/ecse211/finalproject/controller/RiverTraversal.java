@@ -23,7 +23,10 @@ public class RiverTraversal {
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
     }
-
+    
+    /**
+     * Method responsible for performing river traversal
+     */
     public void doTraversal() {
         //TODO: add body
     }

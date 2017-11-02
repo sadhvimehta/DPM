@@ -45,7 +45,11 @@ public class Navigation{
             motor.setAcceleration(3000);
         }
     }
-
+    /**
+     * Method responsible to make robot travel to a certain point
+     * @param x x-coordinate to travel to
+     * @param y y-coordinate to travel to
+     */
     public void travelTo(double x, double y) {
         isNavigating = true;
         // this finds the change in x and y necessary to get to the target point
@@ -101,15 +105,32 @@ public class Navigation{
 
         isNavigating = false;
     }
-
+    
+    /**
+     * Method that converts distance to travel to required wheel rotations
+     * @param radius wheel radius
+     * @param distance distance to travel
+     * @return wheel rotations in degrees
+     */
     public static int convertDistance(double radius, double distance) {
         return (int) ((180.0 * distance) / (Math.PI * radius));
     }
-
+    
+    /**
+     * Method that converts angle to rotate by to required wheel rotations
+     * @param radius wheel radius
+     * @param width distance between the wheels
+     * @param angle angle to rotate by
+     * @return wheel rotations in degrees
+     */
     public static int convertAngle(double radius, double width, double angle) {
         return convertDistance(radius, Math.PI * width * angle / 360.0);
     }
-
+    
+    /**
+     * Method responsible to rotate robot by minimal angle
+     * @param theta angle to rotate by
+     */
     public void turnTo(double theta) {
         // the robot checks the angle it must travel to
         double travelangle = theta - odometer.getTheta();
@@ -161,25 +182,42 @@ public class Navigation{
             }
         }
     }
-
+    
+    /**
+     * Method that determines if robot is still navigating
+     * @return 
+     */
     public boolean isNavigating() {
         return isNavigating;
     }
-
+    
+    /**
+     * Method that rotates robot clockwise
+     * @param degree angle to rotate by
+     */
     public void turnCW(long degree) {
         leftMotor.rotate(
                 convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
         rightMotor.rotate(
                 -convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
     }
-
+    
+    /**
+     * Method that rotates robot counterclockwise
+     * @param degree angle to rotate by
+     */
     public void turnCCW(long degree) {
         leftMotor.rotate(
                 -convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
         rightMotor.rotate(
                 convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
     }
-
+    
+    /**
+     * Method that makes robot move by desired distance
+     * @param distance distance to move by
+     * @param immediateReturn boolean that determines synchronization of motors
+     */
     public void advance(long distance, boolean immediateReturn) {
         leftMotor.rotate(convertDistance(WHEEL_RADIUS, distance), true);
         rightMotor.rotate(convertDistance(WHEEL_RADIUS, distance), immediateReturn);

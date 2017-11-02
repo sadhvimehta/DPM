@@ -32,9 +32,12 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	public static int FULL_CIRCLE = 360;
 	/**
 	 * Distance between robot and wall
-	 * Margin of error
 	 */
-	private static final double DISTANCE_WALL = 30, NOISE_MARGIN = 3;
+	private static final double DISTANCE_WALL = 30;
+	/**
+	 * Margin of error for US sensor
+	 */
+	private static final double NOISE_MARGIN = 3;
 	/**
 	 * Angle to be added for theta correction
 	 */

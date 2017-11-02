@@ -33,20 +33,45 @@ public class LightLocalization implements LightController {
     private double positionY;
     private double dT;
     private long startTime;
+    /**
+     * Stores difference between previous and current light sensor readings
+     */
     private double dCdt; // store difference b/w prev and current cs
     private long correctionStart, correctionEnd;
+    /**
+     * Buffer that stores light sensor readings for differential line detection algorithm
+     */
     private ArrayList<Double> lastNValue = new ArrayList<>(); // stores last 40 cs readings
 
-
+    /**
+     * Boolean that indicates if at origin or not
+     */
     private boolean atApproxOrigin = false;
-
+    
+    /**
+     * Counter that determines number of lines detected
+     */
     private int lineCounter;
+    /**
+     * Buffer that stores angles at which lines are detected
+     */
     private double[] saveLineAngles;
-
+    
+    /**
+     * Threshold to be passed to confirm line was detected
+     */
     private final float LIGHT_DIFF_THRESHOLD = 40;
-    private static final int WAIT_PERIOD = 1000; //in milliseconds
+    /**
+     * Distance to move to origin
+     */
     private final double SENSOR_TO_WHEEL = 14.0; //distance between the wheels and the sensor
+    /**
+     * Period for which sensor reading must be taken
+     */
     private static final long LOOP_TIME = 10;
+    /**
+     * Boolean indicating line detection has started
+     */
     private boolean firstpass = true;
 
     private EV3LargeRegulatedMotor leftMotor, rightMotor;
@@ -61,7 +86,10 @@ public class LightLocalization implements LightController {
         this.csData = csData;
 
     }
-
+    
+    /**
+     * Method that performs actual light localization
+     */
     public void doLocalization() {
         //1st, get the robot close to where the origin is
 
@@ -75,7 +103,10 @@ public class LightLocalization implements LightController {
         navigation.travelTo(0, 0);
 
     }
-
+    
+    /**
+     * Method that moves robot to origin to commence localization
+     */
     private void goToEstimateOrigin() {
 
         //turn 45 degrees to face origin (0,0)
@@ -112,7 +143,10 @@ public class LightLocalization implements LightController {
         System.out.println("Theta: " + odo.getTheta());
 
     }
-
+    
+    /**
+     * Method responsible for robot to rotate and detect lines
+     */
     private void checkLines() {
         //it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
 
@@ -153,7 +187,10 @@ public class LightLocalization implements LightController {
         this.rightMotor.stop(true);
 
     }
-
+    
+    /**
+     * Method responsible to calculate positional offset of robot from true position
+     */
     private void calculatePosition() {
         //Trigonometry calculations from tutorial
         thetaY = saveLineAngles[3] - saveLineAngles[1]; //Y+ - Y-
@@ -177,7 +214,7 @@ public class LightLocalization implements LightController {
     }
 
     /**
-     * method adds in values to the array with logic
+     * Method adds in values to the {@link #lastNValue} with logic
      */
     public void lastNValueAdd(double value) {
         // the array does not take chucks of the values and risk to miss a big difference.
@@ -195,7 +232,7 @@ public class LightLocalization implements LightController {
     }
 
     /**
-     * this method indicates whether a line has actually been passed over
+     * Method responsible for performing line detection algorithm
      */
     public boolean pastline() {
         double biggest = -100;
@@ -238,7 +275,7 @@ public class LightLocalization implements LightController {
         csSensor.fetchSample(csData, 0);
         float color = csData[0] * 100;
 
-        // the correctionstart and corredtionend are to make sure that a value is taken once every
+        // the correctionstart and correctionend are to make sure that a value is taken once every
         // LOOP_TIME
         correctionEnd = System.currentTimeMillis();
         if (correctionEnd - correctionStart < LOOP_TIME) {

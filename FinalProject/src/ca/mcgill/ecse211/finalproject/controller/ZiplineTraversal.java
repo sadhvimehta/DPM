@@ -33,7 +33,10 @@ public class ZiplineTraversal {
         this.usSensor = usSensor;
         this.usData = usData;
     }
-
+    
+    /**
+     * Method responsible for performing zipline traversal
+     */
     public void doTraversal() {
         // first go to the premount in a rectangular fashion
         navigation.travelTo(Main.xPreMount, odometer.getY());
@@ -55,7 +58,10 @@ public class ZiplineTraversal {
         }
     }
 
-    // method to get distance from the wall
+    /**
+     * Method to filter sensor data
+     * @return filtered sensor reading
+     */
     private float getFilteredData() {
         usSensor.fetchSample(usData, 0);
         float distance = usData[0] * 100;
