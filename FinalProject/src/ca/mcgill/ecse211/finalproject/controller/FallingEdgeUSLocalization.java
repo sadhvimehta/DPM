@@ -8,9 +8,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * <h1>FallingEdgeUSLocalization</h1>
+ * Performs falling edge localization
  *
- * <p style="text-indent: 30px">
  */
 public class FallingEdgeUSLocalization implements UltrasonicController{ 
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE}
@@ -131,41 +130,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			this.leftMotor.stop(true);
 			this.rightMotor.stop(false);
 		}
-	 
-	//method that turns the rpbot to a specific angle, so it compares between the angle we had and the angle we want to go to
-	//inputs dest angle
-	public void turnToDestintaionAngle(double angle) {
-
-		double delta = angle - this.odo.getTheta();
-		
-		if (delta < -Math.PI) {
-			delta +=2*Math.PI;
-		}
-			
-		if (delta > Math.PI) {
-			delta -= 2*Math.PI;
-		}
-			
-		if(delta ==0 || delta == 2*Math.PI) {
-			delta = 0;
-		}
-			
-		this.leftMotor.setSpeed(ROTATE_SPEED);
-		this.rightMotor.setSpeed(ROTATE_SPEED);	
-
-		this.leftMotor.rotate(convertAngle(Main.WHEEL_RADIUS,Main.TRACK,Math.toDegrees(delta)),true);
-		this.rightMotor.rotate(-convertAngle(Main.WHEEL_RADIUS,Main.TRACK,Math.toDegrees(delta)),false);
-		Sound.beep();
-			
-	}
-		
-	public static int convertDistance(double radius, double distance) {
-		return (int) ((180.0 * distance) / (Math.PI * radius));
-	}
-
-	public static int convertAngle(double radius, double width, double angle) {
-		return convertDistance(radius, Math.PI * width * angle / 360.0);
-	}
 
 
 	@Override

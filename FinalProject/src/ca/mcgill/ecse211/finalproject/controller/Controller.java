@@ -7,9 +7,8 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * <h1>Controller</h1>
-
- * <p style="text-indent: 30px">
+ * Controls sequence of events between block detection, navigation, obstacle avoidance, and zipline traversal
+ * 
  */
 public class Controller extends Thread implements UltrasonicController{
     private Navigation navigation;
@@ -45,7 +44,8 @@ public class Controller extends Thread implements UltrasonicController{
         //this.zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
     }
-
+    
+    // Run method required for thread
     public void run() {
         usl.doLocalization();
 
