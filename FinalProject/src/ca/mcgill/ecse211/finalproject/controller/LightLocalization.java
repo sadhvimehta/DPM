@@ -17,9 +17,8 @@ import lejos.robotics.SampleProvider;
 
 
 /**
- * <h1>LightLocalization</h1>
+ * Performs light localization
  *
- * <p style="text-indent: 30px">
  */
 public class LightLocalization implements LightController {
 

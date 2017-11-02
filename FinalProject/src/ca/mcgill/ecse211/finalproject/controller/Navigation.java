@@ -9,9 +9,8 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
 /**
- * <h1>Navigation</h1>
+ * Contains all methods responsible for moving robot by desired distances/ rotating by desired angles
  *
- * <p style="text-indent: 30px">
  */
 public class Navigation{
 

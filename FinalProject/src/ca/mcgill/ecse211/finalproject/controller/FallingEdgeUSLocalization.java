@@ -12,13 +12,33 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class FallingEdgeUSLocalization implements UltrasonicController{ 
+
+	/**
+	 * List of localization types
+	 */
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE}
+	/**
+	 *  List of angles detected: alpha is first angle detected, beta is second angle detected.
+	 *
+	 */
 	public enum AngleType {ALPHA, BETA}
-	public static int ROTATION_SPEED = 100;
+	/**
+	 * Rotation speed while performing US localization
+	 */
+	public static int ROTATE_SPEED = 100;
+	/**
+	 * Degrees corresponding to a full circle
+	 */
 	public static int FULL_CIRCLE = 360;
+	/**
+	 * Distance between robot and wall
+	 * Margin of error
+	 */
 	private static final double DISTANCE_WALL = 30, NOISE_MARGIN = 3;
-	private static final int ROTATE_SPEED = 100;
-	private double deltaHeading; //the angle to be added to the odometer angle to correct it
+	/**
+	 * Angle to be added for theta correction
+	 */
+	private double deltaHeading;
 
 	
 	private Odometer odo;
@@ -39,7 +59,9 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		this.navigation = navigation;
 	}
 
-
+	/**
+	 * Performs actual US localization
+	 */
 	public void doLocalization() {
 		double angleA, angleB;
 			
@@ -71,26 +93,29 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		
 	}
 
-	//method to get first falling edge angle
-	//Angle A - Angle where sensor first detects the back wall
+	/**
+	 * Method to get falling edge angles
+	 * @param angleType angle one wishes to detect
+	 * @return angle when wall is detected in radians
+	 */
 	private double getAngleFallingEdge(AngleType angleType) {
 
 		if (angleType == AngleType.ALPHA){
 			//rotate our robot clockwise until a wall is detected
 			while (readUSData() < DISTANCE_WALL + NOISE_MARGIN) {
-				setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
+				setSpeeds(ROTATE_SPEED, -ROTATE_SPEED);
 			}
 			while (readUSData() > DISTANCE_WALL) {
-				setSpeeds(ROTATION_SPEED, -ROTATION_SPEED);
+				setSpeeds(ROTATE_SPEED, -ROTATE_SPEED);
 			}
 		}
 		else if (angleType == AngleType.BETA) {
 			//rotate our robot counter-clockwise until a wall is detected
 			while (readUSData() < DISTANCE_WALL + NOISE_MARGIN) {
-				setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
+				setSpeeds(-ROTATE_SPEED, ROTATE_SPEED);
 			}
 			while (readUSData() > DISTANCE_WALL) {
-				setSpeeds(-ROTATION_SPEED, ROTATION_SPEED);
+				setSpeeds(-ROTATE_SPEED, ROTATE_SPEED);
 			}
 		}
 
@@ -100,7 +125,12 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		return Math.toDegrees(odo.getTheta());
 	}
 	
-	//method the calculate deltaHeading
+	/**
+	 * Calculates deltaTheta
+	 * @param angleA back wall angle (alpha)
+	 * @param angleB front wall angle (beta)
+	 * @return heading to add to current theta
+	 */
 	private double calculateHeading( double angleA, double angleB ) {
 		double deltaHeading = 0;
 		if(angleA > angleB){
@@ -111,7 +141,11 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		return deltaHeading;
 	}
 	
-	 //method to set Speeds of motors
+	/**
+	 * Method to set speed of motors
+	 * @param lSpd left motor speed
+	 * @param rSpd right motor speed
+	 */
 	 public void setSpeeds(int lSpd, int rSpd) {
 			this.leftMotor.setSpeed(lSpd);
 			this.rightMotor.setSpeed(rSpd);
@@ -125,7 +159,9 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 				this.rightMotor.forward();
 		}
 	 
-	 //method to stop the motors
+	 /**
+	  * Method to stop motors synchronously
+	  */
 	 public void stopMotor() {
 			this.leftMotor.stop(true);
 			this.rightMotor.stop(false);

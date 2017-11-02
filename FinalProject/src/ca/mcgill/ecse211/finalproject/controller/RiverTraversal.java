@@ -4,9 +4,8 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
- * <h1>RiverTraversal</h1>
+ * Responsible for handling traversal of river
  *
- * <p style="text-indent: 30px">
  */
 public class RiverTraversal {
     private EV3LargeRegulatedMotor leftMotor;

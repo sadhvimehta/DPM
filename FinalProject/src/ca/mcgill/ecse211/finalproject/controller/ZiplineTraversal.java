@@ -6,9 +6,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * <h1>ZiplineTraversal</h1>
- * <p>
- * <p style="text-indent: 30px">
+ * Responsible for handling traversal of zipline
  */
 public class ZiplineTraversal {
     private EV3LargeRegulatedMotor leftMotor;
