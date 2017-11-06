@@ -57,7 +57,7 @@ public class Main {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.11"; 
+    private static final String serverIP = "192.168.2.41"; 
     /**
      * Team number
      */
@@ -90,6 +90,49 @@ public class Main {
      * Color of block to capture
      */
     public static int flagColor; // this is flag color
+
+    /**
+     * Lower left corner of starting zone (x)
+     */
+	public static int LL_x;
+
+	public static int LL_y;
+
+	public static int UR_x;
+
+	public static int UR_y;
+
+	public static int LL_search_x;
+
+	public static int LL_search_y;
+
+	public static int UR_search_x;
+
+	public static int UR_search_y;
+
+	public static int ziplineEndPoint_x;
+
+	public static int ziplineEndPoint_y;
+
+	public static int ziplineOther_x;
+
+	public static int LL_horizontalShallow_y;
+
+	public static int LL_horizontalShallow_x;
+
+	public static int LL_verticalShallow_y;
+
+	public static int ziplineOther_y;
+
+	public static int UR_horizontalShallow_x;
+
+	public static int UR_horizontalShallow_y;
+
+	public static int LL_verticalShallow_x;
+
+	public static int UR_verticalShallow_x;
+
+	public static int UR_verticalShallow_y;
     
     public static void main(String[] args) {
         int buttonChoice;
@@ -109,7 +152,7 @@ public class Main {
 
         Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor, WHEEL_RADIUS, TRACK);
 
-        WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, true); // get input from server
+        WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
         do {
            
         	wifiConnection.startWifiInitialization();

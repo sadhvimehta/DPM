@@ -95,9 +95,42 @@ public class WiFiConnect {
 	  if(redTeam == 15){
 		  Main.teamColor = "Red";
 		  Main.startingCorner = ((Long) data.get("RedCorner")).intValue();
-		  Main.flagColor = ((Long) data.get("OR")).intValue();
+		  Main.flagColor = ((Long) data.get("OG")).intValue();
+		  Main.LL_x = ((Long) data.get("Red_LL_x")).intValue();
+		  Main.LL_y = ((Long) data.get("Red_LL_y")).intValue();
+		  Main.UR_x = ((Long) data.get("Red_UR_x")).intValue();
+		  Main.UR_y = ((Long) data.get("Red_UR_y")).intValue();
+		  Main.LL_search_x = ((Long) data.get("SG_LL_x")).intValue();
+		  Main.LL_search_y = ((Long) data.get("SG_LL_y")).intValue();
+		  Main.UR_search_x = ((Long) data.get("SG_UR_x")).intValue();
+		  Main.UR_search_y = ((Long) data.get("SG_UR_y")).intValue();
 	  }
-	  else
+	  else{
 		  Main.teamColor = "Green";
+		  Main.startingCorner = ((Long) data.get("GreenCorner")).intValue();
+		  Main.flagColor = ((Long) data.get("OR")).intValue();
+		  Main.LL_x = ((Long) data.get("Green_LL_x")).intValue();
+		  Main.LL_y = ((Long) data.get("Green_LL_y")).intValue();
+		  Main.UR_x = ((Long) data.get("Green_UR_x")).intValue();
+		  Main.UR_y = ((Long) data.get("Green_UR_y")).intValue();
+		  Main.LL_search_x = ((Long) data.get("SR_LL_x")).intValue();
+		  Main.LL_search_y = ((Long) data.get("SR_LL_y")).intValue();
+		  Main.UR_search_x = ((Long) data.get("SR_UR_x")).intValue();
+		  Main.UR_search_y = ((Long) data.get("SR_UR_y")).intValue();
+	  }
+	  // below, initialise common points
+	  Main.ziplineEndPoint_x = ((Long) data.get("ZC_R_x")).intValue();
+	  Main.ziplineEndPoint_y = ((Long) data.get("ZC_R_y")).intValue();
+	  Main.ziplineOther_x = ((Long) data.get("ZC_G_x")).intValue();
+	  Main.ziplineOther_y = ((Long) data.get("ZC_G_y")).intValue();
+	  Main.LL_horizontalShallow_x = ((Long) data.get("SH_LL_x")).intValue();
+	  Main.LL_horizontalShallow_y = ((Long) data.get("SH_LL_y")).intValue();
+	  Main.UR_horizontalShallow_x = ((Long) data.get("SH_UR_x")).intValue();
+	  Main.UR_horizontalShallow_y = ((Long) data.get("SH_UR_y")).intValue();
+	  Main.LL_verticalShallow_x = ((Long) data.get("SV_LL_x")).intValue();
+	  Main.LL_verticalShallow_y = ((Long) data.get("SV_LL_y")).intValue();
+	  Main.UR_verticalShallow_x = ((Long) data.get("SV_UR_x")).intValue();
+	  Main.UR_verticalShallow_y = ((Long) data.get("SV_UR_y")).intValue();
+	  	
   }
 }

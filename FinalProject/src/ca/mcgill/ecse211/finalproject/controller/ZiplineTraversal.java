@@ -39,11 +39,11 @@ public class ZiplineTraversal {
      */
     public void doTraversal() {
         // first go to the premount in a rectangular fashion
-        navigation.travelTo(Main.xPreMount, odometer.getY());
-        navigation.travelTo(Main.xPreMount, Main.yPreMount);
+       // navigation.travelTo(Main.xPreMount, odometer.getY());
+        //navigation.travelTo(Main.xPreMount, Main.yPreMount);
 
         // then go to face the mount
-        navigation.travelTo(Main.xMount, Main.yMount);
+        //navigation.travelTo(Main.xMount, Main.yMount);
 
         // then mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);

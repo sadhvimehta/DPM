@@ -101,6 +101,8 @@ public class LightLocalization implements LightController {
         calculatePosition();
 
         navigation.travelTo(0, 0);
+        
+        navigation.travelTo(1, 1);
 
     }
     
@@ -210,6 +212,7 @@ public class LightLocalization implements LightController {
         System.out.println("dt:" + dT);
         System.out.println("x:" + this.odo.getX());
         System.out.println("y:" + this.odo.getY());
+        System.out.println("theta:" + this.odo.getTheta());
 
     }
 
