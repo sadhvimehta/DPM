@@ -40,8 +40,7 @@ public class Controller extends Thread implements UltrasonicController{
         //TODO:uncomment below
         //this.odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
         
-        // TODO: uncomment below
-        //this.zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
+        this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
     }
     
@@ -53,7 +52,7 @@ public class Controller extends Thread implements UltrasonicController{
 
         //TODO: uncomment below
         //odometryCorrection.start();
-        //zipLineTraversal.doTraversal();
+        ziplineTraversal.doTraversal();
     }
 
     @Override
