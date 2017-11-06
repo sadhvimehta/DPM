@@ -57,7 +57,7 @@ public class Main {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.41"; 
+    private static final String serverIP = "192.168.2.44"; 
     /**
      * Team number
      */

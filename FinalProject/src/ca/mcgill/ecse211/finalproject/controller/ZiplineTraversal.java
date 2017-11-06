@@ -49,15 +49,15 @@ public class ZiplineTraversal implements UltrasonicController{
         // finds approximate length of zipline
         double deltax = Main.ziplineEndPoint_red_x * SIDE_SQUARE - odometer.getX();
         double deltay = Main.ziplineEndPoint_green_y * SIDE_SQUARE - odometer.getY();
-        double h = Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2));
+        double h = 2*(Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2)));
         
         // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);
         rightMotor.setSpeed(Navigation.FORWARD_SPEED);
-        ziplineMotor.setSpeed(Navigation.FORWARD_SPEED);
+        ziplineMotor.setSpeed(Navigation.FORWARD_SPEED *2);
         
         // travel approximate length of zipline
-        ziplineMotor.rotate(Navigation.convertDistance(Main.WHEEL_RADIUS, h), true);
+        ziplineMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, h), true);
         navigation.advance((long) h, false);
         
         navigation.travelTo(Main.ziplineOther_red_x, Main.ziplineOther_red_y);
