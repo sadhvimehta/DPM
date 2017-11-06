@@ -110,11 +110,11 @@ public class Main {
 
 	public static int UR_search_y;
 
-	public static int ziplineEndPoint_x;
+	public static int ziplineEndPoint_red_x;
 
-	public static int ziplineEndPoint_y;
+	public static int ziplineEndPoint_red_y;
 
-	public static int ziplineOther_x;
+	public static int ziplineOther_red_x;
 
 	public static int LL_horizontalShallow_y;
 
@@ -122,7 +122,7 @@ public class Main {
 
 	public static int LL_verticalShallow_y;
 
-	public static int ziplineOther_y;
+	public static int ziplineOther_red_y;
 
 	public static int UR_horizontalShallow_x;
 
@@ -133,6 +133,14 @@ public class Main {
 	public static int UR_verticalShallow_x;
 
 	public static int UR_verticalShallow_y;
+
+	public static int ziplineEndPoint_green_x;
+
+	public static int ziplineEndPoint_green_y;
+
+	public static int ziplineOther_green_x;
+
+	public static int ziplineOther_green_y;
     
     public static void main(String[] args) {
         int buttonChoice;

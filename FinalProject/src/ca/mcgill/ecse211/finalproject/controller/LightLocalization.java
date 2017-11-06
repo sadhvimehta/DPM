@@ -101,8 +101,6 @@ public class LightLocalization implements LightController {
         calculatePosition();
 
         navigation.travelTo(0, 0);
-        
-        navigation.travelTo(1, 1);
 
     }
     

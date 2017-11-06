@@ -2,13 +2,14 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
+import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
  * Responsible for handling traversal of zipline
  */
-public class ZiplineTraversal {
+public class ZiplineTraversal implements UltrasonicController{
     private EV3LargeRegulatedMotor leftMotor;
     private EV3LargeRegulatedMotor rightMotor;
     private Odometer odometer;
@@ -17,6 +18,7 @@ public class ZiplineTraversal {
     private SampleProvider usSensor;
     private float[] usData;
     private static final double DISTANCE_WALL = 20;
+    private static final double SIDE_SQUARE = 30.48;
 
     public ZiplineTraversal(Navigation navigation,
                             Odometer odometer,
@@ -38,33 +40,40 @@ public class ZiplineTraversal {
      * Method responsible for performing zipline traversal
      */
     public void doTraversal() {
-        // first go to the premount in a rectangular fashion
-       // navigation.travelTo(Main.xPreMount, odometer.getY());
-        //navigation.travelTo(Main.xPreMount, Main.yPreMount);
+        // first go to the premount
+    	navigation.travelTo(Main.ziplineOther_green_x, Main.ziplineOther_green_y);
 
         // then go to face the mount
-        //navigation.travelTo(Main.xMount, Main.yMount);
+        navigation.travelTo(Main.ziplineEndPoint_green_x, Main.ziplineEndPoint_green_y);
 
-        // then mount the zipline
+        // finds approximate length of zipline
+        double deltax = Main.ziplineEndPoint_red_x * SIDE_SQUARE - odometer.getX();
+        double deltay = Main.ziplineEndPoint_green_y * SIDE_SQUARE - odometer.getY();
+        double h = Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2));
+        
+        // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);
         rightMotor.setSpeed(Navigation.FORWARD_SPEED);
         ziplineMotor.setSpeed(Navigation.FORWARD_SPEED);
-
-        // if sensor detects wall or not
-        if (getFilteredData() < DISTANCE_WALL) {
-            leftMotor.stop(true);
-            rightMotor.stop(true);
-            ziplineMotor.stop();
-        }
+        
+        // travel approximate length of zipline
+        ziplineMotor.rotate(Navigation.convertDistance(Main.WHEEL_RADIUS, h), true);
+        navigation.advance((long) h, false);
+        
+        navigation.travelTo(Main.ziplineOther_red_x, Main.ziplineOther_red_y);
+        
     }
 
-    /**
-     * Method to filter sensor data
-     * @return filtered sensor reading
-     */
-    private float getFilteredData() {
-        usSensor.fetchSample(usData, 0);
+	@Override
+	public void processUSData(float usData) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float readUSData() {
+		usSensor.fetchSample(usData, 0);
         float distance = usData[0] * 100;
         return distance > 100 ? 100 : distance;
-    }
+	}
 }
