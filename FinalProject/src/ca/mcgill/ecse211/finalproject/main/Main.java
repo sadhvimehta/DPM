@@ -57,7 +57,7 @@ public class Main {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.44"; 
+    private static final String serverIP = "192.168.2.62";
     /**
      * Team number
      */
@@ -66,6 +66,10 @@ public class Main {
      * Radius of right/left wheel
      */
     public static final double WHEEL_RADIUS = 2.05;
+	/**
+	 * Radius of zipline wheel
+	 */
+	public static final double ZIPLINE_WHEEL_RADIUS = 1.0;
     /**
      * Distance between two wheels of robot
      */
@@ -163,7 +167,7 @@ public class Main {
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
         do {
            
-        	wifiConnection.startWifiInitialization();
+        	//wifiConnection.startWifiInitialization();
 
             buttonChoice = Button.waitForAnyPress();
         } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
@@ -172,19 +176,9 @@ public class Main {
 
             odometer.start();
             odometryDisplay.start();
-
-            //TODO: make sure that controller thread does this stuff before removing
-            /*Navigation navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
-            FallingEdgeUSLocalization usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
-            //OdometryCorrection odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
-            LightLocalization lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
-            //ZipLineTraversal zipLineTraversal = new ZipLineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);*/
-
-
             controller.start();
+
         }
-
-
 
         while (true) {
             if (Button.waitForAnyPress() == Button.ID_ENTER) {
