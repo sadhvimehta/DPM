@@ -7,17 +7,41 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * Controls sequence of events between block detection, navigation, obstacle avoidance, and zipline traversal
- * 
+ * Controls sequence of events between block detection, navigation, obstacle avoidance, and zipline traversal.
+ *
+ * The class Controller is started in main. Controller takes care of localizing the robot, and deciding
+ * and controlling the state of the robot to accomplish the tasks at hand to complete the challenge.
+ *
  */
 public class Controller extends Thread implements UltrasonicController{
-    private Navigation navigation;
+	/**
+	 * Navigation class which contains basic methods of moving our robot
+	 */
+	private Navigation navigation;
+	/**
+	 * OdometryCorrection class which corrects the odometer as the robot is running to make sure our odometer is correct
+	 */
+	private OdometryCorrection odometryCorrection;
+	/**
+	 * FallingEdgeUSLocalization class which localizes with an ultrasonic sensor
+	 */
     private FallingEdgeUSLocalization usl;
-    private OdometryCorrection odometryCorrection;
+	/**
+	 * LightLocalization class which localizes with the light sensor
+	 */
     private LightLocalization lightLocalization;
-    private ZiplineTraversal ziplineTraversal;
+	/**
+	 * ZiplineTraversal class which helps the robot traverse the zipline
+	 */
+	private ZiplineTraversal ziplineTraversal;
+	/**
+	 * RiverTraversal class which helps the robot traverse the river
+	 */
+	private RiverTraversal riverTraversal;
 
-
+	/**
+	 * Constructor of the class Controller which uses the parameters to instantiate the classes which will be controlled
+	 */
     public Controller(Odometer odometer,
                       SampleProvider usValue,
                       float[] usData,
@@ -42,11 +66,17 @@ public class Controller extends Thread implements UltrasonicController{
         
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
+        //TODO: implement river traversal
+	    //this.riverTraversal = new RiverTraversal();
+
     }
-    
-    // Run method required for thread
-    public void run() {
-        usl.doLocalization();
+
+	/**
+	 * Method which dictates what the controller thread will do. This method also includes the state machine which helps
+	 * with the logic of what state the robot should be depending on factors.
+	 */
+	public void run() {
+    	usl.doLocalization();
 
         lightLocalization.doLocalization();
 
@@ -55,16 +85,26 @@ public class Controller extends Thread implements UltrasonicController{
         //ziplineTraversal.doTraversal();
     }
 
-    @Override
-    public void processUSData(float usData) {
-        // TODO Auto-generated method stub
+	/**
+	 * Performs any processing of ultrasonic sensor data.
+	 *
+	 * @param usData ultrasonic sensor reading
+	 */
+	@Override
+	public void processUSData(float usData) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    @Override
-    public float readUSData() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	/**
+	 * Retrieves distance read by ultrasonic sensor
+	 *
+	 * @return ultrasonic sensor reading
+	 */
+	@Override
+	public float readUSData() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
