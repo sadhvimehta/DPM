@@ -71,12 +71,22 @@ public class OdometryCorrection extends Thread implements LightController{
 	    }
 	  }
 
+	/**
+	 * Performs any processing of light sensor data.
+	 *
+	 * @param lsData light intensity reading
+	 */
 	@Override
 	public void processLSData(float lsData) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Retrieves intensity read by light sensor
+	 *
+	 * @return light sensor reading
+	 */
 	@Override
 	public float readLSData() {
 		csSensor.fetchSample(csData, 0); // acquire data

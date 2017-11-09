@@ -5,39 +5,72 @@ import java.util.ArrayList;
 import ca.mcgill.ecse211.finalproject.main.Main;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.LightController;
-import lejos.hardware.Button;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.SensorModes;
-import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 
 /**
- * Performs light localization
+ * Performs light localization which allows to set the X and Y of the odometer.
+ *
+ * LightLocalization class localizes by getting the derivative of the light level. This allows to flag if a line is
+ * passed regardless of the initial light source. While spinning, the angles at which the lines are crossed are noted
+ * and used to calculate the X and Y of the robot.
  *
  */
 public class LightLocalization implements LightController {
-
+	/**
+	 * Navigation class which contains basic methods of moving our robot
+	 */
     private Navigation navigation;
-    private Odometer odo;
+	/**
+	 * Odometer class which keeps track of where the robot is positioned based on wheel movement
+	 */
+    private Odometer odometer;
+	/**
+	 * Sample provider
+	 */
     private SampleProvider csSensor;
+	/**
+	 * Array containing data obtained from ultrasonic sensor
+	 */
     private float[] csData;
-    private double lightValueCurrent, lightValuePrev; // store current cs value, previous cs value
-    private double thetaX;
-    private double thetaY;
+	/**
+	 * Variables which store the current and previous light value to calculate the instantaneous differentiation
+	 */
+	private double lightValueCurrent, lightValuePrev;
+	/**
+	 * Variable which is the difference of the angles between the positive X axis and negative X axis
+	 */
+	private double thetaX;
+	/**
+	 * Variable which is the difference of the angles between the positive Y axis and negative Y axis
+	 */
+	private double thetaY;
+	/**
+	 * Variable which is the calculated position of the robot in X
+	 */
     private double positionX;
+	/**
+	 * Variable which is the calculated position of the robot in X
+	 */
     private double positionY;
+	/**
+	 * Variable which is the calculated angle offset of the robot
+	 */
     private double dT;
-    private long startTime;
+	/**
+	 * Variable which is the start time of the method
+	 */
+	private long startTime;
     /**
      * Stores difference between previous and current light sensor readings
      */
-    private double dCdt; // store difference b/w prev and current cs
-    private long correctionStart, correctionEnd;
+    private double dCdt;
+	/**
+	 * Variables that hold the values of the start and end of sensor polling
+	 */
+	private long correctionStart, correctionEnd;
     /**
      * Buffer that stores light sensor readings for differential line detection algorithm
      */
@@ -73,12 +106,16 @@ public class LightLocalization implements LightController {
      * Boolean indicating line detection has started
      */
     private boolean firstpass = true;
-
+	/**
+	 * Left and right motor of the robot
+	 */
     private EV3LargeRegulatedMotor leftMotor, rightMotor;
 
-
+	/**
+	 * Constructor which links the parameters to the class variables
+	 */
     public LightLocalization(Navigation navigation, Odometer odo, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, SampleProvider csSensor, float[] csData) {
-        this.odo = odo;
+        this.odometer = odo;
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.navigation = navigation;
@@ -88,7 +125,7 @@ public class LightLocalization implements LightController {
     }
     
     /**
-     * Method that performs actual light localization
+     * Main method which localizes through the light levels
      */
     public void doLocalization() {
         //1st, get the robot close to where the origin is
@@ -139,8 +176,8 @@ public class LightLocalization implements LightController {
 
         this.leftMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, SENSOR_TO_WHEEL), true);
         this.rightMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, SENSOR_TO_WHEEL), false);
-        System.out.println("Reversing from origin " + odo.getX() + " " + odo.getY());
-        System.out.println("Theta: " + odo.getTheta());
+        System.out.println("Reversing from origin " + odometer.getX() + " " + odometer.getY());
+        System.out.println("Theta: " + odometer.getTheta());
 
     }
     
@@ -177,7 +214,7 @@ public class LightLocalization implements LightController {
             lastNValueAdd(dCdt);
             if (pastline()) {
                 //Store angles in variable for future calculations
-                saveLineAngles[lineCounter] = this.odo.getTheta();
+                saveLineAngles[lineCounter] = this.odometer.getTheta();
                 Sound.beep();
                 lineCounter++;
             }
@@ -203,14 +240,14 @@ public class LightLocalization implements LightController {
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
 
         //Updates odometer to actual values
-        this.odo.setX(positionX);
-        this.odo.setY(positionY);
-        this.odo.setTheta(this.odo.getTheta() + dT);
+        this.odometer.setX(positionX);
+        this.odometer.setY(positionY);
+        this.odometer.setTheta(this.odometer.getTheta() + dT);
         //TODO: remove these prints
         System.out.println("dt:" + dT);
-        System.out.println("x:" + this.odo.getX());
-        System.out.println("y:" + this.odo.getY());
-        System.out.println("theta:" + this.odo.getTheta());
+        System.out.println("x:" + this.odometer.getX());
+        System.out.println("y:" + this.odometer.getY());
+        System.out.println("theta:" + this.odometer.getTheta());
 
     }
 
@@ -263,12 +300,22 @@ public class LightLocalization implements LightController {
         }
     }
 
+    /**
+     * Performs any processing of light sensor data.
+     *
+     * @param lsData light intensity reading
+     */
 	@Override
 	public void processLSData(float lsData) {
 		// TODO Auto-generated method stub
 		
 	}
 
+    /**
+     * Retrieves intensity read by light sensor
+     *
+     * @return light sensor reading
+     */
 	@Override
 	public float readLSData() {
         correctionStart = System.currentTimeMillis();

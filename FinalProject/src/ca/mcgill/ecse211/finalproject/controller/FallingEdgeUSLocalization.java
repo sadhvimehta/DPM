@@ -8,7 +8,11 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * Performs falling edge localization
+ * Performs falling edge localization.
+ *
+ * By spinning around, the robot is able to get the distances that surround it. with a certain threshold, the angles
+ * alpha and beta are those points. If the robot is on the 45 degree line, then the orientation of the robot can be
+ * calculated and corrected to face the true 0 degree.
  *
  */
 public class FallingEdgeUSLocalization implements UltrasonicController{ 
@@ -19,7 +23,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE}
 	/**
 	 *  List of angles detected: alpha is first angle detected, beta is second angle detected.
-	 *
 	 */
 	public enum AngleType {ALPHA, BETA}
 	/**
@@ -43,17 +46,36 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	 */
 	private double deltaHeading;
 
-	
-	private Odometer odo;
+	/**
+	 * Odometer class which keeps track of where the robot is positioned based on wheel movement
+	 */
+	private Odometer odometer;
+	/**
+	 * Sample provider
+	 */
 	private SampleProvider usSensor;
+	/**
+	 * Array containing data obtained from ultrasonic sensor
+	 */
 	private float[] usData;
+	/**
+	 * Variable which dictates which type of edge is used to localize
+	 */
 	private LocalizationType locType;
+	/**
+	 * Navigation class which contains basic methods of moving our robot
+	 */
 	private Navigation navigation;
+	/**
+	 * Left and right motor of the robot
+	 */
 	private EV3LargeRegulatedMotor leftMotor,rightMotor;
-	
-	//Constructor
+
+	/**
+	 * Constructor for the class FallingEdgeUSLocalization which links parameters to class variables
+	 */
 	public FallingEdgeUSLocalization(Odometer odo, SampleProvider usSensor, float[] usData, LocalizationType locType,EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, Navigation navigation) {
-		this.odo = odo;
+		this.odometer = odo;
 		this.usSensor = usSensor;
 		this.usData = usData;
 		this.locType = locType;
@@ -75,7 +97,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 				this.rightMotor.setSpeed(ROTATE_SPEED);	
 				this.leftMotor.rotate(Navigation.convertAngle(Main.WHEEL_RADIUS,Main.TRACK,180),true);
 				this.rightMotor.rotate(-Navigation.convertAngle(Main.WHEEL_RADIUS,Main.TRACK,180),false);
-				odo.setTheta(0);
+				odometer.setTheta(0);
 			}
 
 			// get two falling edge angle
@@ -91,7 +113,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			navigation.turnTo(convertedDeltaTheta);
 			
 			//set the theta to 0
-			odo.setTheta(0);
+			odometer.setTheta(0);
 			Sound.beep();
 		
 	}
@@ -125,7 +147,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		//stop the motors and return the falling edge angle
 		stopMotor();
 		Sound.beep();
-		return Math.toDegrees(odo.getTheta());
+		return Math.toDegrees(odometer.getTheta());
 	}
 	
 	/**
@@ -171,11 +193,21 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		}
 
 
+	/**
+	 * Performs any processing of ultrasonic sensor data.
+	 *
+	 * @param usData ultrasonic sensor reading
+	 */
 	@Override
 	public void processUSData(float usData) {
 		//TODO: add body
 	}
 
+	/**
+	 * Retrieves distance read by ultrasonic sensor
+	 *
+	 * @return ultrasonic sensor reading
+	 */
 	@Override
 	public float readUSData() {
 		usSensor.fetchSample(usData, 0);
