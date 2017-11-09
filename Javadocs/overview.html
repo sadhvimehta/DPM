@@ -7,11 +7,9 @@
 <body>
 <h1>Design Principle Methods Team 15 Final Project</h1>
 
-//TODO: write a bit more on what the project is. maybe like an intro or smth
-
 <p style="text-indent: 30px">
     The goal of this project was to build robot using the lego Mindstorms NXT parts and make it accomplish a set of
-    tasks, requirements. The flow of the competition is started off as our robot must know the layout of the arena.
+    tasks, requirements. The flow of the competition is started off by informing our robot of the layout of the arena.
     Using
     the <i>Wifi</i> class, which is provided, the robot will be sent the map. To allow the user to input various
     values,
@@ -33,6 +31,7 @@
     correcting the odometer as the robot as the competition unfolds by detection of grid lines drawn on the arena.
     This
     class must absolutely be a thread as we would not want to miss a line capture.
+</p>
 <p style="text-indent: 30px">
     Then, the robot finally starts moving with our final thread, <i>Controller</i> class. This class implements
     the logic of the movement of the robot throughout the map by controlling the remaining classes, as we wanted the
@@ -49,12 +48,41 @@
     the help of the <i>Navigation</i> class once again. All along, the <i>Controller</i> makes sure that the robot is
     not
     running into anything with the help of <i>ObstacleAvoidance</i> class if the robot gets too close to any object.
-
+</p>
 <p style="text-indent: 30px">
     The last part of the structure of this project are the interfaces <i>LightController</i> and
     <i>UltrasonicController</i>. These interfaces are the basic methods that are needed to get back the data form the
     sensors. Various classes therefore, implement them, and possibly override their methods to tailor the
     interpretation
     of the data according to need.
+</p>
+<p>
+	<b> Enumeration of Capture The Flag Threads: </b>
+	<ul>
+		<li> Main </li>
+		<li> Odometer </li>
+		<li> OdometryCorrection </li>
+		<li> OdometryDisplay </li>
+		<li> Controller </li>
+	</ul>
+	
+	<b> Enumeration of Capture The Flag Threads' Shared Variables: </b>
+	<ul>
+		<li> Odometer's Position </li>
+		<li> isLocalizing </li>
+		<li> lineEncountered </li>
+	</ul>
+	
+	Below explains the usage of the shared variable amongst the threads followed by a diagram showing their communication. <br> <br>
+	<b> Odometer's position: </b> <br>
+	<i> OdometryDisplay Thread</i> needs to talk to the
+	<i> Odometer Thread</i> to get its position to display it. <br>
+	<i> Controller Thread</i> needs the odometer's position during navaigation calculations and sets its position during localization. <br>
+	<i> OdometryCorrection Thread</i> sets the odometer's position during correction (when a line is encountered). <br> <br>
+	<b> lineEncountered & isLocalizing: </b> <br>
+	<i> Controller Thread</i> needs to check if <i>isLocalizing</i> is true before being able to modify the odometer's position imemdiately after localization. <br>
+	<i> OdometryCorrection Thread</i> is constantly checking if <i>lineEcountered</i> is true AND if <i>isLocalizing</i> is false. Only then will it set the odometer's position. <br> <br>
+	<img src="./threadCommunication.jpg">
+</p>
 </body>
 </html>
