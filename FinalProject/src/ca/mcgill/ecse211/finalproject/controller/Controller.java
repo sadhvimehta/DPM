@@ -46,13 +46,13 @@ public class Controller extends Thread implements UltrasonicController{
     
     // Run method required for thread
     public void run() {
-        //usl.doLocalization();
+        usl.doLocalization();
 
-        //lightLocalization.doLocalization();
+        lightLocalization.doLocalization();
 
         //TODO: uncomment below
         //odometryCorrection.start();
-        ziplineTraversal.doTraversal();
+        //ziplineTraversal.doTraversal();
     }
 
     @Override

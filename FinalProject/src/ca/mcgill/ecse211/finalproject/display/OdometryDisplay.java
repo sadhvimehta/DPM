@@ -47,8 +47,6 @@ public class OdometryDisplay extends Thread{
 
 	    // clear the display once
 	    t.clear();
-	    System.out.flush();
-	    System.err.flush();
 
 	    while (true) {
 	      displayStart = System.currentTimeMillis();

@@ -4,7 +4,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 import java.util.ArrayList;
 
-import ca.mcgill.ecse211.finalproject.main.Main;
+import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
@@ -197,9 +197,9 @@ public class Navigation{
      */
     public void turnCW(long degree) {
         leftMotor.rotate(
-                convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
+                convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
         rightMotor.rotate(
-                -convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
+                -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
     }
     
     /**
@@ -208,9 +208,9 @@ public class Navigation{
      */
     public void turnCCW(long degree) {
         leftMotor.rotate(
-                -convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
+                -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
         rightMotor.rotate(
-                convertAngle(Main.WHEEL_RADIUS, Main.TRACK, degree), true);
+                convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
     }
     
     /**

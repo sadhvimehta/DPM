@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import java.util.ArrayList;
 
-import ca.mcgill.ecse211.finalproject.main.Main;
+import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import lejos.hardware.Button;
@@ -92,7 +92,7 @@ public class LightLocalization implements LightController {
      */
     public void doLocalization() {
         //1st, get the robot close to where the origin is
-
+    	System.out.println("Hello");
         goToEstimateOrigin();
 
         //2nd, turn around the origin and detect the lines
@@ -112,8 +112,8 @@ public class LightLocalization implements LightController {
         //turn 45 degrees to face origin (0,0)
         this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
         this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
-        this.leftMotor.rotate(Navigation.convertAngle(Main.WHEEL_RADIUS, Main.TRACK, 45), true);
-        this.rightMotor.rotate(-Navigation.convertAngle(Main.WHEEL_RADIUS, Main.TRACK, 45), false);
+        this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 45), true);
+        this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 45), false);
 
 
         //then go straight
@@ -137,8 +137,8 @@ public class LightLocalization implements LightController {
         this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
         this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
 
-        this.leftMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, SENSOR_TO_WHEEL), true);
-        this.rightMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, SENSOR_TO_WHEEL), false);
+        this.leftMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), true);
+        this.rightMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), false);
         System.out.println("Reversing from origin " + odo.getX() + " " + odo.getY());
         System.out.println("Theta: " + odo.getTheta());
 
@@ -157,8 +157,8 @@ public class LightLocalization implements LightController {
         startTime = System.currentTimeMillis();
         this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
         this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
-        this.leftMotor.rotate(Navigation.convertAngle(Main.WHEEL_RADIUS, Main.TRACK, 360), true);
-        this.rightMotor.rotate(-Navigation.convertAngle(Main.WHEEL_RADIUS, Main.TRACK, 360), true);
+        this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 360), true);
+        this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 360), true);
 
         //Runs until it has detected 4 lines
         while (lineCounter < 4) {
@@ -202,10 +202,33 @@ public class LightLocalization implements LightController {
 
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
 
-        //Updates odometer to actual values
-        this.odo.setX(positionX);
-        this.odo.setY(positionY);
-        this.odo.setTheta(this.odo.getTheta() + dT);
+        //Updates odometer to actual values depending on corner!
+        if(CaptureFlagMain.startingCorner == 0){
+        	this.odo.setX(positionX + (1.00*30.48));
+        	this.odo.setY(positionY + (1.00*30.48));
+        	this.odo.setTheta(this.odo.getTheta() + dT);
+        }
+        
+        else if(CaptureFlagMain.startingCorner == 1){
+        	positionX = Math.abs(positionX);
+        	this.odo.setX(positionX + (7.00*30.48));
+        	this.odo.setY(positionY + (1.00*30.48));
+        	this.odo.setTheta(this.odo.getTheta() + dT + Math.toRadians(270.00));
+        	
+        }
+        else if(CaptureFlagMain.startingCorner == 2){
+        	positionX = Math.abs(positionX);
+        	positionY = Math.abs(positionY);
+        	this.odo.setX(positionX + (7.00*30.48));
+        	this.odo.setY(positionY + (7.00*30.48));
+        	this.odo.setTheta(this.odo.getTheta() + dT + Math.toRadians(180.00));
+        }
+        else{
+        	positionY = Math.abs(positionY);
+        	this.odo.setX(positionX + (1.00*30.48));
+        	this.odo.setY(positionY + (7.00*30.48));
+        	this.odo.setTheta(this.odo.getTheta() + dT + Math.toRadians(90.00));
+        }
         //TODO: remove these prints
         System.out.println("dt:" + dT);
         System.out.println("x:" + this.odo.getX());

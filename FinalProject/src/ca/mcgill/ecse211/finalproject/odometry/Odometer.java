@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.finalproject.odometry;
 
-import ca.mcgill.ecse211.finalproject.main.Main;
+import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
@@ -38,15 +38,15 @@ public class Odometer extends Thread{
 	   */
 	  private int lastRightMotorTachoCount;
 	  /**
-	   * Left motor from {@link Main}
+	   * Left motor from {@link CaptureFlagMain}
 	   */
 	  private EV3LargeRegulatedMotor leftMotor;
 	  /**
-	   * Right motor from {@link Main}
+	   * Right motor from {@link CaptureFlagMain}
 	   */
 	  private EV3LargeRegulatedMotor rightMotor;
 	  /**
-	   * Motor used to traverse zipline from {@link Main}
+	   * Motor used to traverse zipline from {@link CaptureFlagMain}
 	   */
 	  private EV3LargeRegulatedMotor ziplineMotor;
 	  
@@ -89,12 +89,12 @@ public class Odometer extends Thread{
 		  		
 		  		currentLeftMotorTachoCount = leftMotor.getTachoCount();      		// get tacho counts
 		  		currentRightMotorTachoCount = rightMotor.getTachoCount();
-		  		distL = Math.PI*Main.WHEEL_RADIUS*(currentLeftMotorTachoCount-lastLeftMotorTachoCount)/180;		// compute L and R wheel displacements
-		  		distR = Math.PI*Main.WHEEL_RADIUS*(currentRightMotorTachoCount-lastRightMotorTachoCount)/180;
+		  		distL = Math.PI*CaptureFlagMain.WHEEL_RADIUS*(currentLeftMotorTachoCount-lastLeftMotorTachoCount)/180;		// compute L and R wheel displacements
+		  		distR = Math.PI*CaptureFlagMain.WHEEL_RADIUS*(currentRightMotorTachoCount-lastRightMotorTachoCount)/180;
 		  		lastLeftMotorTachoCount=currentLeftMotorTachoCount;								// save tacho counts for next iteration
 		  		lastRightMotorTachoCount=currentRightMotorTachoCount;
 		  		deltaD = 0.5*(distL+distR);							// compute vehicle displacement
-		  		deltaT = (distL-distR)/Main.TRACK;			// compute change in heading
+		  		deltaT = (distL-distR)/CaptureFlagMain.TRACK;			// compute change in heading
 		  		theta += deltaT;									// update heading
 		  		if(theta >= (2*Math.PI)){							// if theta crosses 360, return theta to zero and compute w.r.t zero degrees
 		  			theta = theta - (2*Math.PI);

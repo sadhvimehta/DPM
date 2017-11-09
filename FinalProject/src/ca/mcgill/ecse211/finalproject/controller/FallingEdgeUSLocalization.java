@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
-import ca.mcgill.ecse211.finalproject.main.Main;
+import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 import lejos.hardware.Sound;
@@ -73,8 +73,8 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			if (readUSData()< DISTANCE_WALL+10) {
 				this.leftMotor.setSpeed(ROTATE_SPEED);
 				this.rightMotor.setSpeed(ROTATE_SPEED);	
-				this.leftMotor.rotate(Navigation.convertAngle(Main.WHEEL_RADIUS,Main.TRACK,180),true);
-				this.rightMotor.rotate(-Navigation.convertAngle(Main.WHEEL_RADIUS,Main.TRACK,180),false);
+				this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS,CaptureFlagMain.TRACK,180),true);
+				this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS,CaptureFlagMain.TRACK,180),false);
 				odo.setTheta(0);
 			}
 

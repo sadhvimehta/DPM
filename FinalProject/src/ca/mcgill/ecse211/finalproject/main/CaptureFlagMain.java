@@ -24,7 +24,7 @@ import lejos.robotics.SampleProvider;
  * Main class responsible for declaring and initializing all other classes.
  *
  */
-public class Main {
+public class CaptureFlagMain {
 	
 	/**
 	 * Left motor of robot.
@@ -57,7 +57,7 @@ public class Main {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.62";
+    private static final String serverIP = "192.168.2.13";
     /**
      * Team number
      */
@@ -167,7 +167,7 @@ public class Main {
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
         do {
            
-        	//wifiConnection.startWifiInitialization();
+        	wifiConnection.startWifiInitialization();
 
             buttonChoice = Button.waitForAnyPress();
         } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
