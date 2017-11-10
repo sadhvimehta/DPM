@@ -110,6 +110,11 @@ public class LightLocalization implements LightController {
 	 * Left and right motor of the robot
 	 */
     private EV3LargeRegulatedMotor leftMotor, rightMotor;
+    
+    
+    public boolean zipLineLocalization = false;
+    
+    
 
 	/**
 	 * Constructor which links the parameters to the class variables
@@ -129,9 +134,11 @@ public class LightLocalization implements LightController {
      */
     public void doLocalization() {
         //1st, get the robot close to where the origin is
-    	System.out.println("Hello");
+    	//System.out.println("Hello");
+    	
+    	if(!zipLineLocalization){
         goToEstimateOrigin();
-
+    	}
         //2nd, turn around the origin and detect the lines
         checkLines();
 
@@ -239,7 +246,13 @@ public class LightLocalization implements LightController {
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
 
         //Updates odometer to actual values depending on corner!
-        if(CaptureFlagMain.startingCorner == 0){
+        if(zipLineLocalization){
+        	this.odometer.setX(positionX + (CaptureFlagMain.ziplineEndPoint_green_x*30.48));
+        	this.odometer.setY(positionY + (CaptureFlagMain.ziplineEndPoint_green_y*30.48));
+        	this.odometer.setTheta(this.odometer.getTheta() + dT);
+        }
+        
+        else if(CaptureFlagMain.startingCorner == 0){
         	this.odometer.setX(positionX + (1.00*30.48));
         	this.odometer.setY(positionY + (1.00*30.48));
         	this.odometer.setTheta(this.odometer.getTheta() + dT);
@@ -259,12 +272,13 @@ public class LightLocalization implements LightController {
         	this.odometer.setY(positionY + (7.00*30.48));
         	this.odometer.setTheta(this.odometer.getTheta() + dT + Math.toRadians(180.00));
         }
-        else{
+        else if(CaptureFlagMain.startingCorner == 3){
         	positionY = Math.abs(positionY);
         	this.odometer.setX(positionX + (1.00*30.48));
         	this.odometer.setY(positionY + (7.00*30.48));
         	this.odometer.setTheta(this.odometer.getTheta() + dT + Math.toRadians(90.00));
         }
+                
         //TODO: remove these prints
         System.out.println("dt:" + dT);
         System.out.println("x:" + this.odometer.getX());

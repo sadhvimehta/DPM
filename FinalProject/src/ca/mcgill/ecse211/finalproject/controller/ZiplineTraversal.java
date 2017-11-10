@@ -16,6 +16,7 @@ public class ZiplineTraversal implements UltrasonicController{
     private EV3LargeRegulatedMotor leftMotor;
     private EV3LargeRegulatedMotor rightMotor;
     private Odometer odometer;
+    private LightLocalization lightLocalization;
     private EV3LargeRegulatedMotor ziplineMotor;
     private Navigation navigation;
     private SampleProvider usSensor;
@@ -26,6 +27,7 @@ public class ZiplineTraversal implements UltrasonicController{
 
     public ZiplineTraversal(Navigation navigation,
                             Odometer odometer,
+                            LightLocalization lightLocalization,
                             EV3LargeRegulatedMotor leftMotor,
                             EV3LargeRegulatedMotor rightMotor,
                             EV3LargeRegulatedMotor ziplineMotor,
@@ -34,6 +36,7 @@ public class ZiplineTraversal implements UltrasonicController{
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.odometer = odometer;
+        this.lightLocalization = lightLocalization;
         this.ziplineMotor = ziplineMotor;
         this.navigation = navigation;
         this.usSensor = usSensor;
@@ -44,11 +47,15 @@ public class ZiplineTraversal implements UltrasonicController{
      * Method responsible for performing zipline traversal
      */
     public void doTraversal() {
-        /*// first go to the premount
-        navigation.travelTo(Main.ziplineOther_green_x, Main.ziplineOther_green_y);
+        // first go to the premount
+        navigation.travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
 
+        //localise to correct our angle and position
+        lightLocalization.zipLineLocalization = true;
+        lightLocalization.doLocalization();
+        
         // then go to face the mount
-        navigation.travelTo(Main.ziplineEndPoint_green_x, Main.ziplineEndPoint_green_y);*/
+        navigation.travelTo(CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y);
 
         // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);

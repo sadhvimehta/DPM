@@ -64,7 +64,7 @@ public class Controller extends Thread implements UltrasonicController{
         //TODO:uncomment below
         //this.odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
         
-        this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, leftMotor, rightMotor, ziplineMotor, usValue, usData);
+        this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
         //TODO: implement river traversal
 	    //this.riverTraversal = new RiverTraversal();
