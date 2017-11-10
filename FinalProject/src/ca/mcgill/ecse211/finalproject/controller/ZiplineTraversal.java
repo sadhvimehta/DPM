@@ -47,17 +47,19 @@ public class ZiplineTraversal implements UltrasonicController{
      * Method responsible for performing zipline traversal
      */
     public void doTraversal() {
-        /*
+
         // first go to the premount
         navigation.travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
 
         //localise to correct our angle and position
         lightLocalization.zipLineLocalization = true;
+        navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensre we cross the correct lines during localization
         lightLocalization.doLocalization();
         
         // then go to face the mount
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y);
 
+        /*
         // finds approximate length of zipline
         double deltax = Main.ziplineEndPoint_red_x * SIDE_SQUARE - odometer.getX();
         double deltay = Main.ziplineEndPoint_green_y * SIDE_SQUARE - odometer.getY();
@@ -89,7 +91,6 @@ public class ZiplineTraversal implements UltrasonicController{
 
         //navigation.travelTo(2, 0);
         //navigation.travelTo(2,1);
-        double h = 123.4;
 
         // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);

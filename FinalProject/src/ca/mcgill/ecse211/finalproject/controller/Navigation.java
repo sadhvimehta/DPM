@@ -129,7 +129,7 @@ public class Navigation{
     
     /**
      * Method responsible to rotate robot by minimal angle
-     * @param theta angle to rotate by in degrees
+     * @param theta angle to rotate by in radians
      */
     public void turnTo(double theta) {
         // the robot checks the angle it must travel to

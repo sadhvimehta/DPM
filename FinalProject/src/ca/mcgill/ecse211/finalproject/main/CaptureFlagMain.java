@@ -57,7 +57,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.20";
+    private static final String serverIP = "192.168.2.62";
     /**
      * Team number
      */
@@ -65,15 +65,15 @@ public class CaptureFlagMain {
     /**
      * Radius of right/left wheel
      */
-    public static final double WHEEL_RADIUS = 2.05;
+    public static final double WHEEL_RADIUS = 2.1;
 	/**
 	 * Radius of zipline wheel
 	 */
-	public static final double ZIPLINE_WHEEL_RADIUS = 1.0;
+	public static final double ZIPLINE_WHEEL_RADIUS = 1.25;
     /**
      * Distance between two wheels of robot
      */
-    public static final double TRACK = 15.7;
+    public static final double TRACK = 15.9;
     /**
      * Slow motor speed in deg/sec
      */
@@ -175,7 +175,7 @@ public class CaptureFlagMain {
         if (buttonChoice == Button.ID_ENTER) {
 
             odometer.start();
-            //odometryDisplay.start();
+            odometryDisplay.start();
             controller.start();
 
         }

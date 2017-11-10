@@ -143,9 +143,6 @@ public class LightLocalization implements LightController {
         checkLines();
 
         calculatePosition();
-
-        navigation.travelTo(0, 0);
-
     }
     
     /**
@@ -182,8 +179,8 @@ public class LightLocalization implements LightController {
         this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
         this.leftMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), true);
         this.rightMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), false);
-        System.out.println("Reversing from origin " + odometer.getX() + " " + odometer.getY());
-        System.out.println("Theta: " + odometer.getTheta());
+        //System.out.println("Reversing from origin " + odometer.getX() + " " + odometer.getY());
+        //System.out.println("Theta: " + odometer.getTheta());
 
     }
     
@@ -278,13 +275,6 @@ public class LightLocalization implements LightController {
         	this.odometer.setY(positionY + (7.00*30.48));
         	this.odometer.setTheta(this.odometer.getTheta() + dT + Math.toRadians(90.00));
         }
-                
-        //TODO: remove these prints
-        System.out.println("dt:" + dT);
-        System.out.println("x:" + this.odometer.getX());
-        System.out.println("y:" + this.odometer.getY());
-        System.out.println("theta:" + this.odometer.getTheta());
-
     }
 
     /**

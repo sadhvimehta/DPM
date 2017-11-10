@@ -82,7 +82,7 @@ public class Controller extends Thread implements UltrasonicController{
 
         //TODO: uncomment below
         //odometryCorrection.start();
-        //ziplineTraversal.doTraversal();
+        ziplineTraversal.doTraversal();
     }
 
 	/**

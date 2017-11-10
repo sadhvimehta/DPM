@@ -37,7 +37,7 @@ public class WiFiConnect {
   @SuppressWarnings("rawtypes")
   public void startWifiInitialization(){
 
-    System.out.println("Running..");
+    //System.out.println("Running..");
 
     // Initialize WifiConnection class
     WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
@@ -60,29 +60,29 @@ public class WiFiConnect {
       initialiseParameters(data);
 
       // Example 1: Print out all received data
-      System.out.println("Map:\n" + data);
+      //System.out.println("Map:\n" + data);
       
       int myCorner = ((Long) data.get("myCorner")).intValue();
-      System.out.println("my corner: " + myCorner);
+      //System.out.println("my corner: " + myCorner);
 
       // Example 2 : Print out specific values
       int redTeam = ((Long) data.get("RedTeam")).intValue();
-      System.out.println("Red Team: " + redTeam);
+      //System.out.println("Red Team: " + redTeam);
 
       int og = ((Long) data.get("OG")).intValue();
-      System.out.println("Green opponent flag: " + og);
+      //System.out.println("Green opponent flag: " + og);
 
       // Example 3: Compare value
       int sh_ll_x =  ((Long) data.get("SH_LL_x")).intValue();
       if (sh_ll_x < 5) {
-        System.out.println("Shallow water LL zone X < 5");
+        //System.out.println("Shallow water LL zone X < 5");
       }
       else {
-        System.out.println("Shallow water LL zone X >= 5");
+        //System.out.println("Shallow water LL zone X >= 5");
       }
 
     } catch (Exception e) {
-      System.err.println("Error: " + e.getMessage());
+      //System.err.println("Error: " + e.getMessage());
     }
   }
   
