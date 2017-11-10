@@ -47,6 +47,7 @@ public class ZiplineTraversal implements UltrasonicController{
      * Method responsible for performing zipline traversal
      */
     public void doTraversal() {
+        /*
         // first go to the premount
         navigation.travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
 
@@ -56,6 +57,39 @@ public class ZiplineTraversal implements UltrasonicController{
         
         // then go to face the mount
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y);
+
+        // finds approximate length of zipline
+        double deltax = Main.ziplineEndPoint_red_x * SIDE_SQUARE - odometer.getX();
+        double deltay = Main.ziplineEndPoint_green_y * SIDE_SQUARE - odometer.getY();
+        double h = 2*(Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2)));
+        
+        // mount the zipline
+        leftMotor.setSpeed(Navigation.FORWARD_SPEED);
+        rightMotor.setSpeed(Navigation.FORWARD_SPEED);
+        ziplineMotor.setSpeed(Navigation.FORWARD_SPEED *2);
+        
+        // travel approximate length of zipline
+        ziplineMotor.rotate(-Navigation.convertDistance(Main.WHEEL_RADIUS, h), true);
+        navigation.advance((long) h, false);
+        
+        navigation.travelTo(Main.ziplineOther_red_x, Main.ziplineOther_red_y);*/
+
+
+        //////////////////////////////////////////////////////////////////////////
+        /*// first go to the premount
+        navigation.travelTo(Main.ziplineOther_green_x, Main.ziplineOther_green_y);
+
+        // then go to face the mount
+        navigation.travelTo(Main.ziplineEndPoint_green_x, Main.ziplineEndPoint_green_y);
+
+        // finds approximate length of zipline
+        double deltax = Main.ziplineEndPoint_red_x * SIDE_SQUARE - odometer.getX();
+        double deltay = Main.ziplineEndPoint_green_y * SIDE_SQUARE - odometer.getY();
+        double h = 2 * (Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2)));*/
+
+        //navigation.travelTo(2, 0);
+        //navigation.travelTo(2,1);
+        double h = 123.4;
 
         // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);

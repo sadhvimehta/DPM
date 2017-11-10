@@ -175,7 +175,7 @@ public class CaptureFlagMain {
         if (buttonChoice == Button.ID_ENTER) {
 
             odometer.start();
-            odometryDisplay.start();
+            //odometryDisplay.start();
             controller.start();
 
         }
