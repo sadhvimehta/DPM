@@ -28,7 +28,6 @@ public class OdometryDisplay extends Thread{
 	  public OdometryDisplay(Odometer odometer, TextLCD t) {
 	    this.odometer = odometer;
 	    this.t = t;
-	    //this.cont = null;
 	  }
 	  
 	  //TODO: uncomment this once we create an ultrasonic controller

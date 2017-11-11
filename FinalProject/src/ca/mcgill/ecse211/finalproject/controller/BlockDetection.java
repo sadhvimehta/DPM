@@ -43,7 +43,11 @@ public class BlockDetection implements UltrasonicController, LightController{
 	/**
 	 * Constructor of the class BlockDetection, which links the parameters to the class variables.
 	 */
-	public BlockDetection(Odometer odometer, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, SampleProvider csSensor, float[] csData){
+	public BlockDetection(Odometer odometer,
+	                      EV3LargeRegulatedMotor leftMotor,
+	                      EV3LargeRegulatedMotor rightMotor,
+	                      SampleProvider csSensor,
+	                      float[] csData){
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;

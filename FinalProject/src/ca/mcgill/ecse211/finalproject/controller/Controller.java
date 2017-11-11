@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
+import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.odometry.OdometryCorrection;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
@@ -49,12 +50,10 @@ public class Controller extends Thread implements UltrasonicController{
                       float[] csData,
                       EV3LargeRegulatedMotor leftMotor,
                       EV3LargeRegulatedMotor rightMotor,
-                      EV3LargeRegulatedMotor ziplineMotor,
-                      double WHEEL_RADIUS,
-                      double TRACK
+                      EV3LargeRegulatedMotor ziplineMotor
                       ){
 
-        this.navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
+        this.navigation = new Navigation(odometer, leftMotor, rightMotor);
 
 
         this.usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);

@@ -119,7 +119,12 @@ public class LightLocalization implements LightController {
 	/**
 	 * Constructor which links the parameters to the class variables
 	 */
-    public LightLocalization(Navigation navigation, Odometer odo, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, SampleProvider csSensor, float[] csData) {
+    public LightLocalization(Navigation navigation,
+                             Odometer odo,
+                             EV3LargeRegulatedMotor leftMotor,
+                             EV3LargeRegulatedMotor rightMotor,
+                             SampleProvider csSensor,
+                             float[] csData) {
         this.odometer = odo;
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;

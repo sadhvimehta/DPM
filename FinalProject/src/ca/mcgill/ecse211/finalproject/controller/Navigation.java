@@ -18,8 +18,6 @@ public class Navigation{
     public static final int FORWARD_SPEED = 250;
     public static final int ROTATE_SPEED = 100;
     private double theta;
-    private static double WHEEL_RADIUS;
-    private static double TRACK;
     private boolean isNavigating;
     private EV3LargeRegulatedMotor leftMotor;
     private EV3LargeRegulatedMotor rightMotor;
@@ -30,15 +28,10 @@ public class Navigation{
     public Navigation(
             Odometer odometer,
             EV3LargeRegulatedMotor leftMotor,
-            EV3LargeRegulatedMotor rightMotor,
-            double WHEEL_RADIUS,
-            double TRACK) {
-
+            EV3LargeRegulatedMotor rightMotor) {
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.odometer = odometer;
-        this.WHEEL_RADIUS = WHEEL_RADIUS;
-        this.TRACK = TRACK;
 
         for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[]{leftMotor, rightMotor}) {
             motor.stop();
@@ -97,8 +90,8 @@ public class Navigation{
         // the robot then rolls foward to get to the point
         leftMotor.setSpeed(FORWARD_SPEED);
         rightMotor.setSpeed(FORWARD_SPEED);
-        leftMotor.rotate(convertDistance(WHEEL_RADIUS, h), true);
-        rightMotor.rotate(convertDistance(WHEEL_RADIUS, h), false);
+        leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), true);
+        rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), false);
 
         leftMotor.stop();
         rightMotor.stop();
@@ -143,40 +136,36 @@ public class Navigation{
         if (Math.abs(travelangle) < Math.PI) {
             if (travelangle > 0) {
                 leftMotor.rotate(
-                        convertAngle(WHEEL_RADIUS, TRACK, Math.toDegrees(Math.abs(travelangle))), true);
+                        convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), true);
                 rightMotor.rotate(
-                        -convertAngle(WHEEL_RADIUS, TRACK, Math.toDegrees(Math.abs(travelangle))), false);
+                        -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), false);
             } else if (travelangle < 0) {
                 leftMotor.rotate(
-                        -convertAngle(WHEEL_RADIUS, TRACK, Math.toDegrees(Math.abs(travelangle))), true);
+                        -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), true);
                 rightMotor.rotate(
-                        convertAngle(WHEEL_RADIUS, TRACK, Math.toDegrees(Math.abs(travelangle))), false);
+                        convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), false);
             }
         } else if (Math.abs(travelangle) > Math.PI) {
             if (travelangle > Math.PI) {
                 leftMotor.rotate(
                         -convertAngle(
-                                WHEEL_RADIUS,
-                                TRACK,
+                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
                                 Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
                         true);
                 rightMotor.rotate(
                         convertAngle(
-                                WHEEL_RADIUS,
-                                TRACK,
+                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
                                 Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
                         false);
             } else if (travelangle < -Math.PI) {
                 leftMotor.rotate(
                         convertAngle(
-                                WHEEL_RADIUS,
-                                TRACK,
+                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
                                 Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
                         true);
                 rightMotor.rotate(
                         -convertAngle(
-                                WHEEL_RADIUS,
-                                TRACK,
+                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
                                 Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
                         false);
             }
@@ -219,7 +208,7 @@ public class Navigation{
      * @param immediateReturn boolean that determines synchronization of motors
      */
     public void advance(long distance, boolean immediateReturn) {
-        leftMotor.rotate(convertDistance(WHEEL_RADIUS, distance), true);
-        rightMotor.rotate(convertDistance(WHEEL_RADIUS, distance), immediateReturn);
+        leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distance), true);
+        rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distance), immediateReturn);
     }
 }

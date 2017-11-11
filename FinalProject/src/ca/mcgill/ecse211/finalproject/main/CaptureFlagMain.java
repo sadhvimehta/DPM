@@ -73,7 +73,7 @@ public class CaptureFlagMain {
     /**
      * Distance between two wheels of robot
      */
-    public static final double TRACK = 15.9;
+    public static double TRACK = 15.9;
     /**
      * Slow motor speed in deg/sec
      */
@@ -162,7 +162,7 @@ public class CaptureFlagMain {
         SampleProvider csValue = csSensor.getRedMode();
         float[] csData = new float[csValue.sampleSize()];
 
-        Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor, WHEEL_RADIUS, TRACK);
+        Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor);
 
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
         do {

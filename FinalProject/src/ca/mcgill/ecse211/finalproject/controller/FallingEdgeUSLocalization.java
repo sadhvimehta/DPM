@@ -74,7 +74,13 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	/**
 	 * Constructor for the class FallingEdgeUSLocalization which links parameters to class variables
 	 */
-	public FallingEdgeUSLocalization(Odometer odo, SampleProvider usSensor, float[] usData, LocalizationType locType,EV3LargeRegulatedMotor leftMotor,EV3LargeRegulatedMotor rightMotor, Navigation navigation) {
+	public FallingEdgeUSLocalization(Odometer odo,
+	                                 SampleProvider usSensor,
+	                                 float[] usData,
+	                                 LocalizationType locType,
+	                                 EV3LargeRegulatedMotor leftMotor,
+	                                 EV3LargeRegulatedMotor rightMotor,
+	                                 Navigation navigation) {
 		this.odometer = odo;
 		this.usSensor = usSensor;
 		this.usData = usData;
