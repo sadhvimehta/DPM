@@ -13,11 +13,13 @@ import lejos.robotics.SampleProvider;
  * and controlling the state of the robot to accomplish the tasks at hand to complete the challenge.
  *
  */
-public class Controller extends Thread implements UltrasonicController{
+public class Controller implements UltrasonicController{
 	/**
 	 * Navigation class which contains basic methods of moving our robot
 	 */
 	private Navigation navigation;
+	
+	private Odometer odometer;
 	/**
 	 * OdometryCorrection class which corrects the odometer as the robot is running to make sure our odometer is correct
 	 */
@@ -53,7 +55,8 @@ public class Controller extends Thread implements UltrasonicController{
                       double WHEEL_RADIUS,
                       double TRACK
                       ){
-
+    	
+    	this.odometer = odometer;
         this.navigation = new Navigation(odometer, leftMotor, rightMotor, WHEEL_RADIUS, TRACK);
 
 
@@ -61,8 +64,7 @@ public class Controller extends Thread implements UltrasonicController{
 
         this.lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
 
-        //TODO:uncomment below
-        //this.odometryCorrection = new OdometryCorrection(odometer, csValue, csData);
+        this.odometryCorrection = new OdometryCorrection(odometer, lightLocalization);
         
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
@@ -72,17 +74,18 @@ public class Controller extends Thread implements UltrasonicController{
     }
 
 	/**
-	 * Method which dictates what the controller thread will do. This method also includes the state machine which helps
+	 * Method which dictates what the controller will do. This method also includes the state machine which helps
 	 * with the logic of what state the robot should be depending on factors.
 	 */
-	public void run() {
+	public void startCourseTraversal() {
     	usl.doLocalization();
-
+    	
         lightLocalization.doLocalization();
-
-        //TODO: uncomment below
-        //odometryCorrection.start();
+        
+        odometryCorrection.start();
+        
         ziplineTraversal.doTraversal();
+        //navigation.advance((long)(7*30.48), false); //left wheel going faster
     }
 
 	/**

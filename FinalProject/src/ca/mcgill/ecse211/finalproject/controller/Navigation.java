@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
+import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 import java.util.ArrayList;
@@ -103,7 +104,7 @@ public class Navigation{
         leftMotor.stop();
         rightMotor.stop();
 
-        isNavigating = false;
+        isNavigating = false; 
     }
     
     /**
@@ -221,5 +222,27 @@ public class Navigation{
     public void advance(long distance, boolean immediateReturn) {
         leftMotor.rotate(convertDistance(WHEEL_RADIUS, distance), true);
         rightMotor.rotate(convertDistance(WHEEL_RADIUS, distance), immediateReturn);
+    }
+    
+    /**
+     * Method responsible for making robot move to a premount point in right angles (imitates square driver)
+     */
+    public void travelToPremount(){
+    	// setting up for odometry correction (go to middle of first square)
+    	if(CaptureFlagMain.startingCorner == 0)
+    		travelTo(0.50, 0.50);
+    	else if(CaptureFlagMain.startingCorner == 1)
+    		travelTo(7.50, 0.50);
+    	else if(CaptureFlagMain.startingCorner == 2)
+    		travelTo(7.50, 7.50);
+    	else if(CaptureFlagMain.startingCorner == 3)
+    		travelTo(0.50, 7.50);
+    	// below, navigation to premount
+    	CaptureFlagMain.doCorrection = true; // start correction
+    	travelTo((odometer.getX()/30.48), (CaptureFlagMain.ziplineOther_green_y-0.500));
+		travelTo((CaptureFlagMain.ziplineOther_green_x - 0.500), (odometer.getY()/30.48));
+		Sound.beep();
+		travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
+		CaptureFlagMain.doCorrection = false; // end correction
     }
 }

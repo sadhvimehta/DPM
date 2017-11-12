@@ -57,7 +57,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.62";
+    private static final String serverIP = "192.168.2.10";
     /**
      * Team number
      */
@@ -73,7 +73,7 @@ public class CaptureFlagMain {
     /**
      * Distance between two wheels of robot
      */
-    public static final double TRACK = 15.9;
+    public static final double TRACK = 16.1; //15.9
     /**
      * Slow motor speed in deg/sec
      */
@@ -145,6 +145,8 @@ public class CaptureFlagMain {
 	public static int ziplineOther_green_x;
 
 	public static int ziplineOther_green_y;
+	
+	public static boolean doCorrection = false;
     
     public static void main(String[] args) {
         int buttonChoice;
@@ -176,7 +178,7 @@ public class CaptureFlagMain {
 
             odometer.start();
             odometryDisplay.start();
-            controller.start();
+            controller.startCourseTraversal();
 
         }
 
