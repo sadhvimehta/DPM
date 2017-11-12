@@ -4,6 +4,7 @@ import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.odometry.OdometryCorrection;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
+import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
@@ -79,9 +80,13 @@ public class Controller extends Thread implements UltrasonicController{
 
         lightLocalization.doLocalization();
 
+        // put a pause to check x and y
+
+        navigation.travelTo(3, 3);
+
         //TODO: uncomment below
         //odometryCorrection.start();
-        ziplineTraversal.doTraversal();
+        //ziplineTraversal.doTraversal();
     }
 
 	/**

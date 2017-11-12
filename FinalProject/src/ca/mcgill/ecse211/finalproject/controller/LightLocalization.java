@@ -8,6 +8,7 @@ import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
+import sun.awt.geom.AreaOp;
 
 
 /**
@@ -101,7 +102,7 @@ public class LightLocalization implements LightController {
     /**
      * Period for which sensor reading must be taken
      */
-    private static final long LOOP_TIME = 10;
+    private static final long LOOP_TIME = 5;
     /**
      * Boolean indicating line detection has started
      */
@@ -142,8 +143,17 @@ public class LightLocalization implements LightController {
     	//System.out.println("Hello");
     	
     	if(!zipLineLocalization){
-        goToEstimateOrigin();
+            goToEstimateOrigin();
     	}
+
+	    this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
+	    this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
+    	while(!pastline()) {
+		    navigation.turnCCW(360);
+	    }
+	    this.leftMotor.stop(true);
+	    this.rightMotor.stop(true);
+
         //2nd, turn around the origin and detect the lines
         checkLines();
 
@@ -193,7 +203,9 @@ public class LightLocalization implements LightController {
      * Method responsible for robot to rotate and detect lines
      */
     private void checkLines() {
-        //it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
+        int lastLTC = leftMotor.getTachoCount();
+        int lastRTC = rightMotor.getTachoCount();
+    	//it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
 
         //Set up variables
         lineCounter = 0;
@@ -202,24 +214,16 @@ public class LightLocalization implements LightController {
         startTime = System.currentTimeMillis();
         this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
         this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
-        this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 360), true);
-        this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 360), true);
+        this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 400), true);
+        this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 400), true);
+
+        try {
+	        Thread.sleep(1000);
+        }
+        catch (Exception e ) {}
 
         //Runs until it has detected 4 lines
         while (lineCounter < 4) {
-            lightValueCurrent = readLSData();
-
-            if (firstpass) {
-                lightValuePrev = lightValueCurrent;
-                firstpass = false;
-            }
-            // rather than check the value of light captured, we are checking the instaneous
-            // differentiation
-            dCdt = lightValueCurrent - lightValuePrev;
-            lightValuePrev = lightValueCurrent;
-
-            // add the differentiation of the color to the array
-            lastNValueAdd(dCdt);
             if (pastline()) {
                 //Store angles in variable for future calculations
                 saveLineAngles[lineCounter] = this.odometer.getTheta();
@@ -228,9 +232,19 @@ public class LightLocalization implements LightController {
             }
         }
 
-        this.leftMotor.stop(true);
-        this.rightMotor.stop(true);
+        int totalLTC = leftMotor.getTachoCount() - lastLTC;
+        int totalRTC = rightMotor.getTachoCount() - lastRTC;
 
+	    this.leftMotor.stop(true);
+	    this.rightMotor.stop(true);
+
+        int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
+
+        CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
+
+        //System.out.println("last tacho counts: " + lastLTC + ", " + lastRTC);
+        //System.out.println("total tacho counts: " + totalLTC + ", " + totalRTC);
+        //System.out.println("new track value: " + CaptureFlagMain.TRACK);
     }
     
     /**
@@ -246,6 +260,9 @@ public class LightLocalization implements LightController {
 
 
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
+
+
+	    System.out.println("thetay: " + thetaY+ " thetax: " + thetaX + " y-: " + saveLineAngles[3]);
 
         //Updates odometer to actual values depending on corner!
         if(zipLineLocalization){
@@ -288,7 +305,7 @@ public class LightLocalization implements LightController {
     public void lastNValueAdd(double value) {
         // the array does not take chucks of the values and risk to miss a big difference.
         // Instead we slide along
-        if (this.lastNValue.size() > 40) {
+        if (this.lastNValue.size() > 100) {
             // the oldest value is removed to make space
 
             this.lastNValue.remove(0);
@@ -307,6 +324,19 @@ public class LightLocalization implements LightController {
         double biggest = -100;
         double smallest = 100;
 
+	    lightValueCurrent = readLSData();
+
+	    if (firstpass) {
+		    lightValuePrev = lightValueCurrent;
+		    firstpass = false;
+	    }
+	    // rather than check the value of light captured, we are checking the instantaneous differentiation
+	    dCdt = lightValueCurrent - lightValuePrev;
+	    lightValuePrev = lightValueCurrent;
+
+	    // add the differentiation of the color to the array
+	    lastNValueAdd(dCdt);
+
         // since crossing a line causes a drop and a rise in the derivative, the filter
         // only considers a line crossed if the biggest value is higher than some threshold
         for (int i = 0; i < this.lastNValue.size(); i++) {
@@ -319,8 +349,7 @@ public class LightLocalization implements LightController {
             }
         }
 
-        // if a sample is considered to be a line, the array is cleared as to not retrigger an other
-        // time
+        // if a sample is considered to be a line, the array is cleared as to not retrigger another time
         if (biggest > 5 && smallest < -3) {
             this.lastNValue.clear();
             Sound.setVolume(30);

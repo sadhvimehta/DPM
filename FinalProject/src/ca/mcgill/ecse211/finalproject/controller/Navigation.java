@@ -16,7 +16,7 @@ public class Navigation{
 
     private static final double SIDE_SQUARE = 30.48;
     public static final int FORWARD_SPEED = 250;
-    public static final int ROTATE_SPEED = 100;
+    public static final int ROTATE_SPEED = 150;
     private double theta;
     private boolean isNavigating;
     private EV3LargeRegulatedMotor leftMotor;
@@ -113,7 +113,7 @@ public class Navigation{
      * Method that converts angle to rotate by to required wheel rotations
      * @param radius wheel radius
      * @param width distance between the wheels
-     * @param angle angle to rotate by
+     * @param angle angle to rotate by in degrees
      * @return wheel rotations in degrees
      */
     public static int convertAngle(double radius, double width, double angle) {
