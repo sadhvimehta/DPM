@@ -97,12 +97,12 @@ public class Navigation{
 
         // the robot then rolls foward to get to the point
         leftMotor.setSpeed(FORWARD_SPEED);
-        rightMotor.setSpeed(FORWARD_SPEED);
+        rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
         leftMotor.rotate(convertDistance(WHEEL_RADIUS, h), true);
         rightMotor.rotate(convertDistance(WHEEL_RADIUS, h), false);
 
-        leftMotor.stop();
-        rightMotor.stop();
+        leftMotor.stop(true);
+        rightMotor.stop(false);
 
         isNavigating = false; 
     }
@@ -137,7 +137,7 @@ public class Navigation{
         double travelangle = theta - odometer.getTheta();
 
         leftMotor.setSpeed(ROTATE_SPEED);
-        rightMotor.setSpeed(ROTATE_SPEED);
+        rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
 
         // this is just to make sure that the robot takes the most optimal route, thus always turning
         // 180 or less
@@ -182,6 +182,8 @@ public class Navigation{
                         false);
             }
         }
+        leftMotor.stop(true);
+        rightMotor.stop(false);
     }
     
     /**
@@ -220,8 +222,12 @@ public class Navigation{
      * @param immediateReturn boolean that determines synchronization of motors
      */
     public void advance(long distance, boolean immediateReturn) {
+    	leftMotor.setSpeed(FORWARD_SPEED);
+    	rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant)); 
         leftMotor.rotate(convertDistance(WHEEL_RADIUS, distance), true);
         rightMotor.rotate(convertDistance(WHEEL_RADIUS, distance), immediateReturn);
+        leftMotor.stop(true);
+        rightMotor.stop(false);
     }
     
     /**
@@ -238,11 +244,11 @@ public class Navigation{
     	else if(CaptureFlagMain.startingCorner == 3)
     		travelTo(0.50, 7.50);
     	// below, navigation to premount
-    	CaptureFlagMain.doCorrection = true; // start correction
+    	/*CaptureFlagMain.doCorrection = true; // start correction
     	travelTo((odometer.getX()/30.48), (CaptureFlagMain.ziplineOther_green_y-0.500));
 		travelTo((CaptureFlagMain.ziplineOther_green_x - 0.500), (odometer.getY()/30.48));
 		Sound.beep();
 		travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
 		CaptureFlagMain.doCorrection = false; // end correction
-    }
+*/    }
 }
