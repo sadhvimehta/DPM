@@ -115,6 +115,7 @@ public class LightLocalization implements LightController {
     
     public boolean zipLineLocalization = false;
     
+    public int lightThreshold = 38;
     
 
 	/**
@@ -140,8 +141,7 @@ public class LightLocalization implements LightController {
      */
     public void doLocalization() {
         //1st, get the robot close to where the origin is
-    	//System.out.println("Hello");
-    	
+    	CaptureFlagMain.doCorrection = false;
     	if(!zipLineLocalization){
             goToEstimateOrigin();
     	}
@@ -182,7 +182,7 @@ public class LightLocalization implements LightController {
             lightValueCurrent = readLSData(); //update data
 
             //If the difference in colour intensity is bigger than a chosen threshold, a line was detected
-            if (lightValueCurrent <= 38) { //TODO: change this to a non absolute value
+            if (lightValueCurrent <= lightThreshold) {
                 leftMotor.stop(true);
                 rightMotor.stop(true);
                 atApproxOrigin = true;
@@ -194,8 +194,6 @@ public class LightLocalization implements LightController {
         this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
         this.leftMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), true);
         this.rightMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), false);
-        //System.out.println("Reversing from origin " + odometer.getX() + " " + odometer.getY());
-        //System.out.println("Theta: " + odometer.getTheta());
 
     }
     
@@ -240,7 +238,7 @@ public class LightLocalization implements LightController {
 
         int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
 
-        CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
+        //CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
 
         //System.out.println("last tacho counts: " + lastLTC + ", " + lastRTC);
         //System.out.println("total tacho counts: " + totalLTC + ", " + totalRTC);
@@ -261,27 +259,30 @@ public class LightLocalization implements LightController {
 
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
 
-
-	    System.out.println("thetay: " + thetaY+ " thetax: " + thetaX + " y-: " + saveLineAngles[3]);
-
-        //Updates odometer to actual values depending on corner!
-        if(zipLineLocalization){
-        	this.odometer.setX(positionX + (CaptureFlagMain.ziplineEndPoint_green_x*30.48));
-        	this.odometer.setY(positionY + (CaptureFlagMain.ziplineEndPoint_green_y*30.48));
-        	this.odometer.setTheta(this.odometer.getTheta() + dT);
+        double newTheta = this.odometer.getTheta() + dT;
+        if(120.00 <= Math.toDegrees(newTheta) && Math.toDegrees(newTheta) <= 230.00){
+        	newTheta = newTheta + Math.PI;
+        	if(newTheta >= (2*Math.PI))
+        		newTheta = newTheta - 2*Math.PI;
         }
         
+        if(zipLineLocalization){
+        	this.odometer.setX(positionX + (CaptureFlagMain.ziplineOther_green_x *30.48));
+        	this.odometer.setY(positionY + (CaptureFlagMain.ziplineOther_green_y *30.48));
+        	this.odometer.setTheta(newTheta);
+        }
+       //Updates odometer to actual values depending on corner!
         else if(CaptureFlagMain.startingCorner == 0){
         	this.odometer.setX(positionX + (1.00*30.48));
         	this.odometer.setY(positionY + (1.00*30.48));
-        	this.odometer.setTheta(this.odometer.getTheta() + dT);
+        	this.odometer.setTheta(newTheta);
         }
         
         else if(CaptureFlagMain.startingCorner == 1){
         	positionX = Math.abs(positionX);
         	this.odometer.setX(positionX + (7.00*30.48));
         	this.odometer.setY(positionY + (1.00*30.48));
-        	this.odometer.setTheta(this.odometer.getTheta() + dT + Math.toRadians(270.00));
+        	this.odometer.setTheta(newTheta + Math.toRadians(270.00));
         	
         }
         else if(CaptureFlagMain.startingCorner == 2){
@@ -289,14 +290,20 @@ public class LightLocalization implements LightController {
         	positionY = Math.abs(positionY);
         	this.odometer.setX(positionX + (7.00*30.48));
         	this.odometer.setY(positionY + (7.00*30.48));
-        	this.odometer.setTheta(this.odometer.getTheta() + dT + Math.toRadians(180.00));
+        	this.odometer.setTheta(newTheta + Math.toRadians(180.00));
         }
         else if(CaptureFlagMain.startingCorner == 3){
         	positionY = Math.abs(positionY);
         	this.odometer.setX(positionX + (1.00*30.48));
         	this.odometer.setY(positionY + (7.00*30.48));
-        	this.odometer.setTheta(this.odometer.getTheta() + dT + Math.toRadians(90.00));
+        	this.odometer.setTheta(newTheta + Math.toRadians(90.00));
         }
+        /*System.out.println("X offset: " + positionX);
+        System.out.println("Y offset: " + positionY);
+        System.out.println("Delta theta : " + dT);
+        System.out.println("Current x: " + odometer.getX());
+        System.out.println("Current y: " + odometer.getY());
+        System.out.println("Current theta: " + odometer.getTheta());*/
     }
 
     /**
@@ -321,43 +328,13 @@ public class LightLocalization implements LightController {
      * Method responsible for performing line detection algorithm
      */
     public boolean pastline() {
-        double biggest = -100;
-        double smallest = 100;
-
-	    lightValueCurrent = readLSData();
-
-	    if (firstpass) {
-		    lightValuePrev = lightValueCurrent;
-		    firstpass = false;
-	    }
-	    // rather than check the value of light captured, we are checking the instantaneous differentiation
-	    dCdt = lightValueCurrent - lightValuePrev;
-	    lightValuePrev = lightValueCurrent;
-
-	    // add the differentiation of the color to the array
-	    lastNValueAdd(dCdt);
-
-        // since crossing a line causes a drop and a rise in the derivative, the filter
-        // only considers a line crossed if the biggest value is higher than some threshold
-        for (int i = 0; i < this.lastNValue.size(); i++) {
-            // and the reverse for the lowest value, thus creating one beep per line
-            if (this.lastNValue.get(i) > biggest) {
-                biggest = this.lastNValue.get(i);
-            }
-            if (this.lastNValue.get(i) < smallest) {
-                smallest = this.lastNValue.get(i);
-            }
-        }
-
-        // if a sample is considered to be a line, the array is cleared as to not retrigger another time
-        if (biggest > 5 && smallest < -3) {
-            this.lastNValue.clear();
-            Sound.setVolume(30);
-            Sound.beep();
-            return true;
-        } else {
-            return false;
-        }
+    	if(readLSData() <= lightThreshold){
+    		Sound.setVolume(30);
+    		Sound.beep();
+    		return true;
+    	}
+    	else
+    		return false;
     }
 
     /**
@@ -378,20 +355,20 @@ public class LightLocalization implements LightController {
      */
 	@Override
 	public float readLSData() {
-        correctionStart = System.currentTimeMillis();
+        //correctionStart = System.currentTimeMillis();
 
         csSensor.fetchSample(csData, 0);
         float color = csData[0] * 100;
 
         // the correctionstart and correctionend are to make sure that a value is taken once every
         // LOOP_TIME
-        correctionEnd = System.currentTimeMillis();
+        /*correctionEnd = System.currentTimeMillis();
         if (correctionEnd - correctionStart < LOOP_TIME) {
             try {
                 Thread.sleep(LOOP_TIME - (correctionEnd - correctionStart));
             } catch (InterruptedException e) {
             }
-        }
+        }*/
 
         return color;
 	}
