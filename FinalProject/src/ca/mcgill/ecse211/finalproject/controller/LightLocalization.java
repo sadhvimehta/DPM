@@ -260,7 +260,7 @@ public class LightLocalization implements LightController {
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
 
         double newTheta = this.odometer.getTheta() + dT;
-        if(120.00 <= Math.toDegrees(newTheta) && Math.toDegrees(newTheta) <= 230.00){
+        if(120.00 <= Math.toDegrees(newTheta) && Math.toDegrees(newTheta) <= 20.00){
         	newTheta = newTheta + Math.PI;
         	if(newTheta >= (2*Math.PI))
         		newTheta = newTheta - 2*Math.PI;
@@ -329,8 +329,8 @@ public class LightLocalization implements LightController {
      */
     public boolean pastline() {
     	if(readLSData() <= lightThreshold){
-    		Sound.setVolume(30);
-    		Sound.beep();
+    		//Sound.setVolume(30);
+    		//Sound.beep();
     		return true;
     	}
     	else

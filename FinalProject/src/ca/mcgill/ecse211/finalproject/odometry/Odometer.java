@@ -88,7 +88,7 @@ public class Odometer extends Thread{
 		    	double distL, distR, deltaD, deltaT, dX, dY;
 		  		
 		  		currentLeftMotorTachoCount = leftMotor.getTachoCount();      		// get tacho counts
-		  		currentRightMotorTachoCount = rightMotor.getTachoCount();
+		  		currentRightMotorTachoCount = (int) (rightMotor.getTachoCount()/CaptureFlagMain.balanceConstant);
 		  		distL = Math.PI*CaptureFlagMain.WHEEL_RADIUS*(currentLeftMotorTachoCount-lastLeftMotorTachoCount)/180;		// compute L and R wheel displacements
 		  		distR = Math.PI*CaptureFlagMain.WHEEL_RADIUS*(currentRightMotorTachoCount-lastRightMotorTachoCount)/180;
 		  		lastLeftMotorTachoCount=currentLeftMotorTachoCount;								// save tacho counts for next iteration
