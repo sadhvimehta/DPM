@@ -86,6 +86,10 @@ public class Controller implements UltrasonicController{
         odometryCorrection.start();
         
         ziplineTraversal.doTraversal();
+        
+        // go to flag zone
+        navigation.travelTo(4, 7);
+        
         //navigation.advance((long)(5*30.48), false); //left wheel going faster
     }
 

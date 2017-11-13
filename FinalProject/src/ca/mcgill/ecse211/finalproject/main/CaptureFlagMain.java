@@ -57,7 +57,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.62";
+    private static final String serverIP = "192.168.2.18";
     /**
      * Team number
      */
@@ -73,7 +73,7 @@ public class CaptureFlagMain {
     /**
      * Distance between two wheels of robot
      */
-    public static double TRACK = 15.87; //DO NOT CHANGE TRACK WHATSOEVER
+    public static double TRACK = 15.90; //DO NOT CHANGE TRACK WHATSOEVER
     
     public static final double balanceConstant = 1.0072; // constant to balance out wheel imbalance
     /**

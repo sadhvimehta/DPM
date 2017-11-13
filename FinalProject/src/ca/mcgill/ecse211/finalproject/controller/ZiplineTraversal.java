@@ -73,13 +73,11 @@ public class ZiplineTraversal implements UltrasonicController{
         ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_red_x, CaptureFlagMain.ziplineEndPoint_red_y);
 
+        // localize after it descends zipline
         lightLocalization.endZipLineLocalization = true;
         navigation.turnTo(Math.toRadians(45));
         lightLocalization.doLocalization();
         lightLocalization.endZipLineLocalization = false;
-
-        navigation.travelTo(1,1);
-        navigation.travelTo(1,1);
     }
 
 	@Override

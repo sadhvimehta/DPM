@@ -144,7 +144,8 @@ public class LightLocalization implements LightController {
     public void doLocalization() {
         //1st, get the robot close to where the origin is
     	CaptureFlagMain.doCorrection = false;
-    	if(!zipLineLocalization){
+    	if((!zipLineLocalization) && (!endZipLineLocalization)){ 
+    		// if either ziplineLocalization or endZiplineLocalizatioin are true, don't go to the origin
             goToEstimateOrigin();
     	}
 
