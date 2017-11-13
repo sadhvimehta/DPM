@@ -73,9 +73,9 @@ public class CaptureFlagMain {
     /**
      * Distance between two wheels of robot
      */
-    public static double TRACK = 16.1; //15.9
+    public static double TRACK = 15.87; //DO NOT CHANGE TRACK WHATSOEVER
     
-    public static final double balanceConstant = 1.007; // constant to balance out wheel imbalance
+    public static final double balanceConstant = 1.0072; // constant to balance out wheel imbalance
     /**
      * Slow motor speed in deg/sec
      */

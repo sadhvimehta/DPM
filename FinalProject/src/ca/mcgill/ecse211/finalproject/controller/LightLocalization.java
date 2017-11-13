@@ -244,7 +244,7 @@ public class LightLocalization implements LightController {
 
         //System.out.println("last tacho counts: " + lastLTC + ", " + lastRTC);
         //System.out.println("total tacho counts: " + totalLTC + ", " + totalRTC);
-        System.out.println("new track value: " + CaptureFlagMain.TRACK);
+        //System.out.println("new track value: " + CaptureFlagMain.TRACK);
     }
     
     /**

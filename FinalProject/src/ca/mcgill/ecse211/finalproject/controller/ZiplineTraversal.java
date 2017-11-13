@@ -24,6 +24,7 @@ public class ZiplineTraversal implements UltrasonicController{
     private static final double DISTANCE_WALL = 20;
     private static final double SIDE_SQUARE = 30.48;
     private double ZIPLINE_LENGTH = 123.4;
+    private double ZIPLINE_NOISE_LENGTH = -10.00; // used to adjust bottom motors due to inital delay during mount
 
     public ZiplineTraversal(Navigation navigation,
                             Odometer odometer,
@@ -55,11 +56,12 @@ public class ZiplineTraversal implements UltrasonicController{
         lightLocalization.zipLineLocalization = true;
         navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
         lightLocalization.doLocalization();
-        System.out.println("X after light localization: " + odometer.getX());
-        System.out.println("Y after light localization: " + odometer.getY());
         
         // then go to face the mount
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y);
+        
+        // possible lee way for zipline motor to latch on to zipline
+        //navigation.advance((long) 10.00, false);
         
         // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);
@@ -68,34 +70,7 @@ public class ZiplineTraversal implements UltrasonicController{
         
        // travel approximate length of zipline (negative b/c motor attached backwards)
         ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
-        navigation.advance((long) ZIPLINE_LENGTH * 2, false);
-
-
-        //////////////////////////////////////////////////////////////////////////
-        /*// first go to the premount
-        navigation.travelTo(Main.ziplineOther_green_x, Main.ziplineOther_green_y);
-
-        // then go to face the mount
-        navigation.travelTo(Main.ziplineEndPoint_green_x, Main.ziplineEndPoint_green_y);
-
-        // finds approximate length of zipline
-        double deltax = Main.ziplineEndPoint_red_x * SIDE_SQUARE - odometer.getX();
-        double deltay = Main.ziplineEndPoint_green_y * SIDE_SQUARE - odometer.getY();
-        double h = 2 * (Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2)));*/
-
-        // mount the zipline
-        //leftMotor.setSpeed(Navigation.FORWARD_SPEED);
-        //rightMotor.setSpeed(Navigation.FORWARD_SPEED);
-        //ziplineMotor.setSpeed(Navigation.FORWARD_SPEED * 2);
-
-        // travel approximate length of zipline (negative b/c motor attached backwards)
-        //ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
-        //navigation.advance((long) ZIPLINE_LENGTH * 2, false);
-
-        //Sound.setVolume(15);
-        //Sound.beep();
-        //navigation.travelTo(Main.ziplineOther_red_x, Main.ziplineOther_red_y);
-        ///////////////////////////////////////////////////////////////////////
+        navigation.advance((long) (ZIPLINE_LENGTH), false);
     }
 
 	@Override
