@@ -57,7 +57,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.10";
+    private static final String serverIP = "192.168.2.18";
     /**
      * Team number
      */
