@@ -147,10 +147,11 @@ public class LightLocalization implements LightController {
     	}
 
 	    /*this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
-	    this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
+	    this.rightMotor.setSpeed(Navigation.ROTATE_SPEED * constant);
     	while(!pastline()) {
 		    navigation.turnCCW(360);
 	    }
+	    // stops ??
 	    this.leftMotor.stop(true);
 	    this.rightMotor.stop(true);*/
 
@@ -201,8 +202,8 @@ public class LightLocalization implements LightController {
      * Method responsible for robot to rotate and detect lines
      */
     private void checkLines() {
-        //int lastLTC = leftMotor.getTachoCount();
-        //int lastRTC = rightMotor.getTachoCount();
+        int lastLTC = leftMotor.getTachoCount();
+        int lastRTC = rightMotor.getTachoCount();
     	
     	//it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
 
@@ -231,19 +232,19 @@ public class LightLocalization implements LightController {
             }
         }
 
-        /*int totalLTC = leftMotor.getTachoCount() - lastLTC;
-        int totalRTC = rightMotor.getTachoCount() - lastRTC;*/
+        int totalLTC = leftMotor.getTachoCount() - lastLTC;
+        int totalRTC = rightMotor.getTachoCount() - lastRTC;
 
-	    this.leftMotor.stop(true);
-	    this.rightMotor.stop(false);
+	    /*this.leftMotor.stop(true);
+	    this.rightMotor.stop(false);*/
 
-        //int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
+        int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
 
         //CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
 
         //System.out.println("last tacho counts: " + lastLTC + ", " + lastRTC);
         //System.out.println("total tacho counts: " + totalLTC + ", " + totalRTC);
-        //System.out.println("new track value: " + CaptureFlagMain.TRACK);
+        System.out.println("new track value: " + CaptureFlagMain.TRACK);
     }
     
     /**

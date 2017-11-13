@@ -75,7 +75,7 @@ public class CaptureFlagMain {
      */
     public static double TRACK = 16.1; //15.9
     
-    public static final double balanceConstant = 1.005; // constant to balance out wheel imbalance
+    public static final double balanceConstant = 1.007; // constant to balance out wheel imbalance
     /**
      * Slow motor speed in deg/sec
      */
