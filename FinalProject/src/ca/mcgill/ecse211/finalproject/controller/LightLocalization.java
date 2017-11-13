@@ -114,8 +114,10 @@ public class LightLocalization implements LightController {
     
     
     public boolean zipLineLocalization = false;
-    
-    public int lightThreshold = 38;
+
+    public boolean endZipLineLocalization = false;
+
+	public int lightThreshold = 38;
     
 
 	/**
@@ -272,6 +274,11 @@ public class LightLocalization implements LightController {
         	this.odometer.setX(positionX + (CaptureFlagMain.ziplineOther_green_x *30.48));
         	this.odometer.setY(positionY + (CaptureFlagMain.ziplineOther_green_y *30.48));
         	this.odometer.setTheta(newTheta);
+        }
+        else if(endZipLineLocalization) {
+	        this.odometer.setX(positionX + (CaptureFlagMain.ziplineOther_red_x * 30.48));
+	        this.odometer.setY(positionY + (CaptureFlagMain.ziplineOther_red_y * 30.48));
+	        this.odometer.setTheta(newTheta);
         }
        //Updates odometer to actual values depending on corner!
         else if(CaptureFlagMain.startingCorner == 0){
