@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.robotics.RegulatedMotor;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,7 @@ public class Navigation{
             motor.stop();
             motor.setAcceleration(3000);
         }
+        
     }
     /**
      * Method responsible to make robot travel to a certain point
@@ -49,6 +51,8 @@ public class Navigation{
         // this finds the change in x and y necessary to get to the target point
         double deltax = x * SIDE_SQUARE - odometer.getX();
         double deltay = y * SIDE_SQUARE - odometer.getY();
+        //System.out.println("deltax: " + deltax);
+        //System.out.println("deltay: " + deltay);
 
         // this finds the longs side which is the distance the robot must travel
         double h = Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2));
@@ -82,6 +86,8 @@ public class Navigation{
                 theta = Math.PI + Math.asin(Math.abs(deltax) / h);
             }
         }
+        
+        //System.out.println("theta: " +theta);
 
         // the robot will only turn if it is not facing the angle it must face to get to the point
         if (Math.toDegrees(odometer.getTheta()) != theta) {
@@ -95,9 +101,9 @@ public class Navigation{
         leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), true);
         rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), false);
 
-        leftMotor.stop(true);
-        rightMotor.stop(false);
-
+        /*leftMotor.stop(true);
+        rightMotor.stop(false);*/
+        
         isNavigating = false; 
     }
     
@@ -172,8 +178,8 @@ public class Navigation{
                         false);
             }
         }
-        leftMotor.stop(true);
-        rightMotor.stop(false);
+        //leftMotor.stop(true);
+        //rightMotor.stop(false);
     }
     
     /**
@@ -216,8 +222,8 @@ public class Navigation{
     	rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant)); 
         leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distance), true);
         rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distance), immediateReturn);
-        leftMotor.stop(true);
-        rightMotor.stop(false);
+        //leftMotor.stop(true);
+        //rightMotor.stop(false);
     }
     
     /**
@@ -234,11 +240,11 @@ public class Navigation{
     	else if(CaptureFlagMain.startingCorner == 3)
     		travelTo(0.50, 7.50);
     	// below, navigation to premount
-    	/*CaptureFlagMain.doCorrection = true; // start correction
+    	//CaptureFlagMain.doCorrection = true; // start correction
     	travelTo((odometer.getX()/30.48), (CaptureFlagMain.ziplineOther_green_y-0.500));
 		travelTo((CaptureFlagMain.ziplineOther_green_x - 0.500), (odometer.getY()/30.48));
 		Sound.beep();
 		travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
-		CaptureFlagMain.doCorrection = false; // end correction
-*/    }
+		//CaptureFlagMain.doCorrection = false; // end correction
+    }
 }

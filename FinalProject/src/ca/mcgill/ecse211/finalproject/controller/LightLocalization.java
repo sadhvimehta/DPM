@@ -146,13 +146,13 @@ public class LightLocalization implements LightController {
             goToEstimateOrigin();
     	}
 
-	    this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
+	    /*this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
 	    this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
     	while(!pastline()) {
 		    navigation.turnCCW(360);
 	    }
 	    this.leftMotor.stop(true);
-	    this.rightMotor.stop(true);
+	    this.rightMotor.stop(true);*/
 
         //2nd, turn around the origin and detect the lines
         checkLines();
@@ -167,14 +167,14 @@ public class LightLocalization implements LightController {
 
         //turn 45 degrees to face origin (0,0)
         this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
-        this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
+        this.rightMotor.setSpeed((int) (Navigation.ROTATE_SPEED * CaptureFlagMain.balanceConstant));
         this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 45), true);
         this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 45), false);
 
 
         //then go straight
         this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
-        this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
+        this.rightMotor.setSpeed((int) (Navigation.FORWARD_SPEED * CaptureFlagMain.balanceConstant));
         this.leftMotor.forward();
         this.rightMotor.forward();
 
@@ -191,7 +191,7 @@ public class LightLocalization implements LightController {
         }
         //go backwards so the front wheels are at the origin and not the sensor
         this.leftMotor.setSpeed(Navigation.FORWARD_SPEED);
-        this.rightMotor.setSpeed(Navigation.FORWARD_SPEED);
+        this.rightMotor.setSpeed((int) (Navigation.FORWARD_SPEED * CaptureFlagMain.balanceConstant));
         this.leftMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), true);
         this.rightMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, SENSOR_TO_WHEEL), false);
 
@@ -201,8 +201,9 @@ public class LightLocalization implements LightController {
      * Method responsible for robot to rotate and detect lines
      */
     private void checkLines() {
-        int lastLTC = leftMotor.getTachoCount();
-        int lastRTC = rightMotor.getTachoCount();
+        //int lastLTC = leftMotor.getTachoCount();
+        //int lastRTC = rightMotor.getTachoCount();
+    	
     	//it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
 
         //Set up variables
@@ -211,14 +212,14 @@ public class LightLocalization implements LightController {
 
         startTime = System.currentTimeMillis();
         this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
-        this.rightMotor.setSpeed(Navigation.ROTATE_SPEED);
+        this.rightMotor.setSpeed((int) (Navigation.ROTATE_SPEED * CaptureFlagMain.balanceConstant));
         this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 400), true);
         this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 400), true);
 
-        try {
+        /*try {
 	        Thread.sleep(1000);
         }
-        catch (Exception e ) {}
+        catch (Exception e ) {}*/
 
         //Runs until it has detected 4 lines
         while (lineCounter < 4) {
@@ -230,13 +231,13 @@ public class LightLocalization implements LightController {
             }
         }
 
-        int totalLTC = leftMotor.getTachoCount() - lastLTC;
-        int totalRTC = rightMotor.getTachoCount() - lastRTC;
+        /*int totalLTC = leftMotor.getTachoCount() - lastLTC;
+        int totalRTC = rightMotor.getTachoCount() - lastRTC;*/
 
 	    this.leftMotor.stop(true);
-	    this.rightMotor.stop(true);
+	    this.rightMotor.stop(false);
 
-        int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
+        //int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
 
         //CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
 
@@ -260,7 +261,7 @@ public class LightLocalization implements LightController {
         dT = Math.toRadians(270.00) + (thetaY / 2) - saveLineAngles[3]; //y-
 
         double newTheta = this.odometer.getTheta() + dT;
-        if(120.00 <= Math.toDegrees(newTheta) && Math.toDegrees(newTheta) <= 20.00){
+        if(120.00 <= Math.toDegrees(newTheta) && Math.toDegrees(newTheta) <= 220.00){
         	newTheta = newTheta + Math.PI;
         	if(newTheta >= (2*Math.PI))
         		newTheta = newTheta - 2*Math.PI;
