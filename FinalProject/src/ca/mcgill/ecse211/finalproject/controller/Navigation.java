@@ -239,12 +239,76 @@ public class Navigation{
     		travelTo(7.50, 7.50);
     	else if(CaptureFlagMain.startingCorner == 3)
     		travelTo(0.50, 7.50);
-    	// below, navigation to premount
+    	/*// below, navigation to premount
     	//CaptureFlagMain.doCorrection = true; // start correction
     	travelTo((odometer.getX()/30.48), (CaptureFlagMain.ziplineOther_green_y-0.500));
 		travelTo((CaptureFlagMain.ziplineOther_green_x - 0.500), (odometer.getY()/30.48));
 		Sound.beep();
 		travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
-		//CaptureFlagMain.doCorrection = false; // end correction
+		//CaptureFlagMain.doCorrection = false; // end correction*/
+	    double premountpointX;
+	    double premountpointY;
+
+	    boolean isVertical = false;
+	    boolean isHorizontal = false;
+	    boolean isDiagonal = false;
+
+    	if(CaptureFlagMain.ziplineOther_green_x == CaptureFlagMain.ziplineEndPoint_green_x) {
+    		premountpointX = CaptureFlagMain.ziplineOther_green_x;
+        	if (CaptureFlagMain.ziplineOther_green_y > CaptureFlagMain.ziplineEndPoint_green_y) {
+        		premountpointY = CaptureFlagMain.ziplineOther_green_y + 0.5;
+	        }
+	        else {
+        		premountpointY = CaptureFlagMain.ziplineOther_green_y - 0.5;
+	        }
+		    isVertical = true;
+        }
+        else if(CaptureFlagMain.ziplineOther_green_y == CaptureFlagMain.ziplineEndPoint_green_y) {
+    		premountpointY = CaptureFlagMain.ziplineOther_green_y;
+		    if (CaptureFlagMain.ziplineOther_green_x > CaptureFlagMain.ziplineEndPoint_green_x) {
+			    premountpointX = CaptureFlagMain.ziplineOther_green_x + 0.5;
+		    } else {
+			    premountpointX = CaptureFlagMain.ziplineOther_green_x - 0.5;
+		    }
+		    isHorizontal = true;
+	    }
+	    else {
+    		//case where the zipline is at an angle
+	        if(CaptureFlagMain.ziplineOther_green_x < CaptureFlagMain.ziplineEndPoint_green_x && CaptureFlagMain.ziplineOther_green_y < CaptureFlagMain.ziplineEndPoint_green_y) {
+	        	premountpointX = CaptureFlagMain.ziplineOther_green_x - 0.5;
+	        	premountpointY = CaptureFlagMain.ziplineOther_green_y - 0.5;
+	        }
+	        else if (CaptureFlagMain.ziplineOther_green_x > CaptureFlagMain.ziplineEndPoint_green_x && CaptureFlagMain.ziplineOther_green_y < CaptureFlagMain.ziplineEndPoint_green_y) {
+		        premountpointX = CaptureFlagMain.ziplineOther_green_x + 0.5;
+		        premountpointY = CaptureFlagMain.ziplineOther_green_y - 0.5;
+	        } else if (CaptureFlagMain.ziplineOther_green_x > CaptureFlagMain.ziplineEndPoint_green_x && CaptureFlagMain.ziplineOther_green_y > CaptureFlagMain.ziplineEndPoint_green_y) {
+		        premountpointX = CaptureFlagMain.ziplineOther_green_x + 0.5;
+		        premountpointY = CaptureFlagMain.ziplineOther_green_y + 0.5;
+	        }
+	        else {
+		        premountpointX = CaptureFlagMain.ziplineOther_green_x - 0.5;
+		        premountpointY = CaptureFlagMain.ziplineOther_green_y + 0.5;
+	        }
+	        isDiagonal = true;
+    	}
+
+	    if(odometer.getX() == premountpointX || odometer.getY() == premountpointY) {
+    		travelTo(premountpointX, premountpointY);
+	    }
+	    else if (isHorizontal) {
+    		travelTo(premountpointX, odometer.getY()/SIDE_SQUARE);
+    		travelTo(premountpointX, premountpointY);
+	    }
+	    else if (isVertical) {
+    		travelTo(odometer.getX()/SIDE_SQUARE, premountpointY);
+    		travelTo(premountpointX, premountpointY);
+	    }
+	    else if (isDiagonal) {
+    		travelTo(premountpointX, odometer.getY()/SIDE_SQUARE);
+    		travelTo(premountpointX, premountpointY);
+	    }
+
+	    travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
+
     }
 }
