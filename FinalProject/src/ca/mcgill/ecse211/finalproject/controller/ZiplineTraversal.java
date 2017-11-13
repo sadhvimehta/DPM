@@ -56,6 +56,7 @@ public class ZiplineTraversal implements UltrasonicController{
         lightLocalization.zipLineLocalization = true;
         navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
         lightLocalization.doLocalization();
+        lightLocalization.zipLineLocalization = false;
         
         // then go to face the mount
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y);
@@ -70,7 +71,15 @@ public class ZiplineTraversal implements UltrasonicController{
         
        // travel approximate length of zipline (negative b/c motor attached backwards)
         ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
-        navigation.advance((long) (ZIPLINE_LENGTH), false); // ends up on roughly on zipline red other point
+        navigation.travelTo(CaptureFlagMain.ziplineEndPoint_red_x, CaptureFlagMain.ziplineEndPoint_red_y);
+
+        lightLocalization.endZipLineLocalization = true;
+        navigation.turnTo(Math.toRadians(45));
+        lightLocalization.doLocalization();
+        lightLocalization.endZipLineLocalization = false;
+
+        navigation.travelTo(1,1);
+        navigation.travelTo(1,1);
     }
 
 	@Override
