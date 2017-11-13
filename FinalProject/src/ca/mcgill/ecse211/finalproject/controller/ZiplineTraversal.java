@@ -70,7 +70,7 @@ public class ZiplineTraversal implements UltrasonicController{
         
        // travel approximate length of zipline (negative b/c motor attached backwards)
         ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
-        navigation.advance((long) (ZIPLINE_LENGTH), false);
+        navigation.advance((long) (ZIPLINE_LENGTH), false); // ends up on roughly on zipline red other point
     }
 
 	@Override
