@@ -42,6 +42,11 @@ public class Controller implements UltrasonicController{
 	 * RiverTraversal class which helps the robot traverse the river
 	 */
 	private RiverTraversal riverTraversal;
+	
+	
+	
+	private BlockDetection blockDetection;
+	
 
 	/**
 	 * Constructor of the class Controller which uses the parameters to instantiate the classes which will be controlled
@@ -60,7 +65,6 @@ public class Controller implements UltrasonicController{
 
     	this.odometer = odometer;
 
-
         this.usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
 
         this.lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
@@ -69,6 +73,9 @@ public class Controller implements UltrasonicController{
         
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
+      //TODO: implement block detection
+        this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, csValue, csData);
+        
         //TODO: implement river traversal
 	    this.riverTraversal = new RiverTraversal(navigation, odometer, leftMotor, rightMotor);
 
@@ -87,15 +94,13 @@ public class Controller implements UltrasonicController{
         
         ziplineTraversal.doTraversal();
         
-        // go to flag zone
-        navigation.travelTo(CaptureFlagMain.UR_search_x, CaptureFlagMain.LL_search_y);
-        
         //navigation.advance((long)(5*30.48), false); //left wheel going faster
         
+        //find flag
+        blockDetection.findFlag();
         
         
         riverTraversal.doTraversal();
-        
         
         //then go back to origin
          navigation.returnToOrigin();

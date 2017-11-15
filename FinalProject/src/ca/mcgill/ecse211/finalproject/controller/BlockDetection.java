@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
+import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
@@ -14,7 +15,10 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class BlockDetection implements UltrasonicController, LightController{
-
+	/**
+	 * Navigation class which contains basic methods of moving our robot
+	 */
+	private Navigation navigation;
 	/**
 	 * Odometer of the robot
 	 */
@@ -43,11 +47,13 @@ public class BlockDetection implements UltrasonicController, LightController{
 	/**
 	 * Constructor of the class BlockDetection, which links the parameters to the class variables.
 	 */
-	public BlockDetection(Odometer odometer,
+	public BlockDetection(Navigation navigation,
+			              Odometer odometer,
 	                      EV3LargeRegulatedMotor leftMotor,
 	                      EV3LargeRegulatedMotor rightMotor,
 	                      SampleProvider csSensor,
 	                      float[] csData){
+		this.navigation = navigation;
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
@@ -59,8 +65,13 @@ public class BlockDetection implements UltrasonicController, LightController{
 	 * Main method of this class which will contain logic to go about finding the opponents flag. This also represents
 	 * one of the states that controller will be in along the competition.
 	 */
-	private void findFlag() {
-
+	public void findFlag() {
+		 // go to flag zone
+        navigation.travelTo(CaptureFlagMain.UR_search_x, CaptureFlagMain.LL_search_y);
+     
+        //then idk where to go from there
+        
+        
 	}
 	
 	/**
