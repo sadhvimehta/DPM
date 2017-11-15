@@ -88,9 +88,21 @@ public class Controller implements UltrasonicController{
         ziplineTraversal.doTraversal();
         
         // go to flag zone
-        navigation.travelTo(4, 7);
+        navigation.travelTo(CaptureFlagMain.UR_search_x, CaptureFlagMain.LL_search_y);
         
         //navigation.advance((long)(5*30.48), false); //left wheel going faster
+        
+        
+        
+        riverTraversal.doTraversal();
+        
+        
+        //then go back to origin
+         navigation.returnToOrigin();
+        
+     
+        
+        
     }
 
 	/**

@@ -311,4 +311,31 @@ public class Navigation{
 	    travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
 
     }
+    
+    
+    public void returnToOrigin(){
+    	
+    	 if(CaptureFlagMain.startingCorner == 0){
+    		 travelTo( 0 + SIDE_SQUARE /2 , 0+ SIDE_SQUARE/2);	
+         }
+         
+         else if(CaptureFlagMain.startingCorner == 1){
+        	 travelTo( 12 - SIDE_SQUARE /2 , 0 + SIDE_SQUARE/2);
+         	
+         }
+         else if(CaptureFlagMain.startingCorner == 2){
+        	 travelTo( 12 - SIDE_SQUARE /2 , 12 - SIDE_SQUARE/2);
+         }
+         else if(CaptureFlagMain.startingCorner == 3){
+         	  travelTo( 0 + SIDE_SQUARE /2 , 12 - SIDE_SQUARE/2);
+         }
+        	
+    	
+    }
+    
+    
+    
+    
+    
+    
 }
