@@ -70,7 +70,7 @@ public class Controller implements UltrasonicController{
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor, usValue, usData);
 
         //TODO: implement river traversal
-	    //this.riverTraversal = new RiverTraversal();
+	    this.riverTraversal = new RiverTraversal(navigation, odometer, leftMotor, rightMotor);
 
     }
 
