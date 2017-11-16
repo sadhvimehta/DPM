@@ -61,6 +61,9 @@ public class Odometer extends Thread{
 	  private Object lock; 
 
 	  // default constructor
+	  /**
+		 * Constructor of the class Odometer, which links the parameters to the class variables.
+		 */
 	  public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
 	    this.leftMotor = leftMotor;
 	    this.rightMotor = rightMotor;

@@ -75,6 +75,9 @@ public class CaptureFlagMain {
      */
     public static double TRACK = 15.90; //DO NOT CHANGE TRACK WHATSOEVER
     
+    /**
+     * Tested constant responsible for making right wheel go faster to balance drift in wheels.
+     */
     public static final double balanceConstant = 1.0072; // constant to balance out wheel imbalance
     /**
      * Slow motor speed in deg/sec
@@ -96,58 +99,105 @@ public class CaptureFlagMain {
      * Color of block to capture
      */
     public static int flagColor; // this is flag color
-
     /**
      * Lower left corner of starting zone (x)
      */
 	public static int LL_x;
-
+	/**
+     * Lower left corner of starting zone (y)
+     */
 	public static int LL_y;
-
+	/**
+     * Upper right corner of starting zone (x)
+     */
 	public static int UR_x;
-
+	/**
+     * Upper right corner of starting zone (x)
+     */
 	public static int UR_y;
-
+	/**
+     * Lower left corner of search zone (x)
+     */
 	public static int LL_search_x;
-
+	/**
+     * Lower left corner of search zone (y)
+     */
 	public static int LL_search_y;
-
+	/**
+     * Upper right corner of search zone (x)
+     */
 	public static int UR_search_x;
-
+	/**
+     * Upper right corner of search zone (y)
+     */
 	public static int UR_search_y;
-
+	/**
+     * End point of zipline (x)
+     */
 	public static int ziplineEndPoint_red_x;
-
+	/**
+     * End point of zipline (y)
+     */
 	public static int ziplineEndPoint_red_y;
-
+	/**
+     * Point to travel to after end point of zipline (x)
+     */
 	public static int ziplineOther_red_x;
-
+	/**
+     * Lower left corner of horizontal segment of shallow water (y)
+     */
 	public static int LL_horizontalShallow_y;
-
+	/**
+     * Lower left corner of horizontal segment of shallow water (x)
+     */
 	public static int LL_horizontalShallow_x;
-
+	/**
+     * Lower left corner of vertical segment of shallow water (y)
+     */
 	public static int LL_verticalShallow_y;
-
+	/**
+     * Point to travel to after end point of zipline (y)
+     */
 	public static int ziplineOther_red_y;
-
+	/**
+     * Upper right corner of horizontal segment of shallow water (x)
+     */
 	public static int UR_horizontalShallow_x;
-
+	/**
+     * Upper right corner of horizontal segment of shallow water (y)
+     */
 	public static int UR_horizontalShallow_y;
-
+	/**
+     * Lower left corner of vertical segment of shallow water (x)
+     */
 	public static int LL_verticalShallow_x;
-
+	/**
+     * Upper right corner of vertical segment of shallow water (x)
+     */
 	public static int UR_verticalShallow_x;
-
+	/**
+     * Upper right corner of vertical segment of shallow water (y)
+     */
 	public static int UR_verticalShallow_y;
-
+	/**
+     * Start point of zipline (x)
+     */
 	public static int ziplineEndPoint_green_x;
-
+	/**
+     * Start point of zipline (y)
+     */
 	public static int ziplineEndPoint_green_y;
-
+	/**
+	 * Premount point of zipline (x)
+	 */
 	public static int ziplineOther_green_x;
-
+	/**
+	 * Premount point of zipline (y)
+	 */
 	public static int ziplineOther_green_y;
-	
+	/**
+	 * Boolean indicating whether to perform odometry correction or not
+	 */
 	public static boolean doCorrection = false;
     
     public static void main(String[] args) {

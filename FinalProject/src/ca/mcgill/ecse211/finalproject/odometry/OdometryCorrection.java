@@ -8,7 +8,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 
 /**
- * Corrects robot position upon line detection
+ * Corrects robot position upon line detection except during light localization.
  *
  */
 public class OdometryCorrection extends Thread{
@@ -25,14 +25,35 @@ public class OdometryCorrection extends Thread{
 	 * Buffer that holds robot's position x,y,theta respectively
 	 */
 	private double robotPos[] = {0,0,0};
+	/**
+	 * LightLocalization which provides method to check if a line has been detected.
+	 */
 	private LightLocalization lightLocalization;
+	/**
+	 * Boolean indicating whether it is the first correction in x-direction after light localization has been performed.
+	 */
 	boolean firstXCorrection = true;
+	/**
+	 * Boolean indicating whether it is the first correction in y-direction after light localization has been performed.
+	 */
 	boolean firstYCorrection = true;
+	/**
+	 * Stores current corrected x-position of robot once it encounters a line.
+	 */
 	double currentXValue;
+	/**
+	 * Stores current corrected y-position of robot once it encounters a line.
+	 */
 	double currentYValue;
+	/**
+	 * Length of tile.
+	 */
 	double squareSize = 30.48;
 	
 	// constructor
+	/**
+	 * Constructor of the class Odometer, which links the parameters to the class variables.
+	*/
 	public OdometryCorrection(Odometer odometer, LightLocalization lightLocalization) {
     this.odometer = odometer;
     this.lightLocalization = lightLocalization;

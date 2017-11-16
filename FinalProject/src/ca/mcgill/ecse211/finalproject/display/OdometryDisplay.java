@@ -20,11 +20,14 @@ public class OdometryDisplay extends Thread{
 	   */
 	  private Odometer odometer;
 	  /**
-	   * LCD display
+	   * LCD display.
 	   */
 	  private TextLCD t;
 	  //private UltrasonicController cont;
-
+	  
+	  /**
+		 * Constructor for the class OdometryDisplay which links parameters to class variables.
+	     */
 	  public OdometryDisplay(Odometer odometer, TextLCD t) {
 	    this.odometer = odometer;
 	    this.t = t;

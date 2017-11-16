@@ -8,7 +8,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * This class contains all methods necessary to detect the enemy's flag based on light intensity readings. <br>
+ * Contains all methods necessary to detect the enemy's flag based on light intensity readings. <br>
  * It is is instantiated within the controller and its respective methods are called upon by the controller as well.
  *
  */
