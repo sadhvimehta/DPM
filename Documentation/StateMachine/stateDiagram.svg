@@ -13,9 +13,9 @@
 <path fill="none" stroke="black" d="M238.316,-8C238.316,-8 2556.32,-8 2556.32,-8 2562.32,-8 2568.32,-14 2568.32,-20 2568.32,-20 2568.32,-458 2568.32,-458 2568.32,-464 2562.32,-470 2556.32,-470 2556.32,-470 238.316,-470 238.316,-470 232.316,-470 226.316,-464 226.316,-458 226.316,-458 226.316,-20 226.316,-20 226.316,-14 232.316,-8 238.316,-8"/>
 <text text-anchor="middle" x="1397.32" y="-453.4" font-family="Times,serif" font-size="14.00">CourseTraversal</text>
 </g>
-<g id="clust2" class="cluster"><title>clusterCaptureTheFlag_smCourseTraversalOdometryDisplayThread_ControllerThread</title>
+<g id="clust2" class="cluster"><title>clusterCaptureTheFlag_smCourseTraversalOdometryDisplayThread_Controller</title>
 <path fill="none" stroke="black" d="M1187.32,-16C1187.32,-16 2548.32,-16 2548.32,-16 2554.32,-16 2560.32,-22 2560.32,-28 2560.32,-28 2560.32,-425.2 2560.32,-425.2 2560.32,-431.2 2554.32,-437.2 2548.32,-437.2 2548.32,-437.2 1187.32,-437.2 1187.32,-437.2 1181.32,-437.2 1175.32,-431.2 1175.32,-425.2 1175.32,-425.2 1175.32,-28 1175.32,-28 1175.32,-22 1181.32,-16 1187.32,-16"/>
-<text text-anchor="middle" x="1867.82" y="-420.6" font-family="Times,serif" font-size="14.00">ControllerThread</text>
+<text text-anchor="middle" x="1867.82" y="-420.6" font-family="Times,serif" font-size="14.00">Controller</text>
 </g>
 <!-- start_CaptureTheFlag_sm -->
 <g id="node1" class="node"><title>start_CaptureTheFlag_sm</title>
@@ -179,59 +179,59 @@
 </g>
 <text text-anchor="middle" x="667.05" y="-259.8" font-family="Times,serif" font-size="14.00">clock / setDis(odo.pos)</text>
 </g>
-<!-- start_CaptureTheFlag_ControllerThread -->
-<g id="node11" class="node"><title>start_CaptureTheFlag_ControllerThread</title>
-<g id="a_node11"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.ControllerThread.start">
+<!-- start_CaptureTheFlag_Controller -->
+<g id="node11" class="node"><title>start_CaptureTheFlag_Controller</title>
+<g id="a_node11"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.Controller.start">
 <ellipse fill="black" stroke="black" cx="1732.32" cy="-397.2" rx="7.2" ry="7.2"/>
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_UltrasonicLocalization -->
-<g id="node12" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_UltrasonicLocalization</title>
-<g id="a_node12"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.ControllerThread.UltrasonicLocalization&#13;Entry:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_UltrasonicLocalization -->
+<g id="node12" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_UltrasonicLocalization</title>
+<g id="a_node12"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.Controller.UltrasonicLocalization&#13;Entry:
  &#160;&#160;performUltrasonicLocalization();">
 <path fill="none" stroke="black" d="M1792.6,-326.4C1792.6,-326.4 1672.03,-326.4 1672.03,-326.4 1666.03,-326.4 1660.03,-320.4 1660.03,-314.4 1660.03,-314.4 1660.03,-302.4 1660.03,-302.4 1660.03,-296.4 1666.03,-290.4 1672.03,-290.4 1672.03,-290.4 1792.6,-290.4 1792.6,-290.4 1798.6,-290.4 1804.6,-296.4 1804.6,-302.4 1804.6,-302.4 1804.6,-314.4 1804.6,-314.4 1804.6,-320.4 1798.6,-326.4 1792.6,-326.4"/>
 <text text-anchor="middle" x="1732.32" y="-304.2" font-family="Times,serif" font-size="14.00">UltrasonicLocalization</text>
 </a>
 </g>
 </g>
-<!-- start_CaptureTheFlag_ControllerThread&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_UltrasonicLocalization -->
-<g id="edge11" class="edge"><title>start_CaptureTheFlag_ControllerThread&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_UltrasonicLocalization</title>
-<g id="a_edge11"><a xlink:title="start to OdometryDisplayThread.ControllerThread.UltrasonicLocalization">
+<!-- start_CaptureTheFlag_Controller&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_UltrasonicLocalization -->
+<g id="edge11" class="edge"><title>start_CaptureTheFlag_Controller&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_UltrasonicLocalization</title>
+<g id="a_edge11"><a xlink:title="start to OdometryDisplayThread.Controller.UltrasonicLocalization">
 <path fill="none" stroke="black" d="M1732.32,-389.958C1732.32,-378.923 1732.32,-355.362 1732.32,-336.556"/>
 <polygon fill="black" stroke="black" points="1735.82,-336.436 1732.32,-326.436 1728.82,-336.436 1735.82,-336.436"/>
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_LightLocalization -->
-<g id="node13" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_LightLocalization</title>
-<g id="a_node13"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.ControllerThread.LightLocalization&#13;Entry:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_LightLocalization -->
+<g id="node13" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_LightLocalization</title>
+<g id="a_node13"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.Controller.LightLocalization&#13;Entry:
  &#160;&#160;performUltrasonicLocalization();">
 <path fill="none" stroke="black" d="M1778.62,-237.6C1778.62,-237.6 1686.01,-237.6 1686.01,-237.6 1680.01,-237.6 1674.01,-231.6 1674.01,-225.6 1674.01,-225.6 1674.01,-213.6 1674.01,-213.6 1674.01,-207.6 1680.01,-201.6 1686.01,-201.6 1686.01,-201.6 1778.62,-201.6 1778.62,-201.6 1784.62,-201.6 1790.62,-207.6 1790.62,-213.6 1790.62,-213.6 1790.62,-225.6 1790.62,-225.6 1790.62,-231.6 1784.62,-237.6 1778.62,-237.6"/>
 <text text-anchor="middle" x="1732.32" y="-215.4" font-family="Times,serif" font-size="14.00">LightLocalization</text>
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_UltrasonicLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_LightLocalization -->
-<g id="edge12" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_UltrasonicLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_LightLocalization</title>
-<g id="a_edge12"><a xlink:title="From OdometryDisplayThread.ControllerThread.UltrasonicLocalization to OdometryDisplayThread.ControllerThread.LightLocalization on usLocalizationIsOver">
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_UltrasonicLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_LightLocalization -->
+<g id="edge12" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_UltrasonicLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_LightLocalization</title>
+<g id="a_edge12"><a xlink:title="From OdometryDisplayThread.Controller.UltrasonicLocalization to OdometryDisplayThread.Controller.LightLocalization on usLocalizationIsOver">
 <path fill="none" stroke="black" d="M1732.32,-290.251C1732.32,-278.125 1732.32,-261.619 1732.32,-247.719"/>
 <polygon fill="black" stroke="black" points="1735.82,-247.713 1732.32,-237.713 1728.82,-247.713 1735.82,-247.713"/>
 </a>
 </g>
 <text text-anchor="middle" x="1792.57" y="-259.8" font-family="Times,serif" font-size="14.00">usLocalizationIsOver</text>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating -->
-<g id="node14" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating</title>
-<g id="a_node14"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.ControllerThread.Navigating">
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating -->
+<g id="node14" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating</title>
+<g id="a_node14"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.Controller.Navigating">
 <path fill="none" stroke="black" d="M1759.52,-148.8C1759.52,-148.8 1705.11,-148.8 1705.11,-148.8 1699.11,-148.8 1693.11,-142.8 1693.11,-136.8 1693.11,-136.8 1693.11,-124.8 1693.11,-124.8 1693.11,-118.8 1699.11,-112.8 1705.11,-112.8 1705.11,-112.8 1759.52,-112.8 1759.52,-112.8 1765.52,-112.8 1771.52,-118.8 1771.52,-124.8 1771.52,-124.8 1771.52,-136.8 1771.52,-136.8 1771.52,-142.8 1765.52,-148.8 1759.52,-148.8"/>
 <text text-anchor="middle" x="1732.32" y="-126.6" font-family="Times,serif" font-size="14.00">Navigating</text>
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_LightLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating -->
-<g id="edge13" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_LightLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating</title>
-<g id="a_edge13"><a xlink:title="From OdometryDisplayThread.ControllerThread.LightLocalization to OdometryDisplayThread.ControllerThread.Navigating on llLocalizationIsOver&#13;Transition Action:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_LightLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating -->
+<g id="edge13" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_LightLocalization&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating</title>
+<g id="a_edge13"><a xlink:title="From OdometryDisplayThread.Controller.LightLocalization to OdometryDisplayThread.Controller.Navigating on llLocalizationIsOver&#13;Transition Action:
  &#160;&#160;&#160;&#160;navToZipline();">
 <path fill="none" stroke="black" d="M1732.32,-201.451C1732.32,-189.325 1732.32,-172.819 1732.32,-158.919"/>
 <polygon fill="black" stroke="black" points="1735.82,-158.913 1732.32,-148.913 1728.82,-158.913 1735.82,-158.913"/>
@@ -239,9 +239,9 @@
 </g>
 <text text-anchor="middle" x="1840.39" y="-171" font-family="Times,serif" font-size="14.00">llLocalizationIsOver / navToZipline();</text>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating -->
-<g id="edge14" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating</title>
-<g id="a_edge14"><a xlink:title="From OdometryDisplayThread.ControllerThread.Navigating to OdometryDisplayThread.ControllerThread.Navigating on lineIsDetected&#13;Transition Action:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating -->
+<g id="edge14" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating</title>
+<g id="a_edge14"><a xlink:title="From OdometryDisplayThread.Controller.Navigating to OdometryDisplayThread.Controller.Navigating on lineIsDetected&#13;Transition Action:
  &#160;&#160;&#160;&#160;odoCorrection()">
 <path fill="none" stroke="black" d="M1771.55,-138.965C1781.74,-138.463 1789.42,-135.741 1789.42,-130.8 1789.42,-127.712 1786.42,-125.49 1781.68,-124.136"/>
 <polygon fill="black" stroke="black" points="1781.95,-120.639 1771.55,-122.635 1780.93,-127.563 1781.95,-120.639"/>
@@ -249,35 +249,35 @@
 </g>
 <text text-anchor="middle" x="1880.38" y="-126.6" font-family="Times,serif" font-size="14.00">lineIsDetected / odoCorrection()</text>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_ZiplineTraversal -->
-<g id="node15" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_ZiplineTraversal</title>
-<g id="a_node15"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.ControllerThread.ZiplineTraversal&#13;Entry:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_ZiplineTraversal -->
+<g id="node15" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_ZiplineTraversal</title>
+<g id="a_node15"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.Controller.ZiplineTraversal&#13;Entry:
  &#160;&#160;doZiplineTraversal();">
 <path fill="none" stroke="black" d="M1346.11,-60C1346.11,-60 1260.52,-60 1260.52,-60 1254.52,-60 1248.52,-54 1248.52,-48 1248.52,-48 1248.52,-36 1248.52,-36 1248.52,-30 1254.52,-24 1260.52,-24 1260.52,-24 1346.11,-24 1346.11,-24 1352.11,-24 1358.11,-30 1358.11,-36 1358.11,-36 1358.11,-48 1358.11,-48 1358.11,-54 1352.11,-60 1346.11,-60"/>
 <text text-anchor="middle" x="1303.32" y="-37.8" font-family="Times,serif" font-size="14.00">ZiplineTraversal</text>
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_ZiplineTraversal -->
-<g id="edge17" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_ZiplineTraversal</title>
-<g id="a_edge17"><a xlink:title="From OdometryDisplayThread.ControllerThread.Navigating to OdometryDisplayThread.ControllerThread.ZiplineTraversal on arrival&#13;Guard: &#160;[atZipline == true]">
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_ZiplineTraversal -->
+<g id="edge17" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_ZiplineTraversal</title>
+<g id="a_edge17"><a xlink:title="From OdometryDisplayThread.Controller.Navigating to OdometryDisplayThread.Controller.ZiplineTraversal on arrival&#13;Guard: &#160;[atZipline == true]">
 <path fill="none" stroke="black" d="M1692.98,-130.213C1576.11,-131.03 1237.09,-130.295 1203.86,-94.8 1187.25,-77.0501 1210.51,-64.2909 1238.7,-55.8772"/>
 <polygon fill="black" stroke="black" points="1239.7,-59.2333 1248.4,-53.1895 1237.83,-52.4876 1239.7,-59.2333"/>
 </a>
 </g>
 <text text-anchor="middle" x="1276.54" y="-82.2" font-family="Times,serif" font-size="14.00">arrival [atZipline == true]</text>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_BlockDetection -->
-<g id="node16" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_BlockDetection</title>
-<g id="a_node16"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.ControllerThread.BlockDetection">
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_BlockDetection -->
+<g id="node16" class="node"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_BlockDetection</title>
+<g id="a_node16"><a xlink:title="Class CaptureTheFlag, SM sm, State OdometryDisplayThread.Controller.BlockDetection">
 <path fill="none" stroke="black" d="M2028.18,-60C2028.18,-60 1948.45,-60 1948.45,-60 1942.45,-60 1936.45,-54 1936.45,-48 1936.45,-48 1936.45,-36 1936.45,-36 1936.45,-30 1942.45,-24 1948.45,-24 1948.45,-24 2028.18,-24 2028.18,-24 2034.18,-24 2040.18,-30 2040.18,-36 2040.18,-36 2040.18,-48 2040.18,-48 2040.18,-54 2034.18,-60 2028.18,-60"/>
 <text text-anchor="middle" x="1988.32" y="-37.8" font-family="Times,serif" font-size="14.00">BlockDetection</text>
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_BlockDetection -->
-<g id="edge18" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_BlockDetection</title>
-<g id="a_edge18"><a xlink:title="From OdometryDisplayThread.ControllerThread.Navigating to OdometryDisplayThread.ControllerThread.BlockDetection on arrival&#13;Guard: &#160;[completedZipline == true &amp;&amp; findBlock == true &amp;&amp; completedRiver == false]">
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_BlockDetection -->
+<g id="edge18" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_BlockDetection</title>
+<g id="a_edge18"><a xlink:title="From OdometryDisplayThread.Controller.Navigating to OdometryDisplayThread.Controller.BlockDetection on arrival&#13;Guard: &#160;[completedZipline == true &amp;&amp; findBlock == true &amp;&amp; completedRiver == false]">
 <path fill="none" stroke="black" d="M1725.46,-112.408C1722.31,-101.271 1720.84,-87.2282 1728.91,-78 1754.02,-49.2801 1857.75,-43.1765 1926.19,-42.3774"/>
 <polygon fill="black" stroke="black" points="1926.47,-45.8754 1936.44,-42.294 1926.41,-38.8756 1926.47,-45.8754"/>
 </a>
@@ -292,18 +292,18 @@
 </a>
 </g>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_sm_End -->
-<g id="edge19" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating&#45;&gt;CaptureTheFlag_sm_End</title>
-<g id="a_edge19"><a xlink:title="From OdometryDisplayThread.ControllerThread.Navigating to End on arrival&#13;Guard: &#160;[completedRiver == true]">
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_sm_End -->
+<g id="edge19" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating&#45;&gt;CaptureTheFlag_sm_End</title>
+<g id="a_edge19"><a xlink:title="From OdometryDisplayThread.Controller.Navigating to End on arrival&#13;Guard: &#160;[completedRiver == true]">
 <path fill="none" stroke="black" d="M1771.58,-129.383C1923.16,-127.6 2465.41,-119.534 2538.32,-94.8 2555.9,-88.8339 2573.05,-77.303 2586.41,-66.6324"/>
 <polygon fill="black" stroke="black" points="2588.75,-69.2393 2594.2,-60.157 2584.27,-63.8548 2588.75,-69.2393"/>
 </a>
 </g>
 <text text-anchor="middle" x="2660.98" y="-82.2" font-family="Times,serif" font-size="14.00">arrival [completedRiver == true]</text>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_ZiplineTraversal&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating -->
-<g id="edge15" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_ZiplineTraversal&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating</title>
-<g id="a_edge15"><a xlink:title="From OdometryDisplayThread.ControllerThread.ZiplineTraversal to OdometryDisplayThread.ControllerThread.Navigating on completeZipline&#13;Guard: &#160;[completedZipline == true]&#13;Transition Action:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_ZiplineTraversal&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating -->
+<g id="edge15" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_ZiplineTraversal&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating</title>
+<g id="a_edge15"><a xlink:title="From OdometryDisplayThread.Controller.ZiplineTraversal to OdometryDisplayThread.Controller.Navigating on completeZipline&#13;Guard: &#160;[completedZipline == true]&#13;Transition Action:
  &#160;&#160;&#160;&#160;navToBlock();">
 <path fill="none" stroke="black" d="M1325.45,-60.187C1343.23,-73.6325 1367,-90.7144 1378.12,-94.8 1432.82,-114.898 1599.22,-124.381 1683.01,-127.98"/>
 <polygon fill="black" stroke="black" points="1682.91,-131.479 1693.04,-128.4 1683.2,-124.485 1682.91,-131.479"/>
@@ -311,9 +311,9 @@
 </g>
 <text text-anchor="middle" x="1548.91" y="-82.2" font-family="Times,serif" font-size="14.00">completeZipline [completedZipline == true] / navToBlock();</text>
 </g>
-<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_BlockDetection&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating -->
-<g id="edge16" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_BlockDetection&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadControllerThread_Navigating</title>
-<g id="a_edge16"><a xlink:title="From OdometryDisplayThread.ControllerThread.BlockDetection to OdometryDisplayThread.ControllerThread.Navigating on blockFound&#13;Guard: &#160;[isCorrectColor() == true]&#13;Transition Action:
+<!-- CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_BlockDetection&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating -->
+<g id="edge16" class="edge"><title>CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_BlockDetection&#45;&gt;CaptureTheFlag_smCourseTraversalOdometryDisplayThreadController_Navigating</title>
+<g id="a_edge16"><a xlink:title="From OdometryDisplayThread.Controller.BlockDetection to OdometryDisplayThread.Controller.Navigating on blockFound&#13;Guard: &#160;[isCorrectColor() == true]&#13;Transition Action:
  &#160;&#160;&#160;&#160;navToRiver();">
 <path fill="none" stroke="black" d="M2040.19,-43.1939C2101.84,-44.6563 2199.29,-51.2757 2222.32,-78 2227.19,-83.6568 2227.4,-89.3354 2222.32,-94.8 2192.73,-126.571 1900.26,-129.945 1781.77,-129.994"/>
 <polygon fill="black" stroke="black" points="1781.53,-126.494 1771.53,-129.991 1781.53,-133.494 1781.53,-126.494"/>
