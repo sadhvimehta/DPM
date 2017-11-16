@@ -8,48 +8,56 @@ import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
-/**
- * Controls sequence of events between block detection, navigation, obstacle avoidance, and zipline traversal.
- *
- * The class Controller is started in main. Controller takes care of localizing the robot, and deciding
- * and controlling the state of the robot to accomplish the tasks at hand to complete the challenge.
+/** *
+ * Controller takes care of all actions required to
+ * complete the course and the sequence of these actions. <br>
+ * This includes localizing the robot, 
+ * navigation of robot, zipline traversal, river traversal, and finally starting the block detection. <br>
+ * It is important to note that this class is not a thread as it simply controls the sequence of the robot's actions
+ * by calling the respective methods from the respective classes to finish the obstacle course. <br>
+ * To view the state machine diagram which describes how this class operates, please open the link below in a new tab and zoom into
+ * the controller class: <br>
+ * <a href="https://www.dropbox.com/s/s2f2d9qunt2eeli/stateDiagram.jpg?dl=0"> State Machine Diagram </a>
  *
  */
 public class Controller implements UltrasonicController{
 	/**
-	 * Navigation class which contains basic methods of moving our robot
+	 * Navigation which contains basic methods of moving our robot to input points and to travel in square-like fashion.
 	 */
 	private Navigation navigation;
+	/**
+	 * Odometer which calculates robot's position using odometry.
+	 */
 	
 	private Odometer odometer;
 	/**
-	 * OdometryCorrection class which corrects the odometer as the robot is running to make sure our odometer is correct
+	 * OdometryCorrection which corrects the odometer through line detection as the robot is moving to ensure  odometer is correct.
 	 */
 	private OdometryCorrection odometryCorrection;
 	/**
-	 * FallingEdgeUSLocalization class which localizes with an ultrasonic sensor
+	 * FallingEdgeUSLocalization which localizes with an ultrasonic sensor at the start of obstacle course.
 	 */
     private FallingEdgeUSLocalization usl;
 	/**
-	 * LightLocalization class which localizes with the light sensor
+	 * LightLocalization which localizes with the light sensor.
 	 */
     private LightLocalization lightLocalization;
 	/**
-	 * ZiplineTraversal class which helps the robot traverse the zipline
+	 * ZiplineTraversal which helps the robot traverse the zipline.
 	 */
 	private ZiplineTraversal ziplineTraversal;
 	/**
-	 * RiverTraversal class which helps the robot traverse the river
+	 * RiverTraversal which helps the robot traverse the river.
 	 */
 	private RiverTraversal riverTraversal;
-	
-	
-	
+	/**
+	 * BlockDetection which helps robot eliminate blocks that are not the enemy's flag and help detect enemy's flag.
+	 */
 	private BlockDetection blockDetection;
 	
 
 	/**
-	 * Constructor of the class Controller which uses the parameters to instantiate the classes which will be controlled
+	 * Constructor of the class Controller which uses the parameters to instantiate the classes which will be controlled.
 	 */
     public Controller(Odometer odometer,
                       SampleProvider usValue,
@@ -82,31 +90,28 @@ public class Controller implements UltrasonicController{
     }
 
 	/**
-	 * Method which dictates what the controller will do. This method also includes the state machine which helps
-	 * with the logic of what state the robot should be depending on factors.
+	 * Method which dictates in what order Controller should call the necessary methods
+	 * required for robot to complete the course. This method also includes the state machine linked above which helps
+	 * with the logic of what state the robot should be in depending on the surrounding factors and its progress in the 
+	 * completion of the course.
 	 */
 	public void startCourseTraversal() {
+		// perform ultrasonic falling edge localization
     	usl.doLocalization();
-    	
+    	// perform initial light localization
         lightLocalization.doLocalization();
-        
+        // begin odometry correction
         odometryCorrection.start();
-        
-        ziplineTraversal.doTraversal();
-        
-        //navigation.advance((long)(5*30.48), false); //left wheel going faster
-        
+        // travel to zipline and traverse it
+        ziplineTraversal.doTraversal();        
         //find flag
+        // TODO: complete findFlag method
         blockDetection.findFlag();
-        
-        
+        // traverse the river
+        // TODO: complete the doTraversal method
         riverTraversal.doTraversal();
-        
         //then go back to origin
-         navigation.returnToOrigin();
-        
-     
-        
+         navigation.returnToOrigin(); 
         
     }
 
@@ -122,7 +127,7 @@ public class Controller implements UltrasonicController{
 	}
 
 	/**
-	 * Retrieves distance read by ultrasonic sensor
+	 * Retrieves distance read by ultrasonic sensor.
 	 *
 	 * @return ultrasonic sensor reading
 	 */

@@ -24,8 +24,6 @@ public class Navigation{
     private EV3LargeRegulatedMotor leftMotor;
     private EV3LargeRegulatedMotor rightMotor;
     private Odometer odometer;
-    private boolean navWithLocalization = false;
-
     private ArrayList<Integer[]> map = new ArrayList<>();
 
     public Navigation(

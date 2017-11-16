@@ -10,15 +10,16 @@ import lejos.robotics.SampleProvider;
 /**
  * Performs falling edge localization.
  *
- * By spinning around, the robot is able to get the distances that surround it. with a certain threshold, the angles
- * alpha and beta are those points. If the robot is on the 45 degree line, then the orientation of the robot can be
+ * By spinning around, the robot is able to get the distances that surround it. <br>
+ * With a certain threshold, the angles alpha and beta are those points. <br>
+ * If the robot is on the 45 degree line, then the orientation of the robot can be
  * calculated and corrected to face the true 0 degree.
  *
  */
 public class FallingEdgeUSLocalization implements UltrasonicController{ 
 
 	/**
-	 * List of localization types
+	 * List of localization types.
 	 */
 	public enum LocalizationType { FALLING_EDGE, RISING_EDGE}
 	/**
@@ -26,53 +27,52 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	 */
 	public enum AngleType {ALPHA, BETA}
 	/**
-	 * Rotation speed while performing US localization
+	 * Rotation speed while performing US localization.
 	 */
 	public static int ROTATE_SPEED = 100;
 	/**
-	 * Degrees corresponding to a full circle
+	 * Degrees corresponding to a full circle.
 	 */
 	public static int FULL_CIRCLE = 360;
 	/**
-	 * Distance between robot and wall
+	 * Distance between robot and wall.
 	 */
 	private static final double DISTANCE_WALL = 30;
 	/**
-	 * Margin of error for US sensor
+	 * Margin of error for US sensor.
 	 */
 	private static final double NOISE_MARGIN = 3;
 	/**
-	 * Angle to be added for theta correction
+	 * Angle to be added for theta correction.
 	 */
 	private double deltaHeading;
-
 	/**
-	 * Odometer class which keeps track of where the robot is positioned based on wheel movement
+	 * Odometer class which keeps track of where the robot is positioned based on wheel movement.
 	 */
 	private Odometer odometer;
 	/**
-	 * Sample provider
+	 * Sample provider of the ultrasonic sensor used to fetch ultrasonic sensor's readings.
 	 */
 	private SampleProvider usSensor;
 	/**
-	 * Array containing data obtained from ultrasonic sensor
+	 * Array containing data obtained from ultrasonic sensor.
 	 */
 	private float[] usData;
 	/**
-	 * Variable which dictates which type of edge is used to localize
+	 * Variable which dictates which type of edge is used to localize.
 	 */
 	private LocalizationType locType;
 	/**
-	 * Navigation class which contains basic methods of moving our robot
+	 * Navigation which contains basic methods of moving our robot.
 	 */
 	private Navigation navigation;
 	/**
-	 * Left and right motor of the robot
+	 * Left and right motor of the robot.
 	 */
 	private EV3LargeRegulatedMotor leftMotor,rightMotor;
 
 	/**
-	 * Constructor for the class FallingEdgeUSLocalization which links parameters to class variables
+	 * Constructor for the class FallingEdgeUSLocalization which links parameters to class variables.
 	 */
 	public FallingEdgeUSLocalization(Odometer odo,
 	                                 SampleProvider usSensor,
@@ -91,7 +91,8 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	}
 
 	/**
-	 * Performs actual US localization
+	 * Performs actual US localization by telling robot to spin, detect the position of the walls relative to itself,
+	 * and calculate the positional offset.
 	 */
 	public void doLocalization() {
 		double angleA, angleB;
@@ -120,14 +121,13 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			
 			//set the theta to 0
 			odometer.setTheta(0);
-			Sound.beep();
 		
 	}
 
 	/**
-	 * Method to get falling edge angles
-	 * @param angleType angle one wishes to detect
-	 * @return angle when wall is detected in radians
+	 * Method to get falling edge angles.
+	 * @param angleType angle one wishes to detect.
+	 * @return angle when wall is detected in radians.
 	 */
 	private double getAngleFallingEdge(AngleType angleType) {
 
@@ -158,9 +158,9 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	
 	/**
 	 * Calculates deltaTheta
-	 * @param angleA back wall angle (alpha)
-	 * @param angleB front wall angle (beta)
-	 * @return heading to add to current theta
+	 * @param angleA back wall angle (alpha).
+	 * @param angleB front wall angle (beta).
+	 * @return heading to add to current theta.
 	 */
 	private double calculateHeading( double angleA, double angleB ) {
 		double deltaHeading = 0;
@@ -173,9 +173,9 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	}
 	
 	/**
-	 * Method to set speed of motors
-	 * @param lSpd left motor speed
-	 * @param rSpd right motor speed
+	 * Method to set speed of motors.
+	 * @param lSpd left motor speed.
+	 * @param rSpd right motor speed.
 	 */
 	 public void setSpeeds(int lSpd, int rSpd) {
 			this.leftMotor.setSpeed(lSpd);
@@ -191,7 +191,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		}
 	 
 	 /**
-	  * Method to stop motors synchronously
+	  * Method to stop motors synchronously.
 	  */
 	 public void stopMotor() {
 			this.leftMotor.stop(true);
@@ -202,7 +202,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	/**
 	 * Performs any processing of ultrasonic sensor data.
 	 *
-	 * @param usData ultrasonic sensor reading
+	 * @param usData ultrasonic sensor reading.
 	 */
 	@Override
 	public void processUSData(float usData) {
@@ -210,9 +210,9 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	}
 
 	/**
-	 * Retrieves distance read by ultrasonic sensor
+	 * Retrieves distance read by ultrasonic sensor.
 	 *
-	 * @return ultrasonic sensor reading
+	 * @return ultrasonic sensor reading.
 	 */
 	@Override
 	public float readUSData() {

@@ -8,39 +8,38 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * Detects block color using light sensor readings.
- *
- * In the competition, this class will take care of first finding blocks and secondly finding the right block which
- * represents the opponents flag.
+ * This class contains all methods necessary to detect the enemy's flag based on light intensity readings. <br>
+ * It is is instantiated within the controller and its respective methods are called upon by the controller as well.
  *
  */
 public class BlockDetection implements UltrasonicController, LightController{
 	/**
-	 * Navigation class which contains basic methods of moving our robot
+	 * Navigation which contains basic methods of moving our robot.
 	 */
 	private Navigation navigation;
 	/**
-	 * Odometer of the robot
+	 * Odometer which calculates robot's position using odometry.
+
 	 */
 	private Odometer odometer;
 	/**
-	 * Left motor of the robot
+	 * Left motor of the robot.
 	 */
 	private EV3LargeRegulatedMotor leftMotor;
 	/**
-	 * Right motor of the robot
+	 * Right motor of the robot.
 	 */
 	private EV3LargeRegulatedMotor rightMotor;
 	/**
-	 * Sample provider
+	 * Sample provider of the color sensor used to fetch light sensor's readings.
 	 */
 	private SampleProvider csSensor;
 	/**
-	 * Array containing data obtained from light sensor
+	 * Array containing data obtained from light sensor.
 	 */
     private float[] csData;
     /**
-     * Buffer that contains intensity readings from range of distances
+     * Buffer that contains light intensity readings from range of distances whichh will be used to identify enemy's flag.
      */
     private float[] intensityBuffer;
 
@@ -62,21 +61,21 @@ public class BlockDetection implements UltrasonicController, LightController{
 	}
 
 	/**
-	 * Main method of this class which will contain logic to go about finding the opponents flag. This also represents
-	 * one of the states that controller will be in along the competition.
+	 * Main method of this class which will contain logic to go about finding the opponents flag. 
+	 * It navigates robot to the flag zone and then instructs it to looks for blocks and identify enemy flag.
+	 * This method also represents one of the states that controller will be in along the competition.
 	 */
+	//TODO: complete this method
 	public void findFlag() {
 		 // go to flag zone
         navigation.travelTo(CaptureFlagMain.UR_search_x, CaptureFlagMain.LL_search_y);
-     
-        //then idk where to go from there
         
         
 	}
 	
 	/**
-	 * Determines color of detected block using intensityBuffer values. This will therefore help to determine if block
-	 * found is indeed the flag of the opposing team.
+	 * Determines color of detected block using intensityBuffer values. 
+	 * This method will therefore help to determine if block found is indeed the flag of the opposing team.
 	 * @return number representing color of detected block
 	 */
 	private int determineColor(){
@@ -84,8 +83,8 @@ public class BlockDetection implements UltrasonicController, LightController{
 	}
 	
 	/**
-	 * Provides the intensity of block from various distances to populate intensity buffer. This will help get an idea
-	 * of where the blocks possibly are.
+	 * Provides the intensity of block from various distances to populate intensity buffer. 
+	 * This method is called upon once a block has been encountered and values are needed to determine its color.
 	 */
 	private void populateIntensityBuffer(){
 		
