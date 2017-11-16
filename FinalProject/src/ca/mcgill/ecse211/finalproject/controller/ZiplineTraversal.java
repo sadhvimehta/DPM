@@ -10,42 +10,57 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
- * Responsible for handling traversal of zipline
+ * Responsible for handling traversal of zipline by arriving to premount point, localizing at premount point,
+ * mounting zipline, traversing it, and localize after dismount.
  */
-public class ZiplineTraversal implements UltrasonicController{
+public class ZiplineTraversal{
+	/**
+	 * left motor of robot.
+	 */
     private EV3LargeRegulatedMotor leftMotor;
+    /**
+     * right motor of robot.
+     */
     private EV3LargeRegulatedMotor rightMotor;
+    /**
+     * Odometer which is responsible for calculating robot's current position using odometry.
+     */
     private Odometer odometer;
+    /**
+     * LightLocalization which is responsible for mounting at premount point postdismount point.
+     */
     private LightLocalization lightLocalization;
+    /**
+     * zipline motor of robot.
+     */
     private EV3LargeRegulatedMotor ziplineMotor;
+    /**
+	 * Navigation which contains basic methods of moving our robot.
+	 */
     private Navigation navigation;
-    private SampleProvider usSensor;
-    private float[] usData;
-    private static final double DISTANCE_WALL = 20;
-    private static final double SIDE_SQUARE = 30.48;
+    /**
+     * length of zipline in cm.
+     */
     private double ZIPLINE_LENGTH = 123.4;
-    private double ZIPLINE_NOISE_LENGTH = -10.00; // used to adjust bottom motors due to inital delay during mount
-
+    /**
+	 * Constructor for the class ZiplineTraversal which links parameters to class variables.
+     */
     public ZiplineTraversal(Navigation navigation,
                             Odometer odometer,
                             LightLocalization lightLocalization,
                             EV3LargeRegulatedMotor leftMotor,
                             EV3LargeRegulatedMotor rightMotor,
-                            EV3LargeRegulatedMotor ziplineMotor,
-                            SampleProvider usSensor,
-                            float[] usData) {
+                            EV3LargeRegulatedMotor ziplineMotor) {
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.odometer = odometer;
         this.lightLocalization = lightLocalization;
         this.ziplineMotor = ziplineMotor;
         this.navigation = navigation;
-        this.usSensor = usSensor;
-        this.usData = usData;
     }
     
     /**
-     * Method responsible for going to zipline and performing zipline traversal
+     * Method responsible for going to zipline and performing zipline traversal.
      */
     public void doTraversal() {
 
@@ -80,16 +95,4 @@ public class ZiplineTraversal implements UltrasonicController{
         lightLocalization.endZipLineLocalization = false;
     }
 
-	@Override
-	public void processUSData(float usData) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public float readUSData() {
-		usSensor.fetchSample(usData, 0);
-        float distance = usData[0] * 100;
-        return distance > 100 ? 100 : distance;
-	}
 }

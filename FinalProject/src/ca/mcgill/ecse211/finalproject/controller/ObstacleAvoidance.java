@@ -3,10 +3,13 @@ package ca.mcgill.ecse211.finalproject.controller;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
 /**
- * Handles avoiding of obstacles
+ * Handles avoiding of obstacles such as blocks and possibly opponent robot.
  */
 public class ObstacleAvoidance implements UltrasonicController{
-
+	
+	/**
+	 * Constructor for the class ObstacleAvoidance which links parameters to class variables.
+     */
 	public ObstacleAvoidance() {}
 
 	/**
@@ -19,7 +22,7 @@ public class ObstacleAvoidance implements UltrasonicController{
 	/**
 	 * Performs any processing of ultrasonic sensor data.
 	 *
-	 * @param usData ultrasonic sensor reading
+	 * @param usData ultrasonic sensor reading.
 	 */
 	@Override
 	public void processUSData(float usData) {
@@ -28,9 +31,9 @@ public class ObstacleAvoidance implements UltrasonicController{
 	}
 
 	/**
-	 * Retrieves distance read by ultrasonic sensor
+	 * Retrieves distance read by ultrasonic sensor.
 	 *
-	 * @return ultrasonic sensor reading
+	 * @return ultrasonic sensor reading.
 	 */
 	@Override
 	public float readUSData() {

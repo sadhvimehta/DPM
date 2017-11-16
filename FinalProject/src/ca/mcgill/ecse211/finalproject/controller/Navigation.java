@@ -11,7 +11,8 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
 /**
- * Contains all methods responsible for moving robot by desired distances/ rotating by desired angles
+ * Contains all methods responsible for moving robot by desired distances, rotating by desired angles, 
+ * and traveling to desired points.
  *
  */
 public class Navigation{
@@ -26,6 +27,9 @@ public class Navigation{
     private Odometer odometer;
     private ArrayList<Integer[]> map = new ArrayList<>();
 
+    /**
+	 * Constructor for the class Navigation which links parameters to class variables.
+     */
     public Navigation(
             Odometer odometer,
             EV3LargeRegulatedMotor leftMotor,
@@ -41,17 +45,15 @@ public class Navigation{
         
     }
     /**
-     * Method responsible to make robot travel to a certain point
-     * @param x x-coordinate to travel to
-     * @param y y-coordinate to travel to
+     * Method responsible to make robot travel to a certain point.
+     * @param x x-coordinate to travel to.
+     * @param y y-coordinate to travel to.
      */
     public void travelTo(double x, double y) {
         isNavigating = true;
         // this finds the change in x and y necessary to get to the target point
         double deltax = x * SIDE_SQUARE - odometer.getX();
         double deltay = y * SIDE_SQUARE - odometer.getY();
-        //System.out.println("deltax: " + deltax);
-        //System.out.println("deltay: " + deltay);
 
         // this finds the longs side which is the distance the robot must travel
         double h = Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2));
@@ -86,14 +88,13 @@ public class Navigation{
             }
         }
         
-        //System.out.println("theta: " +theta);
 
         // the robot will only turn if it is not facing the angle it must face to get to the point
         if (Math.toDegrees(odometer.getTheta()) != theta) {
             turnTo(theta);
         }
 
-        // the robot then rolls foward to get to the point
+        // the robot then rolls forward to get to the point
         leftMotor.setSpeed(FORWARD_SPEED);
 
         rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
@@ -106,29 +107,29 @@ public class Navigation{
         isNavigating = false; 
     }
     /**
-     * Method that converts distance to travel to required wheel rotations
-     * @param radius wheel radius
-     * @param distance distance to travel
-     * @return wheel rotations in degrees
+     * Method that converts distance to travel to required wheel rotations.
+     * @param radius wheel radius.
+     * @param distance distance to travel.
+     * @return wheel rotations in degrees.
      */
     public static int convertDistance(double radius, double distance) {
         return (int) ((180.0 * distance) / (Math.PI * radius));
     }
     
     /**
-     * Method that converts angle to rotate by to required wheel rotations
-     * @param radius wheel radius
-     * @param width distance between the wheels
-     * @param angle angle to rotate by in degrees
-     * @return wheel rotations in degrees
+     * Method that converts angle to rotate by to required wheel rotations.
+     * @param radius wheel radius.
+     * @param width distance between the wheels.
+     * @param angle angle to rotate by in degrees.
+     * @return wheel rotations in degrees.
      */
     public static int convertAngle(double radius, double width, double angle) {
         return convertDistance(radius, Math.PI * width * angle / 360.0);
     }
     
     /**
-     * Method responsible to rotate robot by minimal angle
-     * @param theta angle to rotate by in radians
+     * Method responsible to rotate robot by minimal angle to face a certain orientation.
+     * @param theta angle to rotate by in radians.
      */
     public void turnTo(double theta) {
         // the robot checks the angle it must travel to
@@ -181,16 +182,16 @@ public class Navigation{
     }
     
     /**
-     * Method that determines if robot is still navigating
-     * @return 
+     * Method that determines if robot is still navigating.
+     * @return isNavigating boolean that is either true or false.
      */
     public boolean isNavigating() {
         return isNavigating;
     }
     
     /**
-     * Method that rotates robot clockwise
-     * @param degree angle to rotate by
+     * Method that rotates robot clockwise by certain degrees.
+     * @param degree angle to rotate by.
      */
     public void turnCW(long degree) {
         leftMotor.rotate(
@@ -200,8 +201,8 @@ public class Navigation{
     }
     
     /**
-     * Method that rotates robot counterclockwise
-     * @param degree angle to rotate by
+     * Method that rotates robot counterclockwise by certain degrees.
+     * @param degree angle to rotate by.
      */
     public void turnCCW(long degree) {
         leftMotor.rotate(
@@ -211,9 +212,9 @@ public class Navigation{
     }
     
     /**
-     * Method that makes robot move by desired distance
-     * @param distance distance to move by
-     * @param immediateReturn boolean that determines synchronization of motors
+     * Method that makes robot move by desired distance.
+     * @param distance distance to move by.
+     * @param immediateReturn boolean that determines synchronization of motors.
      */
     public void advance(long distance, boolean immediateReturn) {
     	leftMotor.setSpeed(FORWARD_SPEED);
@@ -225,7 +226,8 @@ public class Navigation{
     }
     
     /**
-     * Method responsible for making robot move to a premount point in right angles (imitates square driver)
+     * Method responsible for making robot move to a premount point in right angles (imitates square driver). <br>
+     * It also handles whether to travel in x-direction or y-direction first to ensure no collision with zipline.
      */
     public void travelToPremount(){
     	// setting up for odometry correction (go to middle of first square)
@@ -237,13 +239,8 @@ public class Navigation{
     		travelTo(7.50, 7.50);
     	else if(CaptureFlagMain.startingCorner == 3)
     		travelTo(0.50, 7.50);
-    	/*// below, navigation to premount
-    	//CaptureFlagMain.doCorrection = true; // start correction
-    	travelTo((odometer.getX()/30.48), (CaptureFlagMain.ziplineOther_green_y-0.500));
-		travelTo((CaptureFlagMain.ziplineOther_green_x - 0.500), (odometer.getY()/30.48));
-		Sound.beep();
-		travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
-		//CaptureFlagMain.doCorrection = false; // end correction*/
+    	
+    	// below, navigation to premount
 	    double premountpointX;
 	    double premountpointY;
 
@@ -310,7 +307,9 @@ public class Navigation{
 
     }
     
-    
+    /**
+     * Method responsible to return robot to its starting corner after it has located enemy's flag.
+     */
     public void returnToOrigin(){
     	
     	 if(CaptureFlagMain.startingCorner == 0){

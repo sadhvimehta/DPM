@@ -20,7 +20,7 @@ import lejos.robotics.SampleProvider;
  * <a href="https://www.dropbox.com/s/s2f2d9qunt2eeli/stateDiagram.jpg?dl=0"> State Machine Diagram </a>
  *
  */
-public class Controller implements UltrasonicController{
+public class Controller{
 	/**
 	 * Navigation which contains basic methods of moving our robot to input points and to travel in square-like fashion.
 	 */
@@ -79,7 +79,7 @@ public class Controller implements UltrasonicController{
 
         this.odometryCorrection = new OdometryCorrection(odometer, lightLocalization);
         
-        this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor, usValue, usData);
+        this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor);
 
       //TODO: implement block detection
         this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, csValue, csData);
@@ -114,27 +114,5 @@ public class Controller implements UltrasonicController{
          navigation.returnToOrigin(); 
         
     }
-
-	/**
-	 * Performs any processing of ultrasonic sensor data.
-	 *
-	 * @param usData ultrasonic sensor reading
-	 */
-	@Override
-	public void processUSData(float usData) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Retrieves distance read by ultrasonic sensor.
-	 *
-	 * @return ultrasonic sensor reading
-	 */
-	@Override
-	public float readUSData() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 }
