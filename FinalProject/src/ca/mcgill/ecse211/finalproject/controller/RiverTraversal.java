@@ -6,6 +6,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
  * Responsible for finding a path through shallow water and actual traversal of river using shallow water crossing.
+ * This class mainly contains the doTrversal method which takes care of this river traversal to go to the green side.
  *
  */
 public class RiverTraversal {

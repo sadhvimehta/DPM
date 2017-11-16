@@ -21,7 +21,9 @@ import lejos.robotics.SampleProvider;
 
 
 /**
- * Main class responsible for declaring and initializing all other classes.
+ * Main class responsible for declaring and initializing all other classes. As we wanted a certain level of abstraction,
+ * we made a controller class that would contain all the logic, while main would simply call them and start the
+ * necessary threads.
  *
  */
 public class CaptureFlagMain {

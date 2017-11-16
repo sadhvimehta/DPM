@@ -11,8 +11,12 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
 /**
- * Contains all methods responsible for moving robot by desired distances, rotating by desired angles, 
- * and traveling to desired points.
+ * Class responsible for the moving of the robot throughout the competition. This means that it contains all methods
+ * responsible for moving robot by desired distances, rotating by desired angles, and traveling to desired points.
+ * The travelTo and turnTo go hand in hand as we need the robot to face the right way to go to the right location.
+ * The convert methods convert distances and angles with which the lejos motor methods can work with. Other important
+ * methods, travelToPremount and returnToOrigin, are more situational methods that are used for a specific part of the
+ * competition.
  *
  */
 public class Navigation{

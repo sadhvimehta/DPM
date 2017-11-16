@@ -3,7 +3,8 @@ package ca.mcgill.ecse211.finalproject.controller;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
 /**
- * Handles avoiding of obstacles such as blocks and possibly opponent robot.
+ * Handles avoiding of obstacles such as blocks and possibly opponent robot. This is important as if the robot would
+ * to get stuck on an object, the odometer would go out of sync and the robot would be completely lost.
  */
 public class ObstacleAvoidance implements UltrasonicController{
 	

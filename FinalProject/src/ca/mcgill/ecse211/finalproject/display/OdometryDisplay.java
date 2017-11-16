@@ -5,8 +5,8 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.lcd.TextLCD;
 
 /**
- * Displays robot X, Y, and Theta positional parameters on LCD.
- *
+ * Displays robot X, Y, and Theta positional parameters on LCD. This class was made a thread as we did not want it
+ * to momentarly stop or have to call a method constantly in other classes.
  *
  */
 public class OdometryDisplay extends Thread{

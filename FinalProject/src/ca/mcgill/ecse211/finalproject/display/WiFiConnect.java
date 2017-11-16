@@ -6,7 +6,8 @@ import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import lejos.hardware.Button;
 
 /**
- * Uses WifiConnection to communicate with server and receive map data.
+ * Uses WifiConnection to communicate with server and receive map data. This class allows the robot to get an idea
+ * of the map that the competition will take place in.
  */
 public class WiFiConnect {
 
