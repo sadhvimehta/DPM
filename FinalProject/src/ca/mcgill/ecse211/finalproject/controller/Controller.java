@@ -17,7 +17,7 @@ import lejos.robotics.SampleProvider;
  * by calling the respective methods from the respective classes to finish the obstacle course. <br>
  * To view the state machine diagram which describes how this class operates, please open the link below in a new tab and zoom into
  * the controller class: <br>
- * <a href="https://www.dropbox.com/s/s2f2d9qunt2eeli/stateDiagram.jpg?dl=0"> State Machine Diagram </a>
+ * <a href="https://www.dropbox.com/s/8m3zkmdv4t1gw5t/stateDiagram.jpg?dl=0"> State Machine Diagram </a>
  *
  */
 public class Controller{
