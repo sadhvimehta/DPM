@@ -48,17 +48,17 @@ public class CaptureFlagMain {
     /**
      * Left color sensors port.
      */
-    public static final Port csPortLeft = LocalEV3.get().getPort("S2");
+    public static final Port csPortLeft = LocalEV3.get().getPort("S3");
 
 	/**
-	 * Left color sensors port.
+	 * Right color sensors port.
 	 */
-	public static final Port csPortRight = LocalEV3.get().getPort("S3");
+	public static final Port csPortRight = LocalEV3.get().getPort("S2");
     
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.18";
+    private static final String serverIP = "192.168.2.5";
     /**
      * Team number
      */

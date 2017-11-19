@@ -36,9 +36,15 @@ public class TwoLightLocalization{
 	private double tandssd;
 
 	private Navigation navigation;
+	
+	private EV3LargeRegulatedMotor leftMotor;
+    private EV3LargeRegulatedMotor rightMotor;
+    private final int ROTATE_SPEED = 150;
 
 
-	public TwoLightLocalization(Odometer odometer, SampleProvider colorSensorL, SampleProvider colorSensorR, float[] colorDataL, float[] colorDataR, Navigation navigation) {
+	public TwoLightLocalization(Odometer odometer, SampleProvider colorSensorL, SampleProvider colorSensorR,
+			float[] colorDataL, float[] colorDataR, Navigation navigation, EV3LargeRegulatedMotor leftMotor,
+			EV3LargeRegulatedMotor rightMotor) {
 
 		this.odometer = odometer; // instantiates the odometer
 
@@ -46,12 +52,74 @@ public class TwoLightLocalization{
 		this.colorSensorR = colorSensorR;
 		this.colorDataL = colorDataL;
 		this.colorDataR = colorDataR;
+		this.leftMotor = leftMotor;
+		this.rightMotor = rightMotor;
 
 		Sound.setVolume(30); // allows us to hear the beep for when a line has been crossed
 
 		this.navigation = navigation;
 	}
 
+	// performs initial light localization after ultrasonic to get x,y,theta offset
+	public void doTwoLightLocalization(){
+		
+		float[] lastBrightness = {0, 0};
+		float[] currentBrightness = {0,0};
+		float[] dbdt = {0, 0}; // the instantaneous differentiation of the brightness d/dt(brightness)
+		boolean passLeftLine = false;
+		boolean passRightLine = false;
+		
+		lastNValueLAdd(dbdt[0]); // adds the derivative to a filter (explained lower down) for the first pass
+		lastNValueRAdd(dbdt[1]);
+		
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+		leftMotor.forward();
+		rightMotor.forward();
+		leftPastline();
+		rightPastline();
+
+		while(leftHasPastLine == false && rightHasPastLine == false){
+			passLeftLine = leftPastline(); 
+			passRightLine = rightPastline(); 
+			currentBrightness = getFilteredData();
+			System.out.println("left " + currentBrightness[0]);
+			System.out.println("right " + currentBrightness[1]);
+			for (int i = 0; i < 2; i++) {
+				dbdt[i] = currentBrightness[i] - lastBrightness[i]; // get the current brightness and sets the derivative
+			}
+			lastNValueLAdd(dbdt[0]); // adds the derivative to a filter (explained lower down)
+			lastNValueRAdd(dbdt[1]);
+			lastBrightness = currentBrightness;
+		}
+		if(leftHasPastLine){
+			System.out.println("LEFT STOPPED");
+			leftMotor.stop(false);
+			rightMotor.stop(false);
+			rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+			rightMotor.rotate(Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, 5.00));
+			rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+			while(rightPastline() == false){
+				rightMotor.backward();
+			}
+			rightMotor.stop(false);
+		}
+		
+		if(rightHasPastLine){
+			System.out.println("RIGHT STOPPED");
+			rightMotor.stop(false);
+			leftMotor.stop(false);
+			leftMotor.setSpeed(ROTATE_SPEED);
+			leftMotor.rotate(Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, 5.00));
+			leftMotor.setSpeed(ROTATE_SPEED);
+			while(leftPastline() == false){
+				leftMotor.backward();
+			}
+			leftMotor.stop(false);
+		}
+		
+	
+	}
 	public float[] getFilteredData() {
 		correctionStart = System.currentTimeMillis();
 
@@ -84,7 +152,7 @@ public class TwoLightLocalization{
 		return colors;
 	}
 
-	public void leftPastline() { // the idea of this filter is to only look at an N number of previous values
+	public boolean leftPastline() { // the idea of this filter is to only look at an N number of previous values
 		biggestL = new float[]{-200, -1000}; // since crossing a line causes a drop and a rise in the derivative, the filter
 		smallestL = new float[]{200, 1000}; // only considers a line crossed if the biggest value is higher than some threshold
 		for (int i = 0; i < lastNValueL.size(); i++) {
@@ -103,10 +171,13 @@ public class TwoLightLocalization{
 			lastNValueL.clear();
 			leftHasPastLine = true;
 			lastLeftLine = new float[]{smallestL[1]};
+			return true;
 		}
+		else
+			return false;
 	}
 
-	public void rightPastline() { // the idea of this filter is to only look at an N number of previous values
+	public boolean rightPastline() { // the idea of this filter is to only look at an N number of previous values
 		biggestR = new float[]{-200, -1000}; // since crossing a line causes a drop and a rise in the derivative, the filter
 		smallestR = new float[]{200, 1000}; // only considers a line crossed if the biggest value is higher than some threshold
 		for (int i = 0; i < lastNValueR.size(); i++) {
@@ -125,13 +196,16 @@ public class TwoLightLocalization{
 			lastNValueR.clear();
 			rightHasPastLine = true;
 			lastRightLine = new float[]{smallestR[1]};
+			return true;
 		}
+		else
+			return false;
 	}
 
 	//left
 	public void lastNValueLAdd(float brightness) {
 		Float[] entry = {brightness, (float) System.currentTimeMillis() - startTime};
-		// the array doesnt take chucks of the values and risk to miss a big difference.
+		// the array doesnt take chunks of the values and risk to miss a big difference.
 		// Instead we slide along
 		if (lastNValueL.size() > 50) {
 			// the oldest value is removed to make space
@@ -234,10 +308,6 @@ public class TwoLightLocalization{
 		}
 
 		return new double[]{x, y};
-	}
-
-	public void doLocalization() {
-
 	}
 
 }

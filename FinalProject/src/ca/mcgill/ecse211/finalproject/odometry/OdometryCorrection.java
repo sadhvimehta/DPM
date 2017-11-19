@@ -170,7 +170,7 @@ public class OdometryCorrection extends Thread{
 				dbdt[i] = presentBrightness[i] - lastBrightness[i]; // get the current brightness and sets the derivative
 			}
 
-			lastBrightness = presentBrightness; // update the last brightness
+			lastBrightness = presentBrightness; // update the last brightness 
 
 			// TODO Place correction implementation here
 
@@ -201,8 +201,8 @@ public class OdometryCorrection extends Thread{
                 }
             }*/
 
-			twoLightLocalization.leftPastline();
-			twoLightLocalization.rightPastline();
+			leftHasPastLine = twoLightLocalization.leftPastline();
+			rightHasPastLine = twoLightLocalization.rightPastline();
 
 			if (leftHasPastLine && rightHasPastLine) {
 				if (false/*isCloseXYAxis()*/) {
@@ -224,10 +224,12 @@ public class OdometryCorrection extends Thread{
 					navigation.travelTo(0, 0);
 				}
 				else if (twoLightLocalization.isCloseXAxis()) {
-					//update x
+					// update x
+					odometer.setX(twoLightLocalization.closestX());
 				}
 				else if (twoLightLocalization.isCloseYAxis()) {
 					//update y
+					odometer.setY(twoLightLocalization.closestY());
 				}
 			}
 

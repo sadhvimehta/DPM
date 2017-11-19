@@ -79,7 +79,7 @@ public class Controller{
         this.usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
 
         //this.lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
-	    this.twoLightLocalization = new TwoLightLocalization(odometer, csValueL, csValueR, csDataL, csDataR, navigation);
+	    this.twoLightLocalization = new TwoLightLocalization(odometer, csValueL, csValueR, csDataL, csDataR, navigation, leftMotor, rightMotor);
 
         this.odometryCorrection = new OdometryCorrection(odometer, lightLocalization, twoLightLocalization);
         
@@ -101,21 +101,21 @@ public class Controller{
 	 */
 	public void startCourseTraversal() {
 		// perform ultrasonic falling edge localization
-    	usl.doLocalization();
+    	//usl.doLocalization();
     	// perform initial light localization
-        //lightLocalization.doLocalization();
+        twoLightLocalization.doTwoLightLocalization();
         // begin odometry correction
-        odometryCorrection.start();
+        //odometryCorrection.start();
         // travel to zipline and traverse it
-        ziplineTraversal.doTraversal();        
+        //ziplineTraversal.doTraversal();        
         //find flag
         // TODO: complete findFlag method
         //blockDetection.findFlag();
         // traverse the river
         // TODO: complete the doTraversal method
-        riverTraversal.doTraversal();
+        //riverTraversal.doTraversal();
         //then go back to origin
-         navigation.returnToOrigin(); 
+         //navigation.returnToOrigin(); 
         
     }
 
