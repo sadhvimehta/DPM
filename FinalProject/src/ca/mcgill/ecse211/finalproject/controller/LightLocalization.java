@@ -213,8 +213,8 @@ public class LightLocalization implements LightController {
      * Method responsible for robot to rotate and detect lines to be able to calcualte positional offset.
      */
     private void checkLines() {
-        int lastLTC = leftMotor.getTachoCount();
-        int lastRTC = rightMotor.getTachoCount();
+        //int lastLTC = leftMotor.getTachoCount();
+        //int lastRTC = rightMotor.getTachoCount();
     	
     	//it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
 
@@ -243,19 +243,12 @@ public class LightLocalization implements LightController {
             }
         }
 
-        int totalLTC = leftMotor.getTachoCount() - lastLTC;
-        int totalRTC = rightMotor.getTachoCount() - lastRTC;
-
+        //int totalLTC = leftMotor.getTachoCount() - lastLTC;
+        //int totalRTC = rightMotor.getTachoCount() - lastRTC;
 	    /*this.leftMotor.stop(true);
 	    this.rightMotor.stop(false);*/
-
-        int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
-
+        //int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
         //CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
-
-        //System.out.println("last tacho counts: " + lastLTC + ", " + lastRTC);
-        //System.out.println("total tacho counts: " + totalLTC + ", " + totalRTC);
-        //System.out.println("new track value: " + CaptureFlagMain.TRACK);
     }
     
     /**
