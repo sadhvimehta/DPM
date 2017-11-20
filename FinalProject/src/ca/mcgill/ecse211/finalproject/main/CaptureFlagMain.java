@@ -91,7 +91,7 @@ public class CaptureFlagMain {
     /**
      * Starting corner
      */
-    public static int startingCorner = 0; // this is the corner number
+    public static int startingCorner = -1; // this is the corner number
     /**
      * Team color
      */
@@ -224,20 +224,17 @@ public class CaptureFlagMain {
         Controller controller = new Controller(odometer, usValue, usData, csValueL, csDataL, csValueR, csDataR, leftMotor, rightMotor, ziplineMotor);
 
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
-        do {
-           
-        	wifiConnection.startWifiInitialization();
 
-            buttonChoice = Button.waitForAnyPress();
-        } while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT && buttonChoice != Button.ID_ENTER);
+	    /*do {
 
-        if (buttonChoice == Button.ID_ENTER) {
+		    wifiConnection.startWifiInitialization();
 
-            odometer.start();
-            odometryDisplay.start();
-            controller.startCourseTraversal();
+	    } while (startingCorner != -1);*/
 
-        }
+	    odometer.start();
+	    odometryDisplay.start();
+	    controller.startCourseTraversal();
+
 
         while (true) {
             if (Button.waitForAnyPress() == Button.ID_ENTER) {

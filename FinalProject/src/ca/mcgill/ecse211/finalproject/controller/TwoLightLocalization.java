@@ -12,7 +12,7 @@ import lejos.robotics.SampleProvider;
 
 import java.util.ArrayList;
 
-public class TwoLightLocalization{
+public class TwoLightLocalization {
 
 	private static final long CORRECTION_PERIOD = 10; // all the variables used for the correction
 	private static final long LOOP_TIME = 10;
@@ -32,19 +32,25 @@ public class TwoLightLocalization{
 	private float radOff;
 	private double[] XYOff;
 
+	private float[] lastBrightness = {0, 0};
+	private float[] currentBrightness = {0, 0};
+	private float[] dbdt = {0, 0}; // the instantaneous differentiation of the brightness d/dt(brightness)
+
 	private float ds;
 	private double tandssd;
 
 	private Navigation navigation;
-	
+
 	private EV3LargeRegulatedMotor leftMotor;
-    private EV3LargeRegulatedMotor rightMotor;
-    private final int ROTATE_SPEED = 150;
+	private EV3LargeRegulatedMotor rightMotor;
+	private final int ROTATE_SPEED = 150;
+
+	private enum XY {X, Y}
 
 
 	public TwoLightLocalization(Odometer odometer, SampleProvider colorSensorL, SampleProvider colorSensorR,
-			float[] colorDataL, float[] colorDataR, Navigation navigation, EV3LargeRegulatedMotor leftMotor,
-			EV3LargeRegulatedMotor rightMotor) {
+	                            float[] colorDataL, float[] colorDataR, Navigation navigation, EV3LargeRegulatedMotor leftMotor,
+	                            EV3LargeRegulatedMotor rightMotor) {
 
 		this.odometer = odometer; // instantiates the odometer
 
@@ -61,67 +67,64 @@ public class TwoLightLocalization{
 	}
 
 	// performs initial light localization after ultrasonic to get x,y,theta offset
-	public void doTwoLightLocalization(){
-		
-		float[] lastBrightness = {0, 0};
-		float[] currentBrightness = {0,0};
-		float[] dbdt = {0, 0}; // the instantaneous differentiation of the brightness d/dt(brightness)
-		boolean passLeftLine = false;
-		boolean passRightLine = false;
-		
-		lastNValueLAdd(dbdt[0]); // adds the derivative to a filter (explained lower down) for the first pass
-		lastNValueRAdd(dbdt[1]);
-		
+	public void doTwoLightLocalization() {
+		hitLine();
+
+		/*
+		hitLine();
+		updatePos(XY.X);
+
+		hitLine();
+		updatePos(XY.Y);*/
+
+	}
+
+	public void hitLine() {
+		resetLineFlag();
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
 		leftMotor.forward();
 		rightMotor.forward();
-		leftPastline();
-		rightPastline();
 
-		while(leftHasPastLine == false && rightHasPastLine == false){
-			passLeftLine = leftPastline(); 
-			passRightLine = rightPastline(); 
-			currentBrightness = getFilteredData();
-			System.out.println("left " + currentBrightness[0]);
-			System.out.println("right " + currentBrightness[1]);
-			for (int i = 0; i < 2; i++) {
-				dbdt[i] = currentBrightness[i] - lastBrightness[i]; // get the current brightness and sets the derivative
-			}
-			lastNValueLAdd(dbdt[0]); // adds the derivative to a filter (explained lower down)
-			lastNValueRAdd(dbdt[1]);
-			lastBrightness = currentBrightness;
+		while (!leftHasPastLine && !rightHasPastLine) {
+			pastLine();
 		}
-		if(leftHasPastLine){
-			System.out.println("LEFT STOPPED");
-			leftMotor.stop(false);
+		if (leftHasPastLine) {
+			leftMotor.stop(true);
 			rightMotor.stop(false);
+			resetLineFlag();
+			System.out.println("LEFT STOPPED");
+
 			rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-			rightMotor.rotate(Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, 5.00));
+			rightMotor.rotate(Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, 5.00), false);
 			rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-			while(rightPastline() == false){
+			while (!rightHasPastLine) {
+				pastLine();
 				rightMotor.backward();
 			}
 			rightMotor.stop(false);
 		}
-		
-		if(rightHasPastLine){
-			System.out.println("RIGHT STOPPED");
-			rightMotor.stop(false);
+		else if (rightHasPastLine) {
+			rightMotor.stop(true);
 			leftMotor.stop(false);
+			resetLineFlag();
+			System.out.println("RIGHT STOPPED");
+
 			leftMotor.setSpeed(ROTATE_SPEED);
-			leftMotor.rotate(Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, 5.00));
+			leftMotor.rotate(Navigation.convertDistance(CaptureFlagMain.WHEEL_RADIUS, 5.00), false);
 			leftMotor.setSpeed(ROTATE_SPEED);
-			while(leftPastline() == false){
+			while (!leftHasPastLine) {
+				pastLine();
 				leftMotor.backward();
 			}
 			leftMotor.stop(false);
 		}
-		
-	
+
+		resetLineFlag();
 	}
+
 	public float[] getFilteredData() {
-		correctionStart = System.currentTimeMillis();
+		//correctionStart = System.currentTimeMillis();
 
 		colorSensorL.fetchSample(colorDataL, 0);
 		colorSensorR.fetchSample(colorDataR, 0);
@@ -139,17 +142,41 @@ public class TwoLightLocalization{
 
 		// the correctionstart and correctionend are to make sure that a value is taken once every
 		// LOOP_TIME
-		correctionEnd = System.currentTimeMillis();
-		if (correctionEnd - correctionStart < LOOP_TIME) {
+		//correctionEnd = System.currentTimeMillis();
+		/*if (correctionEnd - correctionStart < LOOP_TIME) {
 			try {
 				Thread.sleep(LOOP_TIME - (correctionEnd - correctionStart));
 			} catch (InterruptedException e) {
 			}
-		}
+		}*/
 
 		float[] colors = new float[]{colorL, colorR};
 
 		return colors;
+	}
+
+	public void pastLine() {
+		correctionStart = System.currentTimeMillis();
+		currentBrightness = getFilteredData();
+		System.out.println("left: " + currentBrightness[0]);
+		System.out.println("right: " + currentBrightness[1]);
+		for (int i = 0; i < 2; i++) {
+			dbdt[i] = currentBrightness[i] - lastBrightness[i]; // get the current brightness and sets the derivative
+
+		}
+
+		System.out.println("Left dbdt: " + dbdt[0]);
+		System.out.println("Right dbdt: " + dbdt[1]);
+
+		lastNValueLAdd(dbdt[0]); // adds the derivative to a filter (explained lower down)
+		lastNValueRAdd(dbdt[1]);
+		lastBrightness = currentBrightness;
+
+		leftPastline();
+		rightPastline();
+		correctionEnd = System.currentTimeMillis();
+		System.out.println("Time taken: " + (correctionEnd - correctionStart));
+
 	}
 
 	public boolean leftPastline() { // the idea of this filter is to only look at an N number of previous values
@@ -171,9 +198,10 @@ public class TwoLightLocalization{
 			lastNValueL.clear();
 			leftHasPastLine = true;
 			lastLeftLine = new float[]{smallestL[1]};
+			leftMotor.stop(true);
+			rightMotor.stop(false);
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -196,9 +224,10 @@ public class TwoLightLocalization{
 			lastNValueR.clear();
 			rightHasPastLine = true;
 			lastRightLine = new float[]{smallestR[1]};
+			rightMotor.stop(true);
+			leftMotor.stop(false);
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -207,7 +236,7 @@ public class TwoLightLocalization{
 		Float[] entry = {brightness, (float) System.currentTimeMillis() - startTime};
 		// the array doesnt take chunks of the values and risk to miss a big difference.
 		// Instead we slide along
-		if (lastNValueL.size() > 50) {
+		if (lastNValueL.size() > 30) {
 			// the oldest value is removed to make space
 			lastNValueL.remove(0);
 			lastNValueL.add(entry);
@@ -222,7 +251,7 @@ public class TwoLightLocalization{
 		Float[] entry = {brightness, (float) System.currentTimeMillis() - startTime};
 		// the array doesnt take chucks of the values and risk to miss a big difference.
 		// Instead we slide along
-		if (lastNValueR.size() > 50) {
+		if (lastNValueR.size() > 30) {
 			// the oldest value is removed to make space
 			lastNValueR.remove(0);
 			lastNValueR.add(entry);
@@ -308,6 +337,15 @@ public class TwoLightLocalization{
 		}
 
 		return new double[]{x, y};
+	}
+
+	public void resetLineFlag() {
+		leftHasPastLine = false;
+		rightHasPastLine = false;
+	}
+
+	public void updateTheta() {
+
 	}
 
 }
