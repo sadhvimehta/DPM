@@ -1,16 +1,22 @@
 package ca.mcgill.ecse211.finalproject.main;
 
 import ca.mcgill.ecse211.finalproject.controller.Controller;
+import ca.mcgill.ecse211.finalproject.controller.FallingEdgeUSLocalization;
+import ca.mcgill.ecse211.finalproject.controller.LightLocalization;
+import ca.mcgill.ecse211.finalproject.controller.Navigation;
 import ca.mcgill.ecse211.finalproject.display.OdometryDisplay;
 import ca.mcgill.ecse211.finalproject.display.WiFiConnect;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
+import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
 
@@ -46,19 +52,14 @@ public class CaptureFlagMain {
     public static final Port usPort = LocalEV3.get().getPort("S1");
     
     /**
-     * Left color sensors port.
+     * Color sensors port.
      */
-    public static final Port csPortLeft = LocalEV3.get().getPort("S3");
-
-	/**
-	 * Right color sensors port.
-	 */
-	public static final Port csPortRight = LocalEV3.get().getPort("S2");
+    public static final Port csPort = LocalEV3.get().getPort("S2");
     
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.5";
+    private static final String serverIP = "192.168.2.18";
     /**
      * Team number
      */
@@ -213,15 +214,11 @@ public class CaptureFlagMain {
         SampleProvider usValue = usSensor.getMode("Distance");
         float[] usData = new float[usValue.sampleSize()];
 
-        EV3ColorSensor csSensorL = new EV3ColorSensor(csPortLeft);
-        SampleProvider csValueL = csSensorL.getRedMode();
-        float[] csDataL = new float[csValueL.sampleSize()];
+        EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
+        SampleProvider csValue = csSensor.getRedMode();
+        float[] csData = new float[csValue.sampleSize()];
 
-	    EV3ColorSensor csSensorR = new EV3ColorSensor(csPortRight);
-	    SampleProvider csValueR = csSensorR.getRedMode();
-	    float[] csDataR = new float[csValueR.sampleSize()];
-
-        Controller controller = new Controller(odometer, usValue, usData, csValueL, csDataL, csValueR, csDataR, leftMotor, rightMotor, ziplineMotor);
+        Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor);
 
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
         do {
