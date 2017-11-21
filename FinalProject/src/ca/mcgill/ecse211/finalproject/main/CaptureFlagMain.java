@@ -59,7 +59,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.18";
+    private static final String serverIP = "192.168.2.34";
     /**
      * Team number
      */
@@ -201,6 +201,23 @@ public class CaptureFlagMain {
 	 * Boolean indicating whether to perform odometry correction or not
 	 */
 	public static boolean doCorrection = false;
+	
+	/**
+	 * Search lower left corner in our zone (x)
+	 */
+	public static int LL_mysearch_x;
+	/**
+	 * Search lower left corner in our zone (y)
+	 */
+	public static int LL_mysearch_y;
+	/**
+	 * Search upper right corner in our zone (x)
+	 */
+	public static int UR_mysearch_x;
+	/**
+	 * Search upper right corner in our zone (y)
+	 */
+	public static int UR_mysearch_y;
     
     public static void main(String[] args) {
         int buttonChoice;

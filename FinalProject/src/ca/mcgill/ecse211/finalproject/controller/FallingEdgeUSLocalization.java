@@ -29,7 +29,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	/**
 	 * Rotation speed while performing US localization.
 	 */
-	public static int ROTATE_SPEED = 100;
+	public static int ROTATE_SPEED = 200; //175
 	/**
 	 * Degrees corresponding to a full circle.
 	 */

@@ -76,16 +76,13 @@ public class ZiplineTraversal{
         // then go to face the mount
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y);
         
-        // possible lee way for zipline motor to latch on to zipline
-        //navigation.advance((long) 10.00, false);
-        
         // mount the zipline
         leftMotor.setSpeed(Navigation.FORWARD_SPEED);
         rightMotor.setSpeed((int) (Navigation.FORWARD_SPEED * CaptureFlagMain.balanceConstant));
         ziplineMotor.setSpeed(Navigation.FORWARD_SPEED *2);
         
        // travel approximate length of zipline (negative b/c motor attached backwards)
-        ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
+        ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH * 1.50), true);
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_red_x, CaptureFlagMain.ziplineEndPoint_red_y);
 
         // localize after it descends zipline
