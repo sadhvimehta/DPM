@@ -83,6 +83,10 @@ public class WiFiConnect {
 		  CaptureFlagMain.LL_search_y = ((Long) data.get("SG_LL_y")).intValue();
 		  CaptureFlagMain.UR_search_x = ((Long) data.get("SG_UR_x")).intValue();
 		  CaptureFlagMain.UR_search_y = ((Long) data.get("SG_UR_y")).intValue();
+		  CaptureFlagMain.LL_mysearch_x = ((Long) data.get("SR_LL_x")).intValue();
+		  CaptureFlagMain.LL_mysearch_y = ((Long) data.get("SR_LL_y")).intValue();
+		  CaptureFlagMain.UR_mysearch_x = ((Long) data.get("SR_UR_x")).intValue();
+		  CaptureFlagMain.UR_mysearch_y = ((Long) data.get("SR_UR_y")).intValue();
 	  }
 	  else{
 		  CaptureFlagMain.teamColor = "Green";
@@ -96,6 +100,10 @@ public class WiFiConnect {
 		  CaptureFlagMain.LL_search_y = ((Long) data.get("SR_LL_y")).intValue();
 		  CaptureFlagMain.UR_search_x = ((Long) data.get("SR_UR_x")).intValue();
 		  CaptureFlagMain.UR_search_y = ((Long) data.get("SR_UR_y")).intValue();
+		  CaptureFlagMain.LL_mysearch_x = ((Long) data.get("SG_LL_x")).intValue();
+		  CaptureFlagMain.LL_mysearch_y = ((Long) data.get("SG_LL_y")).intValue();
+		  CaptureFlagMain.UR_mysearch_x = ((Long) data.get("SG_UR_x")).intValue();
+		  CaptureFlagMain.UR_mysearch_y = ((Long) data.get("SG_UR_y")).intValue();
 	  }
 	  // below, initialise common points
 	  CaptureFlagMain.ziplineEndPoint_red_x = ((Long) data.get("ZC_R_x")).intValue();

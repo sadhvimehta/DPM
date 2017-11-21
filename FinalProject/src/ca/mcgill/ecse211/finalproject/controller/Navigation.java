@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.finalproject.controller;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.geometry.Point2D;
 
 import java.util.ArrayList;
 
@@ -94,7 +95,7 @@ public class Navigation{
         
 
         // the robot will only turn if it is not facing the angle it must face to get to the point
-        if (Math.toDegrees(odometer.getTheta()) != theta) {
+        if (odometer.getTheta() != theta) {
             turnTo(theta);
         }
 
@@ -234,81 +235,39 @@ public class Navigation{
      * It also handles whether to travel in x-direction or y-direction first to ensure no collision with zipline.
      */
     public void travelToPremount(){
-    	// setting up for odometry correction (go to middle of first square)
-    	if(CaptureFlagMain.startingCorner == 0)
-    		travelTo(0.50, 0.50);
-    	else if(CaptureFlagMain.startingCorner == 1)
-    		travelTo(7.50, 0.50);
-    	else if(CaptureFlagMain.startingCorner == 2)
-    		travelTo(7.50, 7.50);
-    	else if(CaptureFlagMain.startingCorner == 3)
-    		travelTo(0.50, 7.50);
-    	
     	// below, navigation to premount
-	    double premountpointX;
-	    double premountpointY;
+	    double premountpointX = CaptureFlagMain.ziplineOther_green_x;
+	    double premountpointY = CaptureFlagMain.ziplineOther_green_y;
 
 	    boolean isVertical = false;
 	    boolean isHorizontal = false;
 	    boolean isDiagonal = false;
 
     	if(CaptureFlagMain.ziplineOther_green_x == CaptureFlagMain.ziplineEndPoint_green_x) {
-    		premountpointX = CaptureFlagMain.ziplineOther_green_x;
-        	if (CaptureFlagMain.ziplineOther_green_y > CaptureFlagMain.ziplineEndPoint_green_y) {
-        		premountpointY = CaptureFlagMain.ziplineOther_green_y + 0.5;
-	        }
-	        else {
-        		premountpointY = CaptureFlagMain.ziplineOther_green_y - 0.5;
-	        }
 		    isVertical = true;
         }
         else if(CaptureFlagMain.ziplineOther_green_y == CaptureFlagMain.ziplineEndPoint_green_y) {
-    		premountpointY = CaptureFlagMain.ziplineOther_green_y;
-		    if (CaptureFlagMain.ziplineOther_green_x > CaptureFlagMain.ziplineEndPoint_green_x) {
-			    premountpointX = CaptureFlagMain.ziplineOther_green_x + 0.5;
-		    } else {
-			    premountpointX = CaptureFlagMain.ziplineOther_green_x - 0.5;
-		    }
 		    isHorizontal = true;
 	    }
 	    else {
     		//case where the zipline is at an angle
-	        if(CaptureFlagMain.ziplineOther_green_x < CaptureFlagMain.ziplineEndPoint_green_x && CaptureFlagMain.ziplineOther_green_y < CaptureFlagMain.ziplineEndPoint_green_y) {
-	        	premountpointX = CaptureFlagMain.ziplineOther_green_x - 0.5;
-	        	premountpointY = CaptureFlagMain.ziplineOther_green_y - 0.5;
-	        }
-	        else if (CaptureFlagMain.ziplineOther_green_x > CaptureFlagMain.ziplineEndPoint_green_x && CaptureFlagMain.ziplineOther_green_y < CaptureFlagMain.ziplineEndPoint_green_y) {
-		        premountpointX = CaptureFlagMain.ziplineOther_green_x + 0.5;
-		        premountpointY = CaptureFlagMain.ziplineOther_green_y - 0.5;
-	        } else if (CaptureFlagMain.ziplineOther_green_x > CaptureFlagMain.ziplineEndPoint_green_x && CaptureFlagMain.ziplineOther_green_y > CaptureFlagMain.ziplineEndPoint_green_y) {
-		        premountpointX = CaptureFlagMain.ziplineOther_green_x + 0.5;
-		        premountpointY = CaptureFlagMain.ziplineOther_green_y + 0.5;
-	        }
-	        else {
-		        premountpointX = CaptureFlagMain.ziplineOther_green_x - 0.5;
-		        premountpointY = CaptureFlagMain.ziplineOther_green_y + 0.5;
-	        }
 	        isDiagonal = true;
     	}
-
-	    if(odometer.getX() == premountpointX || odometer.getY() == premountpointY) {
-    		travelTo(premountpointX, premountpointY);
-	    }
-	    else if (isHorizontal) {
-    		travelTo(premountpointX, odometer.getY()/SIDE_SQUARE);
-    		travelTo(premountpointX, premountpointY);
-	    }
-	    else if (isVertical) {
+    	// takes care of avoiding home search zone
+    	if(CaptureFlagMain.LL_mysearch_x <= premountpointX && premountpointX <= CaptureFlagMain.UR_mysearch_x){
     		travelTo(odometer.getX()/SIDE_SQUARE, premountpointY);
     		travelTo(premountpointX, premountpointY);
+    	}
+	    else{
+	    	if(CaptureFlagMain.LL_mysearch_y <= odometer.getY() && odometer.getY() <= CaptureFlagMain.UR_mysearch_y){
+	    		travelTo(odometer.getX()/SIDE_SQUARE, premountpointY);
+	    		travelTo(premountpointX, premountpointY);
+	    	}
+	    	else{
+	    		travelTo(premountpointX, odometer.getY()/SIDE_SQUARE);
+	    		travelTo(premountpointX, premountpointY);
+	    	}
 	    }
-	    else if (isDiagonal) {
-    		travelTo(premountpointX, odometer.getY()/SIDE_SQUARE);
-    		travelTo(premountpointX, premountpointY);
-	    }
-
-	    travelTo(CaptureFlagMain.ziplineOther_green_x, CaptureFlagMain.ziplineOther_green_y);
-
     }
     
     /**
@@ -334,9 +293,60 @@ public class Navigation{
     	
     }
     
-    
-    
-    
-    
-    
+	public void travelToUpdate(double x, double y){
+		// determine distance to travel to next point
+				x = x * SIDE_SQUARE;
+				y = y * SIDE_SQUARE;
+				double currentX = odometer.getX();
+				double currentY = odometer.getY();
+				Point2D.Double currentPosition = new Point2D.Double(currentX, currentY);
+				Point2D.Double desiredPosition = new Point2D.Double(x, y);
+				double distanceToTravel = currentPosition.distance(desiredPosition); // calculates distance between the two points
+				
+				// correct orientation
+				double updatedTheta = Math.atan2(x - currentX, y - currentY);
+				if(updatedTheta < 0){ // Make it follow the 0 - 2*pi convention (not -pi to +pi)
+					updatedTheta = ((2.0*Math.PI) + updatedTheta);
+				}
+				
+				double differenceInTheta = (updatedTheta - odometer.getTheta());
+				turnToUpdate(differenceInTheta);
+				
+				// drive forward required distance
+			    leftMotor.setSpeed(FORWARD_SPEED);
+			    rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
+			    leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distanceToTravel), true);
+			    rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distanceToTravel), false);
+	}
+	
+	void turnToUpdate(double differenceInTheta){ // makes robot turn by the minimal angle (in radians)
+		if((differenceInTheta >= -(Math.PI)) && (differenceInTheta <= Math.PI)){
+			if(differenceInTheta < 0){
+				leftMotor.setSpeed(ROTATE_SPEED);
+			    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+				leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(-differenceInTheta))), true);
+				rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(-differenceInTheta)), false);
+			}
+			else{
+				leftMotor.setSpeed(ROTATE_SPEED);
+			    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+				rightMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), true);
+				leftMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), false);
+			}
+		}
+		else if(differenceInTheta < -(Math.PI)){
+			differenceInTheta = differenceInTheta + (2*Math.PI);
+			leftMotor.setSpeed(ROTATE_SPEED);
+		    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+			leftMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), true);
+			rightMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), false);
+		}
+		else if(differenceInTheta > (Math.PI)){
+			differenceInTheta = (2*Math.PI) - differenceInTheta;
+			leftMotor.setSpeed(ROTATE_SPEED);
+		    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+			rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), true);
+			leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), false);
+		}
+	}
 }

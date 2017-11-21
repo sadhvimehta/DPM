@@ -1,6 +1,8 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
+import lejos.robotics.geometry.Point2D;
+import lejos.robotics.geometry.Point2D.Double;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
@@ -43,6 +45,22 @@ public class BlockDetection implements UltrasonicController, LightController{
      */
     private float[] intensityBuffer;
 
+    // below correspond to corners of search region.
+    // corner zero is lower left corner
+    // corner one is lower right corner
+    // corner two is upper right corner
+    // corner three is upper left corner
+    private double cornerZero_x;
+    private double cornerZero_y;
+    private double cornerOne_x;
+    private double cornerOne_y;
+    private double cornerTwo_x;
+    private double cornerTwo_y;
+    private double cornerThree_x;
+    private double cornerThree_y;
+
+
+    
 	/**
 	 * Constructor of the class BlockDetection, which links the parameters to the class variables.
 	 */
@@ -58,6 +76,7 @@ public class BlockDetection implements UltrasonicController, LightController{
 		this.rightMotor = rightMotor;
 		this.csSensor = csSensor;
 		this.csData = csData;
+
 	}
 
 	/**
@@ -67,10 +86,54 @@ public class BlockDetection implements UltrasonicController, LightController{
 	 */
 	//TODO: complete this method
 	public void findFlag() {
-		 // go to flag zone
-        navigation.travelTo(CaptureFlagMain.UR_search_x, CaptureFlagMain.LL_search_y);
-        
-        
+		// initialize corners of search zone (do it inside method in order to ensure LL_search_x etc were initialsied by wifi for sure)
+		cornerZero_x = CaptureFlagMain.LL_search_x;
+		cornerZero_y = CaptureFlagMain.LL_search_y;
+		cornerOne_x = CaptureFlagMain.UR_search_x;
+		cornerOne_y = CaptureFlagMain.LL_search_y;
+		cornerTwo_x = CaptureFlagMain.UR_search_x;
+		cornerTwo_y = CaptureFlagMain.UR_search_y;
+		cornerThree_x = CaptureFlagMain.LL_search_x;
+		cornerThree_y = CaptureFlagMain.UR_search_y;
+				
+		// find corner closest to robot's current position and travel to it(after dismounting zipline)
+		int closestCorner = 0;
+		double shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerZero_x, cornerZero_y);
+		if(distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerOne_x, cornerOne_y) < shortestDistance){
+			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerOne_x, cornerOne_y);
+			closestCorner = 1;
+		}
+		if((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerTwo_x, cornerTwo_y) < shortestDistance)){
+			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerTwo_x, cornerTwo_y);
+			closestCorner = 2;
+		}
+		if((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y) < shortestDistance)){
+			closestCorner = 3;
+		}
+		if(closestCorner == 0)
+			navigation.travelToUpdate(this.cornerZero_x, this.cornerZero_y);
+		else if(closestCorner == 1)
+			navigation.travelToUpdate(this.cornerOne_x, this.cornerOne_y);
+		else if(closestCorner == 2)
+			navigation.travelToUpdate(this.cornerTwo_x, this.cornerTwo_y);
+		else
+			navigation.travelToUpdate(this.cornerThree_x, this.cornerThree_y);
+	}
+	/**
+	 * Method that is used to find distance to all four corners of the search region
+	 * @param x1 x-coordinate of desired corner
+	 * @param y1 y-coordinate of desired corner
+	 * @return distance to desired corner
+	 */
+	public double distanceBetweenPoint(double x1, double y1, double x2, double y2){
+		x1 = x1 * 30.48;
+		x2 = x2 * 30.48;
+		y1 = y1 * 30.48;
+		y2 = y2 * 30.48;
+		java.awt.geom.Point2D.Double currentPosition = new java.awt.geom.Point2D.Double(x1, y1);
+		java.awt.geom.Point2D.Double desiredPosition = new java.awt.geom.Point2D.Double(x2, y2);
+		double distance = currentPosition.distance(desiredPosition); // calculates distance between the two point
+		return distance;
 	}
 	
 	/**

@@ -100,17 +100,19 @@ public class Controller{
     	usl.doLocalization();
     	// perform initial light localization
         lightLocalization.doLocalization();
-        // travel to zipline and traverse it
-        ziplineTraversal.doTraversal();
-        //find flag
-        // TODO: complete findFlag method
-        blockDetection.findFlag();
-        // traverse the river
-        // TODO: complete the doTraversal method
-        riverTraversal.doTraversal();
-        //then go back to origin
-		navigation.returnToOrigin();
-
+        
+        if(CaptureFlagMain.teamColor == "Green"){
+        	// travel to zipline and traverse it
+        	ziplineTraversal.doTraversal();        
+        	// find flag
+        	// TODO: complete findFlag method
+        	blockDetection.findFlag();
+        	// traverse the river
+        	// TODO: complete the doTraversal method
+        	riverTraversal.doTraversal();
+        	//then go back to origin
+        	navigation.returnToOrigin();
+        }
     }
 
 }
