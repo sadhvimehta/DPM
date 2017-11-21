@@ -27,10 +27,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	 */
 	public enum AngleType {ALPHA, BETA}
 	/**
-	 * Rotation speed while performing US localization.
-	 */
-	public static int ROTATE_SPEED = 100;
-	/**
 	 * Degrees corresponding to a full circle.
 	 */
 	public static int FULL_CIRCLE = 360;
@@ -100,8 +96,8 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			//check if the robot is face to the wall, if the robot is face to the wall
 			//turn 180 degrees
 			if (readUSData()< DISTANCE_WALL+10) {
-				this.leftMotor.setSpeed(ROTATE_SPEED);
-				this.rightMotor.setSpeed(ROTATE_SPEED);	
+				this.leftMotor.setSpeed(navigation.ROTATE_SPEED);
+				this.rightMotor.setSpeed(navigation.ROTATE_SPEED);
 				this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS,CaptureFlagMain.TRACK,180),true);
 				this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS,CaptureFlagMain.TRACK,180),false);
 				odometer.setTheta(0);
@@ -134,19 +130,19 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 		if (angleType == AngleType.ALPHA){
 			//rotate our robot clockwise until a wall is detected
 			while (readUSData() < DISTANCE_WALL + NOISE_MARGIN) {
-				setSpeeds(ROTATE_SPEED, -ROTATE_SPEED);
+				setSpeeds(navigation.ROTATE_SPEED, -navigation.ROTATE_SPEED);
 			}
 			while (readUSData() > DISTANCE_WALL) {
-				setSpeeds(ROTATE_SPEED, -ROTATE_SPEED);
+				setSpeeds(navigation.ROTATE_SPEED, -navigation.ROTATE_SPEED);
 			}
 		}
 		else if (angleType == AngleType.BETA) {
 			//rotate our robot counter-clockwise until a wall is detected
 			while (readUSData() < DISTANCE_WALL + NOISE_MARGIN) {
-				setSpeeds(-ROTATE_SPEED, ROTATE_SPEED);
+				setSpeeds(-navigation.ROTATE_SPEED, navigation.ROTATE_SPEED);
 			}
 			while (readUSData() > DISTANCE_WALL) {
-				setSpeeds(-ROTATE_SPEED, ROTATE_SPEED);
+				setSpeeds(-navigation.ROTATE_SPEED, navigation.ROTATE_SPEED);
 			}
 		}
 

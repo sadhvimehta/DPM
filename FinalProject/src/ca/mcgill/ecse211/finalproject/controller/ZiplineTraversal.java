@@ -85,7 +85,7 @@ public class ZiplineTraversal{
         ziplineMotor.setSpeed(Navigation.FORWARD_SPEED *2);
         
        // travel approximate length of zipline (negative b/c motor attached backwards)
-        ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS, ZIPLINE_LENGTH), true);
+        ziplineMotor.rotate(-Navigation.convertDistance(CaptureFlagMain.ZIPLINE_WHEEL_RADIUS * 2, ZIPLINE_LENGTH), true);
         navigation.travelTo(CaptureFlagMain.ziplineEndPoint_red_x, CaptureFlagMain.ziplineEndPoint_red_y);
 
         // localize after it descends zipline

@@ -21,9 +21,9 @@ import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
  */
 public class Navigation{
 
-    private static final double SIDE_SQUARE = 30.48;
+    public static final double SIDE_SQUARE = 30.48;
     public static final int FORWARD_SPEED = 250;
-    public static final int ROTATE_SPEED = 150;
+    public static final int ROTATE_SPEED = 200;
     private double theta;
     private boolean isNavigating;
     private EV3LargeRegulatedMotor leftMotor;

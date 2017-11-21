@@ -100,10 +100,8 @@ public class Controller{
     	usl.doLocalization();
     	// perform initial light localization
         lightLocalization.doLocalization();
-        // begin odometry correction
-        odometryCorrection.start();
         // travel to zipline and traverse it
-        ziplineTraversal.doTraversal();        
+        ziplineTraversal.doTraversal();
         //find flag
         // TODO: complete findFlag method
         blockDetection.findFlag();
@@ -111,8 +109,8 @@ public class Controller{
         // TODO: complete the doTraversal method
         riverTraversal.doTraversal();
         //then go back to origin
-         navigation.returnToOrigin(); 
-        
+		navigation.returnToOrigin();
+
     }
 
 }
