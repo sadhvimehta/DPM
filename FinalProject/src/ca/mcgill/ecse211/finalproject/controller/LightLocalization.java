@@ -288,11 +288,21 @@ public class LightLocalization implements LightController {
 			double[] newPoint;
 			
 			if (dy == 0) {
-				newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + 5, CaptureFlagMain.ziplineEndPoint_green_y};
+				if (dx > 0) {
+					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x - 5, CaptureFlagMain.ziplineEndPoint_green_y};
+				}
+				else {
+					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + 5, CaptureFlagMain.ziplineEndPoint_green_y};
+				}
 				System.out.println(" in dy = 0!");
 			}
 			else if (dx == 0) {
-				newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y + 5 };
+				if (dy > 0) {
+					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y - 5 };
+				}
+				else {
+					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y + 5 };
+				}
 				System.out.println(" in dx = 0!");
 			}
 			else {

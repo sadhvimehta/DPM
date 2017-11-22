@@ -106,7 +106,7 @@ public class Controller{
         	ziplineTraversal.doTraversal();        
         	// find flag
         	// TODO: complete findFlag method
-        	//blockDetection.findFlag();
+        	blockDetection.findFlag();
         	// traverse the river
         	// TODO: complete the doTraversal method
         	//riverTraversal.doTraversal();
