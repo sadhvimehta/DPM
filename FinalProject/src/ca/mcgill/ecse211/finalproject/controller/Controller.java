@@ -82,7 +82,7 @@ public class Controller{
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor);
 
       //TODO: implement block detection
-        this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, csValue, csData);
+        this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, csValue, csData, lightLocalization);
         
         //TODO: implement river traversal
 	    this.riverTraversal = new RiverTraversal(navigation, odometer, leftMotor, rightMotor);
@@ -109,7 +109,7 @@ public class Controller{
         	blockDetection.findFlag();
         	// traverse the river
         	// TODO: complete the doTraversal method
-        	//riverTraversal.doTraversal();
+        	riverTraversal.doTraversal();
         	//then go back to origin
         	//navigation.returnToOrigin();
         }

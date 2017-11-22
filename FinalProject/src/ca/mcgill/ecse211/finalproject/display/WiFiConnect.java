@@ -122,6 +122,14 @@ public class WiFiConnect {
 	  CaptureFlagMain.LL_verticalShallow_y = ((Long) data.get("SV_LL_y")).intValue();
 	  CaptureFlagMain.UR_verticalShallow_x = ((Long) data.get("SV_UR_x")).intValue();
 	  CaptureFlagMain.UR_verticalShallow_y = ((Long) data.get("SV_UR_y")).intValue();
-	  	
+	  CaptureFlagMain.LL_redZone_x = ((Long) data.get("Red_LL_x")).intValue();
+	  CaptureFlagMain.LL_redZone_y = ((Long) data.get("Red_LL_y")).intValue();
+	  CaptureFlagMain.UR_redZone_x = ((Long) data.get("Red_UR_x")).intValue();
+	  CaptureFlagMain.UR_redZone_y = ((Long) data.get("Red_UR_y")).intValue();
+	  CaptureFlagMain.LL_greenZone_x = ((Long) data.get("Green_LL_x")).intValue();
+	  CaptureFlagMain.LL_greenZone_y = ((Long) data.get("Green_LL_y")).intValue();
+	  CaptureFlagMain.UR_greenZone_x = ((Long) data.get("Green_UR_x")).intValue();
+	  CaptureFlagMain.UR_greenZone_y = ((Long) data.get("Green_UR_y")).intValue();
+	  
   }
 }

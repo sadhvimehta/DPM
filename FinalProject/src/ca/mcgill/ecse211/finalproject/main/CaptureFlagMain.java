@@ -218,6 +218,22 @@ public class CaptureFlagMain {
 	 * Search upper right corner in our zone (y)
 	 */
 	public static int UR_mysearch_y;
+
+	public static int LL_redZone_x;
+
+	public static int LL_redZone_y;
+
+	public static int UR_redZone_x;
+
+	public static int UR_redZone_y;
+
+	public static int LL_greenZone_x;
+
+	public static int LL_greenZone_y;
+
+	public static int UR_greenZone_x;
+
+	public static int UR_greenZone_y;
     
     public static void main(String[] args) {
         int buttonChoice;

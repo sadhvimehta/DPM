@@ -294,7 +294,6 @@ public class Navigation{
     }
     
 	public void travelToUpdate(double x, double y){
-		// determine distance to travel to next point
 				x = x * SIDE_SQUARE;
 				y = y * SIDE_SQUARE;
 				double currentX = odometer.getX();
@@ -302,14 +301,7 @@ public class Navigation{
 				Point2D.Double currentPosition = new Point2D.Double(currentX, currentY);
 				Point2D.Double desiredPosition = new Point2D.Double(x, y);
 				double distanceToTravel = currentPosition.distance(desiredPosition); // calculates distance between the two points
-				
-				// correct orientation
-				double updatedTheta = Math.atan2(x - currentX, y - currentY);
-				if(updatedTheta < 0){ // Make it follow the 0 - 2*pi convention (not -pi to +pi)
-					updatedTheta = ((2.0*Math.PI) + updatedTheta);
-				}
-				
-				double differenceInTheta = (updatedTheta - odometer.getTheta());
+				double differenceInTheta = turnToAngle(x,y);
 				turnToUpdate(differenceInTheta);
 				
 				// drive forward required distance
@@ -348,5 +340,25 @@ public class Navigation{
 			rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), true);
 			leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), false);
 		}
+	}
+	
+	/**
+	 * Calculates angle to turn to for when wanting to travel to a specific point
+	 * @param x x-coordinate of desired point
+	 * @param y y-coordinate of desired point
+	 * @return angle to face to travel to desired point
+	 */
+	public double turnToAngle(double x, double y){
+		double currentX = odometer.getX();
+		double currentY = odometer.getY();
+		
+		// correct orientation
+		double updatedTheta = Math.atan2(x - currentX, y - currentY);
+		if(updatedTheta < 0){ // Make it follow the 0 - 2*pi convention (not -pi to +pi)
+			updatedTheta = ((2.0*Math.PI) + updatedTheta);
+		}
+		
+		double differenceInTheta = (updatedTheta - odometer.getTheta());
+		return differenceInTheta;
 	}
 }

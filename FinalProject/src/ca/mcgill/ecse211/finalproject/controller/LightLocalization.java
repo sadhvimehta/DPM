@@ -119,6 +119,8 @@ public class LightLocalization implements LightController {
 	 * This boolean is used to communicate between ZiplineTraversal class and LightLocalization class.
 	 */
 	public boolean endZipLineLocalization = false;
+	
+	public boolean localizeOnTheMove = false;
 	/**
 	 * Variable indicating approx value of light sensorr when line is detected.
 	 */
@@ -156,7 +158,7 @@ public class LightLocalization implements LightController {
 		// do not perform odometry correction when light localizing
 		CaptureFlagMain.doCorrection = false;
 		// if either ziplineLocalization or endZiplineLocalizatioin are true, don't go to the origin
-		if ((!zipLineLocalization) && (!endZipLineLocalization)) {
+		if ((!zipLineLocalization) && (!endZipLineLocalization) && (!localizeOnTheMove)) {
 			// get the robot close to where the origin is
 			goToEstimateOrigin();
 		}
@@ -282,50 +284,17 @@ public class LightLocalization implements LightController {
 			this.odometer.setY(positionY + (CaptureFlagMain.ziplineOther_green_y * 30.48));
 			this.odometer.setTheta(newTheta);
 		} else if (endZipLineLocalization) {
-			float dy = CaptureFlagMain.ziplineEndPoint_green_y - CaptureFlagMain.ziplineOther_green_y;
-			float dx = CaptureFlagMain.ziplineEndPoint_green_x - CaptureFlagMain.ziplineOther_green_x;
-
-			double[] newPoint;
-			
-			if (dy == 0) {
-				if (dx > 0) {
-					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x - 5, CaptureFlagMain.ziplineEndPoint_green_y};
-				}
-				else {
-					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + 5, CaptureFlagMain.ziplineEndPoint_green_y};
-				}
-				System.out.println(" in dy = 0!");
-			}
-			else if (dx == 0) {
-				if (dy > 0) {
-					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y - 5 };
-				}
-				else {
-					newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y + 5 };
-				}
-				System.out.println(" in dx = 0!");
-			}
-			else {
-				System.out.println(" in else case");
-				double angle = Math.atan(dy / dx);
-
-				double[] delta = new double[2];
-
-				delta[0] = 5 * Math.cos(angle);
-				delta[1] = 5 * Math.sin(angle);
-
-				newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + delta[0], CaptureFlagMain.ziplineEndPoint_green_y + delta[1]};
-
-			}
-			this.odometer.setX(positionX + (newPoint[0] * 30.48));
-			this.odometer.setY(positionY + (newPoint[1] * 30.48));
-			this.odometer.setTheta(newTheta);
-
-	        /*this.odometer.setX(positionX + (CaptureFlagMain.ziplineOther_red_x * 30.48));
+	        this.odometer.setX(positionX + (CaptureFlagMain.ziplineOther_red_x * 30.48));
 	        this.odometer.setY(positionY + (CaptureFlagMain.ziplineOther_red_y * 30.48));
-	        this.odometer.setTheta(newTheta);*/
+	        this.odometer.setTheta(newTheta);
 
 		}
+		else if(localizeOnTheMove){
+			this.odometer.setX(positionX + odometer.getX());
+			this.odometer.setY(positionY + odometer.getY());
+			this.odometer.setTheta(newTheta);
+		}
+		
 		//Updates odometer to actual values depending on corner!
 		else if (CaptureFlagMain.startingCorner == 0) {
 			this.odometer.setX(positionX + (1.00 * 30.48));

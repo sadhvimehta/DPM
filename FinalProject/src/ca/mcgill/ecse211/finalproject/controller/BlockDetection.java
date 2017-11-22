@@ -44,6 +44,8 @@ public class BlockDetection implements UltrasonicController, LightController{
      * Buffer that contains light intensity readings from range of distances whichh will be used to identify enemy's flag.
      */
     private float[] intensityBuffer;
+    
+    private LightLocalization lightLocalization;
 
     // below correspond to corners of search region.
     // corner zero is lower left corner
@@ -69,13 +71,14 @@ public class BlockDetection implements UltrasonicController, LightController{
 	                      EV3LargeRegulatedMotor leftMotor,
 	                      EV3LargeRegulatedMotor rightMotor,
 	                      SampleProvider csSensor,
-	                      float[] csData){
+	                      float[] csData, LightLocalization lightLocalization){
 		this.navigation = navigation;
 		this.odometer = odometer;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.csSensor = csSensor;
 		this.csData = csData;
+		this.lightLocalization = lightLocalization;
 
 	}
 
@@ -108,16 +111,33 @@ public class BlockDetection implements UltrasonicController, LightController{
 			closestCorner = 2;
 		}
 		if((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y) < shortestDistance)){
+			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y);
 			closestCorner = 3;
 		}
-		if(closestCorner == 0)
+		// below, travels to nearest block detection point.
+		// if distance >= 4.5 tiles, localizes once during travel to search area.
+		if(closestCorner == 0){
 			navigation.travelToUpdate(this.cornerZero_x, this.cornerZero_y);
-		else if(closestCorner == 1)
+		}
+		else if(closestCorner == 1){
 			navigation.travelToUpdate(this.cornerOne_x, this.cornerOne_y);
-		else if(closestCorner == 2)
+		}
+		else if(closestCorner == 2){
 			navigation.travelToUpdate(this.cornerTwo_x, this.cornerTwo_y);
-		else
+		}
+		else{
 			navigation.travelToUpdate(this.cornerThree_x, this.cornerThree_y);
+		}
+		
+		//localise to correct our angle and position
+		lightLocalization.localizeOnTheMove = true;
+        navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+        lightLocalization.doLocalization();
+        lightLocalization.localizeOnTheMove = false;
+		
+			//double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
+		
+			//int currentcorner = closestCorner;
 	}
 	/**
 	 * Method that is used to find distance to all four corners of the search region
@@ -125,7 +145,7 @@ public class BlockDetection implements UltrasonicController, LightController{
 	 * @param y1 y-coordinate of desired corner
 	 * @return distance to desired corner
 	 */
-	public double distanceBetweenPoint(double x1, double y1, double x2, double y2){
+	public static double distanceBetweenPoint(double x1, double y1, double x2, double y2){
 		x1 = x1 * 30.48;
 		x2 = x2 * 30.48;
 		y1 = y1 * 30.48;
