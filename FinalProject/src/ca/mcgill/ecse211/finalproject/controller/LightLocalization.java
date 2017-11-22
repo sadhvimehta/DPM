@@ -285,15 +285,28 @@ public class LightLocalization implements LightController {
 			float dy = CaptureFlagMain.ziplineEndPoint_green_y - CaptureFlagMain.ziplineOther_green_y;
 			float dx = CaptureFlagMain.ziplineEndPoint_green_x - CaptureFlagMain.ziplineOther_green_x;
 
-			double angle = Math.atan(dy / dx);
+			double[] newPoint;
+			
+			if (dy == 0) {
+				newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + 5, CaptureFlagMain.ziplineEndPoint_green_y};
+				System.out.println(" in dy = 0!");
+			}
+			else if (dx == 0) {
+				newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x, CaptureFlagMain.ziplineEndPoint_green_y + 5 };
+				System.out.println(" in dx = 0!");
+			}
+			else {
+				System.out.println(" in else case");
+				double angle = Math.atan(dy / dx);
 
-			double[] delta = new double[]{};
+				double[] delta = new double[2];
 
-			delta[0] = 4 * Math.cos(angle);
-			delta[1] = 4 * Math.sin(angle);
+				delta[0] = 5 * Math.cos(angle);
+				delta[1] = 5 * Math.sin(angle);
 
-			double[] newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + delta[0], CaptureFlagMain.ziplineEndPoint_green_y + delta[1]};
+				newPoint = new double[]{CaptureFlagMain.ziplineEndPoint_green_x + delta[0], CaptureFlagMain.ziplineEndPoint_green_y + delta[1]};
 
+			}
 			this.odometer.setX(positionX + (newPoint[0] * 30.48));
 			this.odometer.setY(positionY + (newPoint[1] * 30.48));
 			this.odometer.setTheta(newTheta);
