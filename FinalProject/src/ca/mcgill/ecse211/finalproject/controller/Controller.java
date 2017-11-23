@@ -97,11 +97,13 @@ public class Controller{
 	 */
 	public void startCourseTraversal() {
 		// perform ultrasonic falling edge localization
-    	usl.doLocalization();
+    	//usl.doLocalization();
     	// perform initial light localization
-        lightLocalization.doLocalization();
-        
-        if(CaptureFlagMain.teamColor == "Green"){
+        //lightLocalization.doLocalization();
+
+        blockDetection.findFlag();
+
+        /*if(CaptureFlagMain.teamColor == "Green"){
         	// travel to zipline and traverse it
         	ziplineTraversal.doTraversal();
         	// find flag
@@ -119,7 +121,7 @@ public class Controller{
 	        ziplineTraversal.doTraversal();
         }
 
-        navigation.returnToOrigin();
+        navigation.returnToOrigin();*/
     }
 
 }

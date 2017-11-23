@@ -158,9 +158,9 @@ public class LightLocalization implements LightController {
 		// do not perform odometry correction when light localizing
 		CaptureFlagMain.doCorrection = false;
 		// if either ziplineLocalization or endZiplineLocalizatioin are true, don't go to the origin
+
 		if ((!zipLineLocalization) && (!endZipLineLocalization) && (!localizeOnTheMove)) {
 			// get the robot close to where the origin is
-			System.out.println("should not see this");
 			goToEstimateOrigin();
 		}
 
@@ -174,7 +174,9 @@ public class LightLocalization implements LightController {
 	    this.rightMotor.stop(true);*/
 
 		// turn around the origin and detect the lines
-		checkLines();
+		while(lineCounter < 4) {
+			checkLines();
+		}
 
 		// calculate positional offset
 		calculatePosition();
@@ -248,6 +250,12 @@ public class LightLocalization implements LightController {
 				saveLineAngles[lineCounter] = this.odometer.getTheta();
 				Sound.beep();
 				lineCounter++;
+				System.out.println("found line!");
+			}
+			else if (!leftMotor.isMoving() && !rightMotor.isMoving()) {
+				System.out.println("missed a line, trying again");
+				lineCounter = 0;
+				return;
 			}
 		}
 

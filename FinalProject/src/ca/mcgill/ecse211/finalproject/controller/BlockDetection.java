@@ -108,7 +108,7 @@ public class BlockDetection{
 	 */
 	//TODO: complete this method
 	public void findFlag() {
-		gotoSearch();
+		//gotoSearch();
 		search();
 	}
 
@@ -252,6 +252,7 @@ public class BlockDetection{
 	}
 
 	public void search() {
+		double starttime = System.currentTimeMillis();
 		double[] nextPoint = corners[(closestCorner + 1) % 4];
 
 		if (nextPoint[0] == CaptureFlagMain.MAP_SIZE || nextPoint[0] == 0 || nextPoint[1] == CaptureFlagMain.MAP_SIZE || nextPoint[1] == 0) {
@@ -264,21 +265,30 @@ public class BlockDetection{
 		double[] vector = {nextPoint[0] - corners[closestCorner][0], nextPoint[1] - corners[closestCorner][1]};
 
 		double[] alignedPoint = corners[closestCorner];
+
+		/*System.out.println(vector[0] + " " + vector[1]);
+
+		if (vector[0] == 0) {
+			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+			navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
+		} else if (vector[1] == 0) {
+			System.out.println("turning to " + navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+			navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
+		}*/
+
 		while (!searchdone(closestCorner, (closestCorner + 1) % 4)) {
-			/*while(!hasflagfound) {
 
-			}*/
-
-			if(vector[0] == 0) {
-				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-				navigation.advance((long) vector[1], false);
-			}
-			else if (vector[1] == 0) {
-				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-				navigation.advance((long) vector[0], false);
-			}
+			if (vector[0] == 0) {
+			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+			navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
+		} else if (vector[1] == 0) {
+			System.out.println("turning to " + navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+			navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
+		}
 			
-			while(navigation.isNavigating()) {
+			while(leftMotor.isMoving() || rightMotor.isMoving()) {
 				if(foundFlag()) {
 					hasflagfound = true;
 					leftMotor.stop();
@@ -294,31 +304,44 @@ public class BlockDetection{
 					Sound.beep();
 					return;
 				}
+				else if (System.currentTimeMillis() - starttime > (60 * 1000)) {
+					Sound.setVolume(30);
+					Sound.beep();
+					Sound.beep();
+					Sound.beep();
+					return;
+				}
 			}
 
-			
-			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
 			if (vector[0] == 0) {
 				if (vector[1] > 0) {
 					alignedPoint[0] -= INCREMENT;
-				}
-				else {
+					nextPoint[0] -= INCREMENT;
+
+				} else {
 					alignedPoint[0] += INCREMENT;
+					nextPoint[0] += INCREMENT;
 				}
-			}
-			else if (vector[1] == 0) {
+			} else if (vector[1] == 0) {
 				if (vector[0] > 0) {
 					alignedPoint[1] += INCREMENT;
+					nextPoint[1] += INCREMENT;
 				} else {
 					alignedPoint[1] -= INCREMENT;
+					nextPoint[1] -= INCREMENT;
 				}
 			}
-			
+
+			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
 			navigation.advance((long) INCREMENT, false);
 			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
 			navigation.travelToUpdate(alignedPoint[0],alignedPoint[1]);
 			navigation.turnToUpdate(odometer.getTheta() + Math.PI);
+
+			navigation.travelToUpdate(nextPoint[0], nextPoint[1]);
+			navigation.travelToUpdate(alignedPoint[0], alignedPoint[1]);
 		}
+
 	}
 
 	public boolean searchdone(double currentcorner, double nextcorner) {

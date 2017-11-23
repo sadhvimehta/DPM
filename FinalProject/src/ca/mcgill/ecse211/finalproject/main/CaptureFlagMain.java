@@ -59,7 +59,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.5";
+    private static final String serverIP = "192.168.2.62";
     /**
      * Team number
      */
@@ -97,7 +97,7 @@ public class CaptureFlagMain {
     /**
      * Starting corner
      */
-    public static int startingCorner = 0/*-1*/; // this is the corner number
+    public static int startingCorner = -1; // this is the corner number
     /**
      * Team color
      */
