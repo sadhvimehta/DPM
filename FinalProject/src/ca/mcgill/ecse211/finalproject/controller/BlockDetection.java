@@ -20,6 +20,8 @@ public class BlockDetection{
 	 * Period for which sensor reading must be taken.
 	 */
 	private static final long LOOP_TIME = 5;
+	private double DIST_FAULT = 0.165;  // about 5 cm
+	private double INCREMENT = 0.328; // about 10 cm
 	/**
 	 * Navigation which contains basic methods of moving our robot.
 	 */
@@ -77,6 +79,8 @@ public class BlockDetection{
 	 * Variables that hold the values of the start and end of sensor polling.
 	 */
 	private long correctionStart, correctionEnd;
+
+	private boolean hasflagfound = false;
     
 	/**
 	 * Constructor of the class BlockDetection, which links the parameters to the class variables.
@@ -105,7 +109,7 @@ public class BlockDetection{
 	//TODO: complete this method
 	public void findFlag() {
 		gotoSearch();
-		//search();
+		search();
 	}
 
 	/**
@@ -171,28 +175,26 @@ public class BlockDetection{
 		switch (color) {
 			case "Red":
 				if (g > 0.1 && b > 0.1 && r >= g * 4) {
-					return true;
+					hasflagfound = true;
 				}
 				break;
 			case "Blue":
 				if (g > 0.1 && b > 0.1 && r > 0.1 && b > 1.6 * r && g > 1.4 * r) {
-					return true;
+					hasflagfound = true;
 				}
 				break;
 			case "Yellow":
 				if (r > g * 1.4 && r < g * 2 && g > 0.1 && b > 0.1 && g > 2 * b) {
-					return true;
+					hasflagfound = true;
 				}
 				break;
 			case "White":
 				if (r < g * 1.4 && r > g * 1.1 && g > 0.1 && b > 0.1 && r > 0.1 && g < b * 1.3) {
-					return true;
+					hasflagfound = true;
 				}
 				break;
-			default:
-				return false;
 		}
-		return false;
+		return hasflagfound;
 	}
 
 	public void gotoSearch() {
@@ -249,4 +251,88 @@ public class BlockDetection{
 		//int currentcorner = closestCorner;
 	}
 
+	public void search() {
+		double[] nextPoint = corners[(closestCorner + 1) % 4];
+
+		if (nextPoint[0] == CaptureFlagMain.MAP_SIZE || nextPoint[0] == 0 || nextPoint[1] == CaptureFlagMain.MAP_SIZE || nextPoint[1] == 0) {
+			closestCorner = (closestCorner - 1) % 4;
+			navigation.travelToUpdate(corners[closestCorner][0], corners[closestCorner][1]);
+		}
+
+		nextPoint = corners[(closestCorner + 1) % 4];
+
+		double[] vector = {nextPoint[0] - corners[closestCorner][0], nextPoint[1] - corners[closestCorner][1]};
+
+		double[] alignedPoint = corners[closestCorner];
+
+		while (searchdone(closestCorner, (closestCorner + 1) % 4)) {
+			/*while(!hasflagfound) {
+
+			}*/
+
+			if(vector[0] == 0) {
+				navigation.turnToAngle(nextPoint[0], nextPoint[1]);
+				navigation.advance((long) vector[1], true);
+			}
+			else if (vector[1] == 0) {
+				navigation.turnToAngle(nextPoint[0], nextPoint[1]);
+				navigation.advance((long) vector[0], true);
+			}
+
+			while(navigation.isNavigating()) {
+				if(foundFlag()) {
+					hasflagfound = true;
+					leftMotor.stop();
+					rightMotor.stop();
+					navigation.travelToUpdate(nextPoint[0], nextPoint[1]);
+					lightLocalization.localizeOnTheMove = true;
+					navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+					lightLocalization.doLocalization();
+					lightLocalization.localizeOnTheMove = false;
+					Sound.setVolume(30);
+					Sound.beep();
+					Sound.beep();
+					Sound.beep();
+					return;
+				}
+			}
+
+			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
+			if (vector[0] == 0) {
+				if (vector[1] > 0) {
+					alignedPoint[0] -= INCREMENT;
+				}
+				else {
+					alignedPoint[0] += INCREMENT;
+				}
+			}
+			else if (vector[1] == 0) {
+				if (vector[0] > 0) {
+					alignedPoint[1] += INCREMENT;
+				} else {
+					alignedPoint[1] -= INCREMENT;
+				}
+			}
+			navigation.advance((long) INCREMENT, false);
+			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
+			navigation.travelToUpdate(alignedPoint[0],alignedPoint[1]);
+			navigation.turnToUpdate(odometer.getTheta() + Math.PI);
+		}
+	}
+
+	public boolean searchdone(double currentcorner, double nextcorner) {
+
+		if (corners[(int) currentcorner][0] == corners[(int) nextcorner][0]) {
+			if(odometer.getX() / Navigation.SIDE_SQUARE + DIST_FAULT > corners[(int)(nextcorner + 1)%4][0] && odometer.getX() / Navigation.SIDE_SQUARE - DIST_FAULT < corners[(int) (nextcorner + 1) % 4][0]) {
+				return true;
+			}
+		}
+		else if (corners[(int) currentcorner][1] == corners[(int) nextcorner][1]) {
+			if (odometer.getY() / Navigation.SIDE_SQUARE + DIST_FAULT > corners[(int) (nextcorner + 1) % 4][1] && odometer.getY() / Navigation.SIDE_SQUARE - DIST_FAULT < corners[(int) (nextcorner + 1) % 4][1]) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
