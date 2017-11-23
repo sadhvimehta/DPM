@@ -260,25 +260,24 @@ public class BlockDetection{
 		}
 
 		nextPoint = corners[(closestCorner + 1) % 4];
-
+		//from og point to other point
 		double[] vector = {nextPoint[0] - corners[closestCorner][0], nextPoint[1] - corners[closestCorner][1]};
 
 		double[] alignedPoint = corners[closestCorner];
-
-		while (searchdone(closestCorner, (closestCorner + 1) % 4)) {
+		while (!searchdone(closestCorner, (closestCorner + 1) % 4)) {
 			/*while(!hasflagfound) {
 
 			}*/
 
 			if(vector[0] == 0) {
-				navigation.turnToAngle(nextPoint[0], nextPoint[1]);
-				navigation.advance((long) vector[1], true);
+				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.advance((long) vector[1], false);
 			}
 			else if (vector[1] == 0) {
-				navigation.turnToAngle(nextPoint[0], nextPoint[1]);
-				navigation.advance((long) vector[0], true);
+				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.advance((long) vector[0], false);
 			}
-
+			
 			while(navigation.isNavigating()) {
 				if(foundFlag()) {
 					hasflagfound = true;
@@ -297,6 +296,7 @@ public class BlockDetection{
 				}
 			}
 
+			
 			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
 			if (vector[0] == 0) {
 				if (vector[1] > 0) {
@@ -313,6 +313,7 @@ public class BlockDetection{
 					alignedPoint[1] -= INCREMENT;
 				}
 			}
+			
 			navigation.advance((long) INCREMENT, false);
 			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
 			navigation.travelToUpdate(alignedPoint[0],alignedPoint[1]);

@@ -101,7 +101,7 @@ public class Controller{
     	// perform initial light localization
         lightLocalization.doLocalization();
         
-        /*if(CaptureFlagMain.teamColor == "Green"){
+        if(CaptureFlagMain.teamColor == "Green"){
         	// travel to zipline and traverse it
         	ziplineTraversal.doTraversal();
         	// find flag
@@ -117,8 +117,7 @@ public class Controller{
         	riverTraversal.doTraversal();
 	        blockDetection.findFlag();
 	        ziplineTraversal.doTraversal();
-        }*/
-		navigation.travelToWLocalize(7,1);
+        }
 
         navigation.returnToOrigin();
     }
