@@ -374,8 +374,8 @@ public class Navigation{
 	 *
 	 */
 	public void travelToWLocalize(double x, double y) {
-		double dx = x - odometer.getX();
-		double dy = y - odometer.getY();
+		double dx = x - Math.round(odometer.getX() / Navigation.SIDE_SQUARE);
+		double dy = y - Math.round(odometer.getY() / Navigation.SIDE_SQUARE);
 
 		LightLocalization lightLocalization = new LightLocalization(this, odometer, leftMotor, rightMotor, csValue, csData);
 
@@ -383,17 +383,17 @@ public class Navigation{
 			if (Math.abs(dx) > Math.abs(dy)) {    // moves horizontally
 				if (dx > 0) {                     // moves to the right
 					for (int i = 0; i < Math.floor( dx / Navigation.SECURE_BLOCK_LENGTH); i++) {
-						travelToUpdate(odometer.getX() + Navigation.SECURE_BLOCK_LENGTH, y);
+						travelToUpdate(Math.round(odometer.getX() / Navigation.SIDE_SQUARE) + Navigation.SECURE_BLOCK_LENGTH, y);
 						lightLocalization.localizeOnTheMove = true;
-						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization. localizeOnTheMove = false;
 					}
 				} else {                           // moves to the left
 					for (int i = 0; i < Math.floor(dx / Navigation.SECURE_BLOCK_LENGTH); i++) {
-						travelToUpdate(odometer.getX() - Navigation.SECURE_BLOCK_LENGTH, y);
+						travelToUpdate(Math.round(odometer.getX() / Navigation.SIDE_SQUARE) - Navigation.SECURE_BLOCK_LENGTH, y);
 						lightLocalization.localizeOnTheMove = true;
-						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization.localizeOnTheMove = false;
 					}
@@ -402,17 +402,17 @@ public class Navigation{
 				if (dy > 0) {                     // moves to the right
 					for (int i = 0; i < Math.floor(dy / Navigation.SECURE_BLOCK_LENGTH); i++) {
 						System.out.println(dy/ Navigation.SECURE_BLOCK_LENGTH); //check going there
-						travelToUpdate(x, odometer.getY() + Navigation.SECURE_BLOCK_LENGTH);
+						travelToUpdate(x, Math.round(odometer.getY() / Navigation.SIDE_SQUARE) + Navigation.SECURE_BLOCK_LENGTH);
 						lightLocalization.localizeOnTheMove = true;
-						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization.localizeOnTheMove = false;
 					}
 				} else {                           // moves to the left
 					for (int i = 0; i < Math.floor(dy / Navigation.SECURE_BLOCK_LENGTH); i++) {
-						travelToUpdate(x, odometer.getY() - Navigation.SECURE_BLOCK_LENGTH);
+						travelToUpdate(x, Math.round(odometer.getY() / Navigation.SIDE_SQUARE) - Navigation.SECURE_BLOCK_LENGTH);
 						lightLocalization.localizeOnTheMove = true;
-						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization.localizeOnTheMove = false;
 					}

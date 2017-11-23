@@ -160,6 +160,7 @@ public class LightLocalization implements LightController {
 		// if either ziplineLocalization or endZiplineLocalizatioin are true, don't go to the origin
 		if ((!zipLineLocalization) && (!endZipLineLocalization) && (!localizeOnTheMove)) {
 			// get the robot close to where the origin is
+			System.out.println("should not see this");
 			goToEstimateOrigin();
 		}
 
