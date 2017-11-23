@@ -59,7 +59,7 @@ public class CaptureFlagMain {
     /**
      * IP address of server
      */
-    private static final String serverIP = "192.168.2.62";
+    private static final String serverIP = "192.168.2.5";
     /**
      * Team number
      */
@@ -260,12 +260,12 @@ public class CaptureFlagMain {
 
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
 
-        /*do {
+        do {
            
         	wifiConnection.startWifiInitialization();
 
         } while (startingCorner == -1); // will intialize starting corner to -1 so that no button press is needed for the robot to operate after the data has been transmited
-*/
+
 
         odometer.start();
         odometryDisplay.start();
