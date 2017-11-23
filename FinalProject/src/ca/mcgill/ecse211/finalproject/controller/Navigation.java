@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
-import javafx.scene.effect.Light;
+//import javafx.scene.effect.Light;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
@@ -379,39 +379,40 @@ public class Navigation{
 
 		LightLocalization lightLocalization = new LightLocalization(this, odometer, leftMotor, rightMotor, csValue, csData);
 
-		if (dx > 4 || dy > 4) {
+		if (dx > Navigation.SECURE_BLOCK_LENGTH || dy > Navigation.SECURE_BLOCK_LENGTH) {
 			if (Math.abs(dx) > Math.abs(dy)) {    // moves horizontally
 				if (dx > 0) {                     // moves to the right
-					for (int i = 0; i < dx / Navigation.SECURE_BLOCK_LENGTH; i++) {
-						travelTo(odometer.getX() + 4, y);
+					for (int i = 0; i < Math.floor( dx / Navigation.SECURE_BLOCK_LENGTH); i++) {
+						travelToUpdate(odometer.getX() + Navigation.SECURE_BLOCK_LENGTH, y);
 						lightLocalization.localizeOnTheMove = true;
-						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization. localizeOnTheMove = false;
 					}
 				} else {                           // moves to the left
-					for (int i = 0; i < dx / Navigation.SECURE_BLOCK_LENGTH; i++) {
-						travelTo(odometer.getX() - 4, y);
+					for (int i = 0; i < Math.floor(dx / Navigation.SECURE_BLOCK_LENGTH); i++) {
+						travelToUpdate(odometer.getX() - Navigation.SECURE_BLOCK_LENGTH, y);
 						lightLocalization.localizeOnTheMove = true;
-						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization.localizeOnTheMove = false;
 					}
 				}
 			} else {                                // moves vertically
 				if (dy > 0) {                     // moves to the right
-					for (int i = 0; i < dy / Navigation.SECURE_BLOCK_LENGTH; i++) {
-						travelTo(x, odometer.getY() + 4);
+					for (int i = 0; i < Math.floor(dy / Navigation.SECURE_BLOCK_LENGTH); i++) {
+						System.out.println(dy/ Navigation.SECURE_BLOCK_LENGTH); //check going there
+						travelToUpdate(x, odometer.getY() + Navigation.SECURE_BLOCK_LENGTH);
 						lightLocalization.localizeOnTheMove = true;
-						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization.localizeOnTheMove = false;
 					}
 				} else {                           // moves to the left
-					for (int i = 0; i < dy / Navigation.SECURE_BLOCK_LENGTH; i++) {
-						travelTo(x, odometer.getY() - 4);
+					for (int i = 0; i < Math.floor(dy / Navigation.SECURE_BLOCK_LENGTH); i++) {
+						travelToUpdate(x, odometer.getY() - Navigation.SECURE_BLOCK_LENGTH);
 						lightLocalization.localizeOnTheMove = true;
-						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						turnToUpdate(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
 						lightLocalization.localizeOnTheMove = false;
 					}
@@ -419,6 +420,8 @@ public class Navigation{
 
 			}
 		}
-		travelTo(x, y);
+		Sound.setVolume(30);
+		Sound.beep();
+		travelToUpdate(x, y);
 	}
 }
