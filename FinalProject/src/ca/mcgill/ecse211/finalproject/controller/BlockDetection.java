@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
+import lejos.hardware.Sound;
 import lejos.robotics.geometry.Point2D;
 import lejos.robotics.geometry.Point2D.Double;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
@@ -14,7 +15,11 @@ import lejos.robotics.SampleProvider;
  * It is is instantiated within the controller and its respective methods are called upon by the controller as well.
  *
  */
-public class BlockDetection implements UltrasonicController, LightController{
+public class BlockDetection{
+	/**
+	 * Period for which sensor reading must be taken.
+	 */
+	private static final long LOOP_TIME = 5;
 	/**
 	 * Navigation which contains basic methods of moving our robot.
 	 */
@@ -61,7 +66,17 @@ public class BlockDetection implements UltrasonicController, LightController{
     private double cornerThree_x;
     private double cornerThree_y;
 
+    private double[][] corners = new double[4][2];
 
+    private double[] colorData = new double[3];
+
+	private int closestCorner = 0;
+
+	private String color;
+	/**
+	 * Variables that hold the values of the start and end of sensor polling.
+	 */
+	private long correctionStart, correctionEnd;
     
 	/**
 	 * Constructor of the class BlockDetection, which links the parameters to the class variables.
@@ -79,7 +94,7 @@ public class BlockDetection implements UltrasonicController, LightController{
 		this.csSensor = csSensor;
 		this.csData = csData;
 		this.lightLocalization = lightLocalization;
-
+		determineColor(CaptureFlagMain.flagColor);
 	}
 
 	/**
@@ -89,56 +104,10 @@ public class BlockDetection implements UltrasonicController, LightController{
 	 */
 	//TODO: complete this method
 	public void findFlag() {
-		// initialize corners of search zone (do it inside method in order to ensure LL_search_x etc were initialsied by wifi for sure)
-		cornerZero_x = CaptureFlagMain.LL_search_x;
-		cornerZero_y = CaptureFlagMain.LL_search_y;
-		cornerOne_x = CaptureFlagMain.UR_search_x;
-		cornerOne_y = CaptureFlagMain.LL_search_y;
-		cornerTwo_x = CaptureFlagMain.UR_search_x;
-		cornerTwo_y = CaptureFlagMain.UR_search_y;
-		cornerThree_x = CaptureFlagMain.LL_search_x;
-		cornerThree_y = CaptureFlagMain.UR_search_y;
-				
-		// find corner closest to robot's current position and travel to it(after dismounting zipline)
-		int closestCorner = 0;
-		double shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerZero_x, cornerZero_y);
-		if(distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerOne_x, cornerOne_y) < shortestDistance){
-			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerOne_x, cornerOne_y);
-			closestCorner = 1;
-		}
-		if((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerTwo_x, cornerTwo_y) < shortestDistance)){
-			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerTwo_x, cornerTwo_y);
-			closestCorner = 2;
-		}
-		if((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y) < shortestDistance)){
-			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y);
-			closestCorner = 3;
-		}
-		// below, travels to nearest block detection point.
-		// if distance >= 4.5 tiles, localizes once during travel to search area.
-		if(closestCorner == 0){
-			navigation.travelToUpdate(this.cornerZero_x, this.cornerZero_y);
-		}
-		else if(closestCorner == 1){
-			navigation.travelToUpdate(this.cornerOne_x, this.cornerOne_y);
-		}
-		else if(closestCorner == 2){
-			navigation.travelToUpdate(this.cornerTwo_x, this.cornerTwo_y);
-		}
-		else{
-			navigation.travelToUpdate(this.cornerThree_x, this.cornerThree_y);
-		}
-		
-		//localise to correct our angle and position
-		lightLocalization.localizeOnTheMove = true;
-        navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
-        lightLocalization.doLocalization();
-        lightLocalization.localizeOnTheMove = false;
-		
-			//double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
-		
-			//int currentcorner = closestCorner;
+		gotoSearch();
+		//search();
 	}
+
 	/**
 	 * Method that is used to find distance to all four corners of the search region
 	 * @param x1 x-coordinate of desired corner
@@ -146,10 +115,15 @@ public class BlockDetection implements UltrasonicController, LightController{
 	 * @return distance to desired corner
 	 */
 	public static double distanceBetweenPoint(double x1, double y1, double x2, double y2){
-		x1 = x1 * 30.48;
+		/*x1 = x1 * 30.48;
 		x2 = x2 * 30.48;
 		y1 = y1 * 30.48;
-		y2 = y2 * 30.48;
+		y2 = y2 * 30.48;*/
+
+		for(double point : new double[]{x1, x2, y1, y2}) {
+			point *= Navigation.SIDE_SQUARE;
+		}
+
 		java.awt.geom.Point2D.Double currentPosition = new java.awt.geom.Point2D.Double(x1, y1);
 		java.awt.geom.Point2D.Double desiredPosition = new java.awt.geom.Point2D.Double(x2, y2);
 		double distance = currentPosition.distance(desiredPosition); // calculates distance between the two point
@@ -161,56 +135,118 @@ public class BlockDetection implements UltrasonicController, LightController{
 	 * This method will therefore help to determine if block found is indeed the flag of the opposing team.
 	 * @return number representing color of detected block
 	 */
-	private int determineColor(){
-		return 0;
-	}
-	
-	/**
-	 * Provides the intensity of block from various distances to populate intensity buffer. 
-	 * This method is called upon once a block has been encountered and values are needed to determine its color.
-	 */
-	private void populateIntensityBuffer(){
-		
-	}
-
-	/**
-	 * Performs any processing of light sensor data.
-	 *
-	 * @param lsData light intensity reading
-	 */
-	@Override
-	public void processLSData(float lsData) {
-		// TODO Auto-generated method stub
-		
+	private void determineColor(int number){
+		switch (number) {
+			case 1:
+				color = "Red";
+				break;
+			case 2:
+				color = "Blue";
+				break;
+			case 3:
+				color = "Yellow";
+				break;
+			case 4:
+				color = "White";
+				break;
+		}
 	}
 
-	/**
-	 * Retrieves intensity read by light sensor
-	 *
-	 * @return light sensor reading
-	 */
-	@Override
-	public float readLSData() {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean foundFlag() {
+		correctionStart = System.currentTimeMillis();
+
+		csSensor.fetchSample(csData, 0); //get data from the sensor
+		double r = colorData[0] * 100;
+		double g = colorData[1] * 100;
+		double b = colorData[2] * 100;
+
+		correctionEnd = System.currentTimeMillis();
+		if (correctionEnd - correctionStart < LOOP_TIME) {
+			try {
+				Thread.sleep(LOOP_TIME - (correctionEnd - correctionStart));
+			}
+			catch (InterruptedException e) {}
+		}
+
+		switch (color) {
+			case "Red":
+				if (g > 0.1 && b > 0.1 && r >= g * 4) {
+					return true;
+				}
+				break;
+			case "Blue":
+				if (g > 0.1 && b > 0.1 && r > 0.1 && b > 1.6 * r && g > 1.4 * r) {
+					return true;
+				}
+				break;
+			case "Yellow":
+				if (r > g * 1.4 && r < g * 2 && g > 0.1 && b > 0.1 && g > 2 * b) {
+					return true;
+				}
+				break;
+			case "White":
+				if (r < g * 1.4 && r > g * 1.1 && g > 0.1 && b > 0.1 && r > 0.1 && g < b * 1.3) {
+					return true;
+				}
+				break;
+			default:
+				return false;
+		}
+		return false;
 	}
 
-	/**
-	 * Performs any processing of ultrasonic sensor data.
-	 *
-	 * @param usData ultrasonic sensor reading
-	 */
-	@Override
-	public void processUSData(float usData) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void gotoSearch() {
+		// initialize corners of search zone (do it inside method in order to ensure LL_search_x etc were initialsied by wifi for sure)
+		cornerZero_x = CaptureFlagMain.LL_search_x;
+		cornerZero_y = CaptureFlagMain.LL_search_y;
+		cornerOne_x = CaptureFlagMain.UR_search_x;
+		cornerOne_y = CaptureFlagMain.LL_search_y;
+		cornerTwo_x = CaptureFlagMain.UR_search_x;
+		cornerTwo_y = CaptureFlagMain.UR_search_y;
+		cornerThree_x = CaptureFlagMain.LL_search_x;
+		cornerThree_y = CaptureFlagMain.UR_search_y;
 
+		corners = new double[][] { {cornerZero_x, cornerZero_y},
+								   {cornerOne_x, cornerOne_y},
+								   {cornerTwo_x, cornerTwo_y},
+								   {cornerThree_x, cornerThree_y}
+								 };
 
-	@Override
-	public float readUSData() {
-		// TODO Auto-generated method stub
-		return 0;
+		// find corner closest to robot's current position and travel to it(after dismounting zipline)
+		double shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerZero_x, cornerZero_y);
+		if (distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerOne_x, cornerOne_y) < shortestDistance) {
+			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerOne_x, cornerOne_y);
+			closestCorner = 1;
+		}
+		if ((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerTwo_x, cornerTwo_y) < shortestDistance)) {
+			shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerTwo_x, cornerTwo_y);
+			closestCorner = 2;
+		}
+		if ((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y) < shortestDistance)) {
+			//shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y);
+			closestCorner = 3;
+		}
+		// below, travels to nearest block detection point.
+		// if distance >= 4.5 tiles, localizes once during travel to search area.
+		if (closestCorner == 0) {
+			navigation.travelToUpdate(this.cornerZero_x, this.cornerZero_y);
+		} else if (closestCorner == 1) {
+			navigation.travelToUpdate(this.cornerOne_x, this.cornerOne_y);
+		} else if (closestCorner == 2) {
+			navigation.travelToUpdate(this.cornerTwo_x, this.cornerTwo_y);
+		} else {
+			navigation.travelToUpdate(this.cornerThree_x, this.cornerThree_y);
+		}
+
+		//localise to correct our angle and position
+		lightLocalization.localizeOnTheMove = true;
+		navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+		lightLocalization.doLocalization();
+		lightLocalization.localizeOnTheMove = false;
+
+		//double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
+
+		//int currentcorner = closestCorner;
 	}
 
 }

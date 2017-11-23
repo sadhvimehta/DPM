@@ -1,8 +1,10 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
+import javafx.scene.effect.Light;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.SampleProvider;
 import lejos.robotics.geometry.Point2D;
 
 import java.util.ArrayList;
@@ -25,23 +27,29 @@ public class Navigation{
     public static final double SIDE_SQUARE = 30.48;
     public static final int FORWARD_SPEED = 250;
     public static final int ROTATE_SPEED = 200;
+    public static final int SECURE_BLOCK_LENGTH = 4;
     private double theta;
     private boolean isNavigating;
     private EV3LargeRegulatedMotor leftMotor;
     private EV3LargeRegulatedMotor rightMotor;
     private Odometer odometer;
     private ArrayList<Integer[]> map = new ArrayList<>();
+	private SampleProvider csValue;
+	private float[] csData;
 
     /**
 	 * Constructor for the class Navigation which links parameters to class variables.
      */
-    public Navigation(
-            Odometer odometer,
-            EV3LargeRegulatedMotor leftMotor,
-            EV3LargeRegulatedMotor rightMotor) {
+    public Navigation(Odometer odometer,
+                      EV3LargeRegulatedMotor leftMotor,
+                      EV3LargeRegulatedMotor rightMotor,
+                      SampleProvider csValue,
+                      float[] csData) {
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
         this.odometer = odometer;
+        this.csValue = csValue;
+        this.csData = csData;
 
         for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[]{leftMotor, rightMotor}) {
             motor.stop();
@@ -276,18 +284,18 @@ public class Navigation{
     public void returnToOrigin(){
     	
     	 if(CaptureFlagMain.startingCorner == 0){
-    		 travelTo( 0 + SIDE_SQUARE /2 , 0+ SIDE_SQUARE/2);	
+    		 travelTo( 0.5,0.5);
          }
          
          else if(CaptureFlagMain.startingCorner == 1){
-        	 travelTo( 12 - SIDE_SQUARE /2 , 0 + SIDE_SQUARE/2);
+        	 travelTo( CaptureFlagMain.MAP_SIZE - 0.5 , 0.5);
          	
          }
          else if(CaptureFlagMain.startingCorner == 2){
-        	 travelTo( 12 - SIDE_SQUARE /2 , 12 - SIDE_SQUARE/2);
+        	 travelTo( CaptureFlagMain.MAP_SIZE - 0.5, CaptureFlagMain.MAP_SIZE - 0.5);
          }
          else if(CaptureFlagMain.startingCorner == 3){
-         	  travelTo( 0 + SIDE_SQUARE /2 , 12 - SIDE_SQUARE/2);
+         	  travelTo( 0.5, CaptureFlagMain.MAP_SIZE - 0.5);
          }
         	
     	
@@ -360,5 +368,57 @@ public class Navigation{
 		
 		double differenceInTheta = (updatedTheta - odometer.getTheta());
 		return differenceInTheta;
+	}
+
+	/**
+	 *
+	 */
+	public void travelToWLocalize(double x, double y) {
+		double dx = x - odometer.getX();
+		double dy = y - odometer.getY();
+
+		LightLocalization lightLocalization = new LightLocalization(this, odometer, leftMotor, rightMotor, csValue, csData);
+
+		if (dx > 4 || dy > 4) {
+			if (Math.abs(dx) > Math.abs(dy)) {    // moves horizontally
+				if (dx > 0) {                     // moves to the right
+					for (int i = 0; i < dx / Navigation.SECURE_BLOCK_LENGTH; i++) {
+						travelTo(odometer.getX() + 4, y);
+						lightLocalization.localizeOnTheMove = true;
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						lightLocalization.doLocalization();
+						lightLocalization. localizeOnTheMove = false;
+					}
+				} else {                           // moves to the left
+					for (int i = 0; i < dx / Navigation.SECURE_BLOCK_LENGTH; i++) {
+						travelTo(odometer.getX() - 4, y);
+						lightLocalization.localizeOnTheMove = true;
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						lightLocalization.doLocalization();
+						lightLocalization.localizeOnTheMove = false;
+					}
+				}
+			} else {                                // moves vertically
+				if (dy > 0) {                     // moves to the right
+					for (int i = 0; i < dy / Navigation.SECURE_BLOCK_LENGTH; i++) {
+						travelTo(x, odometer.getY() + 4);
+						lightLocalization.localizeOnTheMove = true;
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						lightLocalization.doLocalization();
+						lightLocalization.localizeOnTheMove = false;
+					}
+				} else {                           // moves to the left
+					for (int i = 0; i < dy / Navigation.SECURE_BLOCK_LENGTH; i++) {
+						travelTo(x, odometer.getY() - 4);
+						lightLocalization.localizeOnTheMove = true;
+						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+						lightLocalization.doLocalization();
+						lightLocalization.localizeOnTheMove = false;
+					}
+				}
+
+			}
+		}
+		travelTo(x, y);
 	}
 }

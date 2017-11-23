@@ -290,8 +290,8 @@ public class LightLocalization implements LightController {
 
 		}
 		else if(localizeOnTheMove){
-			this.odometer.setX(positionX + odometer.getX());
-			this.odometer.setY(positionY + odometer.getY());
+			this.odometer.setX(positionX + closestX());
+			this.odometer.setY(positionY + closestY());
 			this.odometer.setTheta(newTheta);
 		}
 		
@@ -408,5 +408,13 @@ public class LightLocalization implements LightController {
 		return color;
 	}
 
+	public double closestX() {
+		return Math.round(odometer.getX() / navigation.SIDE_SQUARE) * navigation.SIDE_SQUARE;
+	}
+
+	public double closestY() {
+		return Math.round(odometer.getY() / navigation.SIDE_SQUARE) * navigation.SIDE_SQUARE;
+
+	}
 
 }

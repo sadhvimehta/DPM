@@ -69,7 +69,7 @@ public class Controller{
                       EV3LargeRegulatedMotor ziplineMotor
                       ){
 
-        this.navigation = new Navigation(odometer, leftMotor, rightMotor);
+        this.navigation = new Navigation(odometer, leftMotor, rightMotor, csValue, csData);
 
     	this.odometer = odometer;
 
@@ -113,6 +113,13 @@ public class Controller{
         	//then go back to origin
         	//navigation.returnToOrigin();
         }
+        else {
+        	riverTraversal.doTraversal();
+	        blockDetection.findFlag();
+	        ziplineTraversal.doTraversal();
+        }
+
+        navigation.returnToOrigin();
     }
 
 }

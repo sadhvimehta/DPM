@@ -39,6 +39,8 @@ public class RiverTraversal {
     private double cornerThree_y;
     private double entryPoint_x;
     private double entryPoint_y;
+
+    private boolean horizontalFirst = false;
     
     
     /**
@@ -85,8 +87,20 @@ public class RiverTraversal {
     	}
     	return false;
     }
-    /**
-     * Method responsible to determine entry point of river.
+
+	/**
+	 *
+	 */
+	private double farthestPoint(double position, double point1, double point2) {
+		if (Math.abs(position - point1) > Math.abs(position - point2)) {
+			return point1;
+		}
+		else {
+			return point2;
+		}
+	}
+	/**
+	 * Method responsible to determine entry point of river.
      */
     private void entryPointRiver(){
     	// initialize corners
@@ -100,21 +114,23 @@ public class RiverTraversal {
 		cornerThree_y = CaptureFlagMain.UR_redZone_y;
     	// start with vertical segments:
 		if((isContainedInRed(CaptureFlagMain.LL_verticalShallow_x, CaptureFlagMain.LL_verticalShallow_y))){
-			entryPoint_x = ((CaptureFlagMain.UR_verticalShallow_x + CaptureFlagMain.LL_verticalShallow_x)/2);
+			entryPoint_x = ((CaptureFlagMain.UR_verticalShallow_x + CaptureFlagMain.LL_verticalShallow_x) * 0.5);
 			entryPoint_y = CaptureFlagMain.LL_verticalShallow_y;
 		}
 		else if((isContainedInRed(CaptureFlagMain.UR_verticalShallow_x, CaptureFlagMain.UR_verticalShallow_y))){
-			entryPoint_x = ((CaptureFlagMain.UR_verticalShallow_x + CaptureFlagMain.LL_verticalShallow_x)/2);
+			entryPoint_x = ((CaptureFlagMain.UR_verticalShallow_x + CaptureFlagMain.LL_verticalShallow_x) * 0.5);
 			entryPoint_y = CaptureFlagMain.UR_verticalShallow_y;
 		}
 		// now horizontal segments:
 		else if((isContainedInRed(CaptureFlagMain.LL_horizontalShallow_x, CaptureFlagMain.LL_horizontalShallow_y))){
 			entryPoint_x = CaptureFlagMain.LL_horizontalShallow_x;
-			entryPoint_y = ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y)/2);
+			entryPoint_y = ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y) * 0.5);
+			horizontalFirst = true;
 		}
 		else{
 			entryPoint_x = CaptureFlagMain.UR_horizontalShallow_x;
-			entryPoint_y = ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y)/2);
+			entryPoint_y = ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y) * 0.5);
+			horizontalFirst = true;
 		}
     }
     /**
@@ -124,14 +140,33 @@ public class RiverTraversal {
      */
     public void doTraversal() {
     	// find entry point
-    	entryPointRiver();
-    	// travel to entry point of shallow water in square like fashion
-    	navigation.travelToUpdate(entryPoint_x, odometer.getY()/30.48);
-    	// TODO: add localization here
-    	navigation.travelToUpdate(entryPoint_x, entryPoint_y);
+	    entryPointRiver();
+
+	    if (horizontalFirst) {
+		    // travel to entry point of shallow water in square like fashion
+		    navigation.travelToUpdate(odometer.getX() / 30.48, entryPoint_y);
+		    // TODO: add localization here
+		    navigation.travelToUpdate(entryPoint_x, entryPoint_y);
+	    }
+	    else {
+		    // travel to entry point of shallow water in square like fashion
+		    navigation.travelToUpdate(entryPoint_x, odometer.getY() / 30.48);
+		    // TODO: add localization here
+		    navigation.travelToUpdate(entryPoint_x, entryPoint_y);
+	    }
     	
     	// TODO: add travel to end of first segment of bridge
+	    double[] bridgeMiddle = {((CaptureFlagMain.LL_verticalShallow_x + CaptureFlagMain.UR_verticalShallow_x) * 0.5), ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y) * 0.5)};
+
+	    navigation.travelToUpdate(bridgeMiddle[0], bridgeMiddle[1]);
+
     	//TODO: add travel to end of second segment of bridge
+	    if (horizontalFirst) {
+		    navigation.travelToUpdate(bridgeMiddle[0], farthestPoint(bridgeMiddle[1], CaptureFlagMain.UR_verticalShallow_y, CaptureFlagMain.LL_verticalShallow_y));
+	    }
+	    else {
+	    	navigation.travelToUpdate(farthestPoint(bridgeMiddle[0], CaptureFlagMain.UR_horizontalShallow_x, CaptureFlagMain.LL_horizontalShallow_y), bridgeMiddle[1]);
+	    }
     	//end of traversal
     }
 }
