@@ -108,8 +108,8 @@ public class BlockDetection{
 	 */
 	//TODO: complete this method
 	public void findFlag() {
-		//gotoSearch();
-		search();
+		gotoSearch();
+		//search();
 	}
 
 	/**
@@ -246,7 +246,7 @@ public class BlockDetection{
 		lightLocalization.doLocalization();
 		lightLocalization.localizeOnTheMove = false;
 
-		//double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
+		double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
 
 		//int currentcorner = closestCorner;
 	}
@@ -257,7 +257,7 @@ public class BlockDetection{
 
 		if (nextPoint[0] == CaptureFlagMain.MAP_SIZE || nextPoint[0] == 0 || nextPoint[1] == CaptureFlagMain.MAP_SIZE || nextPoint[1] == 0) {
 			closestCorner = (closestCorner - 1) % 4;
-			navigation.travelToUpdate(corners[closestCorner][0], corners[closestCorner][1]);
+		//	navigation.travelToUpdate(corners[closestCorner][0], corners[closestCorner][1]);
 		}
 
 		nextPoint = corners[(closestCorner + 1) % 4];

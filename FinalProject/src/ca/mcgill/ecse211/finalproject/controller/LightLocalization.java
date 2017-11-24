@@ -311,20 +311,20 @@ public class LightLocalization implements LightController {
 			this.odometer.setTheta(newTheta);
 		} else if (CaptureFlagMain.startingCorner == 1) {
 			positionX = Math.abs(positionX);
-			this.odometer.setX(positionX + (7.00 * 30.48));
+			this.odometer.setX(positionX + (11.00 * 30.48));
 			this.odometer.setY(positionY + (1.00 * 30.48));
 			this.odometer.setTheta(newTheta + Math.toRadians(270.00));
 
 		} else if (CaptureFlagMain.startingCorner == 2) {
 			positionX = Math.abs(positionX);
 			positionY = Math.abs(positionY);
-			this.odometer.setX(positionX + (7.00 * 30.48));
-			this.odometer.setY(positionY + (7.00 * 30.48));
+			this.odometer.setX(positionX + (11.00 * 30.48));
+			this.odometer.setY(positionY + (11.00 * 30.48));
 			this.odometer.setTheta(newTheta + Math.toRadians(180.00));
 		} else if (CaptureFlagMain.startingCorner == 3) {
 			positionY = Math.abs(positionY);
 			this.odometer.setX(positionX + (1.00 * 30.48));
-			this.odometer.setY(positionY + (7.00 * 30.48));
+			this.odometer.setY(positionY + (11.00 * 30.48));
 			this.odometer.setTheta(newTheta + Math.toRadians(90.00));
 		}
 	}

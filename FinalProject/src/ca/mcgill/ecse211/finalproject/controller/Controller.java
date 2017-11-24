@@ -103,7 +103,7 @@ public class Controller{
 
         blockDetection.findFlag();
 
-        /*if(CaptureFlagMain.teamColor == "Green"){
+        if(CaptureFlagMain.teamColor == "Green"){
         	// travel to zipline and traverse it
         	ziplineTraversal.doTraversal();
         	// find flag
@@ -113,7 +113,7 @@ public class Controller{
         	// TODO: complete the doTraversal method
         	riverTraversal.doTraversal();
         	//then go back to origin
-        	//navigation.returnToOrigin();
+        	navigation.returnToOrigin();
         }
         else {
         	riverTraversal.doTraversal();
@@ -121,7 +121,7 @@ public class Controller{
 	        ziplineTraversal.doTraversal();
         }
 
-        navigation.returnToOrigin();*/
+        navigation.returnToOrigin();
     }
 
 }
