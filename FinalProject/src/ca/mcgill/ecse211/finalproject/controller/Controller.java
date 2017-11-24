@@ -113,7 +113,7 @@ public class Controller{
         	// TODO: complete the doTraversal method
         	riverTraversal.doTraversal();
         	//then go back to origin
-        	navigation.returnToOrigin();
+        	//navigation.returnToOrigin();
         }
         else {
         	riverTraversal.doTraversal();

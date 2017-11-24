@@ -245,7 +245,7 @@ public class BlockDetection{
 		navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 		lightLocalization.doLocalization();
 		lightLocalization.localizeOnTheMove = false;
-
+		
 		double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
 
 		//int currentcorner = closestCorner;
