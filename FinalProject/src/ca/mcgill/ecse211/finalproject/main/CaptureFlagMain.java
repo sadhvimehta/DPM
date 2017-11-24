@@ -80,7 +80,7 @@ public class CaptureFlagMain {
 	/**
 	 *
 	 */
-	public static int MAP_SIZE = 8;
+	public static int MAP_SIZE = 12;
     
     /**
      * Tested constant responsible for making right wheel go faster to balance drift in wheels.

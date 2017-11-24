@@ -174,9 +174,9 @@ public class LightLocalization implements LightController {
 	    this.rightMotor.stop(true);*/
 
 		// turn around the origin and detect the lines
-		while(lineCounter < 4) {
+		//while(lineCounter < 4) {
 			checkLines();
-		}
+		//}
 
 		// calculate positional offset
 		calculatePosition();
