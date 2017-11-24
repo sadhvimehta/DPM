@@ -56,6 +56,8 @@ public class CaptureFlagMain {
      */
     public static final Port csPort = LocalEV3.get().getPort("S2");
     
+    public static final Port blockcsPort = LocalEV3.get().getPort("S4");
+    
     /**
      * IP address of server
      */
@@ -255,6 +257,10 @@ public class CaptureFlagMain {
         EV3ColorSensor csSensor = new EV3ColorSensor(csPort);
         SampleProvider csValue = csSensor.getRedMode();
         float[] csData = new float[csValue.sampleSize()];
+        
+        EV3ColorSensor blockcsSensor = new EV3ColorSensor(blockcsPort);
+        SampleProvider blockcsValue = blockcsSensor.getRGBMode();
+        float[] blockcsData = new float[blockcsValue.sampleSize()];
 
         Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor);
 
