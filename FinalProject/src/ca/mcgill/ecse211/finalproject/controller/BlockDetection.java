@@ -247,6 +247,11 @@ public class BlockDetection{
 		lightLocalization.localizeOnTheMove = false;
 
 		double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
+		
+		Sound.setVolume(30);
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
 
 		//int currentcorner = closestCorner;
 	}
