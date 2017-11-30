@@ -46,11 +46,6 @@ public class Odometer extends Thread{
 	   */
 	  private EV3LargeRegulatedMotor rightMotor;
 	  /**
-	   * Motor used to traverse zipline from {@link CaptureFlagMain}
-	   */
-	  private EV3LargeRegulatedMotor ziplineMotor;
-	  
-	  /**
 	   * Duration of period after which odometer must recalculate position
 	   */
 	  private static final long ODOMETER_PERIOD = 25; /*odometer update period, in ms*/
@@ -64,10 +59,9 @@ public class Odometer extends Thread{
 	  /**
 		 * Constructor of the class Odometer, which links the parameters to the class variables.
 		 */
-	  public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor ziplineMotor) {
+	  public Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 	    this.leftMotor = leftMotor;
 	    this.rightMotor = rightMotor;
-	    this.ziplineMotor = ziplineMotor;
 	    this.x = 0.0;
 	    this.y = 0.0;
 	    this.theta = 0.0;

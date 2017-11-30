@@ -2,17 +2,17 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import lejos.hardware.Sound;
-import lejos.robotics.geometry.Point2D;
-import lejos.robotics.geometry.Point2D.Double;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
-import ca.mcgill.ecse211.finalproject.sensor.LightController;
-import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
 /**
  * Contains all methods necessary to detect the enemy's flag based on light intensity readings. <br>
- * It is is instantiated within the controller and its respective methods are called upon by the controller as well.
+ * It is is instantiated within the controller and its respective methods are called upon by the controller as well. The
+ * algorithm used to detect blocks and find the right one is the edge follower. The implemented algorithm makes the
+ * robot travel from corner to corner in an anticlockwise manner. The anticlockwise is important as it always points the
+ * color sensor towards the blocks. By having this method of only following the border, we maximize our chances of
+ * detecting the flag without spending too much time searching.
  *
  */
 public class BlockDetection{
@@ -47,10 +47,6 @@ public class BlockDetection{
 	 * Array containing data obtained from light sensor.
 	 */
     private float[] csData;
-    /**
-     * Buffer that contains light intensity readings from range of distances whichh will be used to identify enemy's flag.
-     */
-    private float[] intensityBuffer;
     
     private LightLocalization lightLocalization;
 
@@ -109,7 +105,7 @@ public class BlockDetection{
 	//TODO: complete this method
 	public void findFlag() {
 		gotoSearch();
-		//search();
+		search();
 	}
 
 	/**
@@ -119,11 +115,6 @@ public class BlockDetection{
 	 * @return distance to desired corner
 	 */
 	public static double distanceBetweenPoint(double x1, double y1, double x2, double y2){
-		/*x1 = x1 * 30.48;
-		x2 = x2 * 30.48;
-		y1 = y1 * 30.48;
-		y2 = y2 * 30.48;*/
-
 		for(double point : new double[]{x1, x2, y1, y2}) {
 			point *= Navigation.SIDE_SQUARE;
 		}
@@ -245,60 +236,33 @@ public class BlockDetection{
 		navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 		lightLocalization.doLocalization();
 		lightLocalization.localizeOnTheMove = false;
-		
-		double[][] corners = {{cornerZero_x, cornerZero_y},{cornerOne_x, cornerOne_y},{cornerTwo_x, cornerTwo_y},{cornerThree_x, cornerThree_y}};
-		
-		Sound.setVolume(30);
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-
-		//int currentcorner = closestCorner;
 	}
 
 	public void search() {
 		double starttime = System.currentTimeMillis();
+		double[] startPoint = corners[closestCorner];
 		double[] nextPoint = corners[(closestCorner + 1) % 4];
 
-		if (nextPoint[0] == CaptureFlagMain.MAP_SIZE || nextPoint[0] == 0 || nextPoint[1] == CaptureFlagMain.MAP_SIZE || nextPoint[1] == 0) {
-			closestCorner = (closestCorner - 1) % 4;
-		//	navigation.travelToUpdate(corners[closestCorner][0], corners[closestCorner][1]);
-		}
-
-		nextPoint = corners[(closestCorner + 1) % 4];
 		//from og point to other point
 		double[] vector = {nextPoint[0] - corners[closestCorner][0], nextPoint[1] - corners[closestCorner][1]};
 
-		double[] alignedPoint = corners[closestCorner];
+		//double[] alignedPoint = corners[closestCorner];
 
-		/*System.out.println(vector[0] + " " + vector[1]);
-
-		if (vector[0] == 0) {
-			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-			navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
-		} else if (vector[1] == 0) {
-			System.out.println("turning to " + navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-			navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
-		}*/
-
-		while (!searchdone(closestCorner, (closestCorner + 1) % 4)) {
-
+		while (nextPoint[0] == CaptureFlagMain.MAP_SIZE || nextPoint[0] == 0 || nextPoint[1] == CaptureFlagMain.MAP_SIZE || nextPoint[1] == 0 || nextPoint == startPoint) {
 			if (vector[0] == 0) {
-			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-			navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
-		} else if (vector[1] == 0) {
-			System.out.println("turning to " + navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-			navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-			navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
-		}
-			
-			while(leftMotor.isMoving() || rightMotor.isMoving()) {
-				if(foundFlag()) {
+				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
+			} else if (vector[1] == 0) {
+				System.out.println("turning to " + navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
+			}
+
+			while (leftMotor.isMoving() || rightMotor.isMoving()) {
+				if (foundFlag()) {
 					hasflagfound = true;
 					leftMotor.stop();
 					rightMotor.stop();
-					navigation.travelToUpdate(nextPoint[0], nextPoint[1]);
 					lightLocalization.localizeOnTheMove = true;
 					navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 					lightLocalization.doLocalization();
@@ -308,8 +272,7 @@ public class BlockDetection{
 					Sound.beep();
 					Sound.beep();
 					return;
-				}
-				else if (System.currentTimeMillis() - starttime > (60 * 1000)) {
+				} else if (System.currentTimeMillis() - starttime > (60 * 1000)) {
 					Sound.setVolume(30);
 					Sound.beep();
 					Sound.beep();
@@ -318,50 +281,11 @@ public class BlockDetection{
 				}
 			}
 
-			if (vector[0] == 0) {
-				if (vector[1] > 0) {
-					alignedPoint[0] -= INCREMENT;
-					nextPoint[0] -= INCREMENT;
+			nextPoint = corners[(closestCorner + 1) % 4];
 
-				} else {
-					alignedPoint[0] += INCREMENT;
-					nextPoint[0] += INCREMENT;
-				}
-			} else if (vector[1] == 0) {
-				if (vector[0] > 0) {
-					alignedPoint[1] += INCREMENT;
-					nextPoint[1] += INCREMENT;
-				} else {
-					alignedPoint[1] -= INCREMENT;
-					nextPoint[1] -= INCREMENT;
-				}
-			}
-
-			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
-			navigation.advance((long) INCREMENT, false);
-			navigation.turnToUpdate(odometer.getTheta() + Math.PI * 0.5);
-			navigation.travelToUpdate(alignedPoint[0],alignedPoint[1]);
-			navigation.turnToUpdate(odometer.getTheta() + Math.PI);
-
-			navigation.travelToUpdate(nextPoint[0], nextPoint[1]);
-			navigation.travelToUpdate(alignedPoint[0], alignedPoint[1]);
+			vector[0] = nextPoint[0] - corners[closestCorner][0];
+			vector[1] = nextPoint[1] - corners[closestCorner][1];
 		}
 
-	}
-
-	public boolean searchdone(double currentcorner, double nextcorner) {
-
-		if (corners[(int) currentcorner][0] == corners[(int) nextcorner][0]) {
-			if(odometer.getX() / Navigation.SIDE_SQUARE + DIST_FAULT > corners[(int)(nextcorner + 1)%4][0] && odometer.getX() / Navigation.SIDE_SQUARE - DIST_FAULT < corners[(int) (nextcorner + 1) % 4][0]) {
-				return true;
-			}
-		}
-		else if (corners[(int) currentcorner][1] == corners[(int) nextcorner][1]) {
-			if (odometer.getY() / Navigation.SIDE_SQUARE + DIST_FAULT > corners[(int) (nextcorner + 1) % 4][1] && odometer.getY() / Navigation.SIDE_SQUARE - DIST_FAULT < corners[(int) (nextcorner + 1) % 4][1]) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

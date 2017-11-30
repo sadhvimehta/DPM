@@ -1,14 +1,11 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
-import java.util.ArrayList;
-
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.sensor.LightController;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
-import sun.awt.geom.AreaOp;
 
 
 /**
@@ -34,10 +31,6 @@ public class LightLocalization implements LightController {
 	 */
 	private float[] csData;
 	/**
-	 * Variables which store the current and previous light value to calculate the instantaneous differentiation.
-	 */
-	private double lightValueCurrent, lightValuePrev;
-	/**
 	 * Variable which is the difference of the angles between the positive X axis and negative X axis.
 	 */
 	private double thetaX;
@@ -58,22 +51,9 @@ public class LightLocalization implements LightController {
 	 */
 	private double dT;
 	/**
-	 * Variable which is the start time of the method.
-	 */
-	private long startTime;
-	/**
-	 * Stores difference between previous and current light sensor readings and is used in line detection algorithm.
-	 */
-	private double dCdt;
-	/**
 	 * Variables that hold the values of the start and end of sensor polling.
 	 */
 	private long correctionStart, correctionEnd;
-	/**
-	 * Buffer that stores light sensor readings for differential line detection algorithm.
-	 */
-	private ArrayList<Double> lastNValue = new ArrayList<>(); // stores last 40 cs readings
-
 	/**
 	 * Boolean that indicates if robot is at origin or not.
 	 */
@@ -87,11 +67,6 @@ public class LightLocalization implements LightController {
 	 * Buffer that stores angles at which lines are detected.
 	 */
 	private double[] saveLineAngles;
-
-	/**
-	 * Threshold to be passed to confirm line was detected
-	 */
-	private final float LIGHT_DIFF_THRESHOLD = 40;
 	/**
 	 * Distance to move to origin.
 	 */
@@ -100,10 +75,6 @@ public class LightLocalization implements LightController {
 	 * Period for which sensor reading must be taken.
 	 */
 	private static final long LOOP_TIME = 5;
-	/**
-	 * Boolean indicating line detection has started.
-	 */
-	private boolean firstpass = true;
 	/**
 	 * Left and right motor of the robot.
 	 */
@@ -121,16 +92,12 @@ public class LightLocalization implements LightController {
 	public boolean endZipLineLocalization = false;
 	
 	public boolean localizeOnTheMove = false;
-	/**
-	 * Variable indicating approx value of light sensorr when line is detected.
-	 */
-	public int lightThreshold = 38;
 
-	public double biggest, smallest;
+	private double biggest, smallest;
 
-	float lastBrightness = 0;
-	float currentBrightness = 0;
-	float dbdt = 0; // the instantaneous differentiation of the brightness d/dt(brightness)
+	private float lastBrightness = 0;
+	private float currentBrightness = 0;
+	private float dbdt = 0; // the instantaneous differentiation of the brightness d/dt(brightness)
 
 
 	/**
@@ -164,15 +131,6 @@ public class LightLocalization implements LightController {
 			goToEstimateOrigin();
 		}
 
-	    /*this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
-	    this.rightMotor.setSpeed(Navigation.ROTATE_SPEED * constant);
-    	while(!pastline()) {
-		    navigation.turnCCW(360);
-	    }
-	    // stops ??
-	    this.leftMotor.stop(true);
-	    this.rightMotor.stop(true);*/
-
 		// turn around the origin and detect the lines
 		lineCounter = 0;
 		while(lineCounter < 4) {
@@ -187,7 +145,6 @@ public class LightLocalization implements LightController {
 	 * Method that moves robot to origin to commence light localization.
 	 */
 	private void goToEstimateOrigin() {
-
 		//turn 45 degrees to face origin (0,0)
 		this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
 		this.rightMotor.setSpeed((int) (Navigation.ROTATE_SPEED * CaptureFlagMain.balanceConstant));
@@ -202,8 +159,6 @@ public class LightLocalization implements LightController {
 		this.rightMotor.forward();
 
 		while (!atApproxOrigin) { //boolean to check if we have arrived or not
-			lightValueCurrent = readLSData(); //update data
-
 			//If the difference in colour intensity is bigger than a chosen threshold, a line was detected
 			if (pastline()) {
 				leftMotor.stop(true);
@@ -224,25 +179,16 @@ public class LightLocalization implements LightController {
 	 * Method responsible for robot to rotate and detect lines to be able to calcualte positional offset.
 	 */
 	private void checkLines() {
-		//int lastLTC = leftMotor.getTachoCount();
-		//int lastRTC = rightMotor.getTachoCount();
-
 		//it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
 
 		//Set up variables
 		lineCounter = 0;
 		saveLineAngles = new double[4];
 
-		startTime = System.currentTimeMillis();
 		this.leftMotor.setSpeed(Navigation.ROTATE_SPEED);
 		this.rightMotor.setSpeed((int) (Navigation.ROTATE_SPEED * CaptureFlagMain.balanceConstant));
 		this.leftMotor.rotate(Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 400), true);
 		this.rightMotor.rotate(-Navigation.convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, 400), true);
-
-        /*try {
-	        Thread.sleep(1000);
-        }
-        catch (Exception e ) {}*/
 
 		//Runs until it has detected 4 lines
 		while (lineCounter < 4) {
@@ -259,13 +205,6 @@ public class LightLocalization implements LightController {
 				return;
 			}
 		}
-
-		//int totalLTC = leftMotor.getTachoCount() - lastLTC;
-		//int totalRTC = rightMotor.getTachoCount() - lastRTC;
-	    /*this.leftMotor.stop(true);
-	    this.rightMotor.stop(false);*/
-		//int averageTC = (Math.abs(totalLTC) + Math.abs(totalRTC))/2;
-		//CaptureFlagMain.TRACK = 2 * (CaptureFlagMain.WHEEL_RADIUS * averageTC) / (360);
 	}
 
 	/**
@@ -331,21 +270,10 @@ public class LightLocalization implements LightController {
 	}
 
 	/**
-	 * Method adds in values to the {@link #lastNValue} with logic.
+	 * Method adds in values to the {@link #} with logic.
 	 */
 	public void lastNValueAdd(double value) {
-		// the array does not take chucks of the values and risk to miss a big difference.
-		// Instead we slide along
-        /*if (this.lastNValue.size() > 10) {
-            // the oldest value is removed to make space
 
-            this.lastNValue.remove(0);
-            this.lastNValue.add(value);
-        } else {
-            // if the array happens to be less that, simply add them
-
-            this.lastNValue.add(value);
-        }*/
 		if (value > biggest) {
 			biggest = value;
 		} else if (value < smallest) {
@@ -360,20 +288,12 @@ public class LightLocalization implements LightController {
 	public boolean pastline() { // the idea of this filter is to only look at an N number of previous values
 		// only considers a line crossed if the biggest value is higher than some threshold
 
-		//correctionStart = System.currentTimeMillis();
-
 	    currentBrightness = readLSData();
 	    dbdt = currentBrightness - lastBrightness; // get the current brightness and sets the derivative
 	    lastNValueAdd(dbdt); // adds the derivative to a filter (explained lower down)
 	    lastBrightness = currentBrightness;
 
-		//correctionEnd = System.currentTimeMillis();
-
-		//System.out.println(correctionEnd - correctionStart);
-
-		//System.out.println(dbdt);
 	    if (biggest > 5 && smallest < -5) { // if a sample is considered to be a line, the array is cleared as to not
-		//if (readLSData() <= lightThreshold) {
 			// retrigger an other time
 			biggest = -200; // since crossing a line causes a drop and a rise in the derivative, the filter
 			smallest = 200;
@@ -382,16 +302,6 @@ public class LightLocalization implements LightController {
 			return false;
 	}
 
-	/**
-	 * Performs any processing of light sensor data.
-	 *
-	 * @param lsData light intensity reading
-	 */
-	@Override
-	public void processLSData(float lsData) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
 	 * Retrieves intensity read by light sensor.
@@ -405,8 +315,7 @@ public class LightLocalization implements LightController {
 		csSensor.fetchSample(csData, 0);
 		float color = csData[0] * 100;
 
-		// the correctionstart and correctionend are to make sure that a value is taken once every
-		// LOOP_TIME
+		// the correctionstart and correctionend are to make sure that a value is taken once every LOOP_TIME
         correctionEnd = System.currentTimeMillis();
         if (correctionEnd - correctionStart < LOOP_TIME) {
             try {

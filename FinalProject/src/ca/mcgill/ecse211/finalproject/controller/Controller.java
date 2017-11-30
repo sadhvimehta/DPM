@@ -3,8 +3,6 @@ package ca.mcgill.ecse211.finalproject.controller;
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import ca.mcgill.ecse211.finalproject.odometry.OdometryCorrection;
-import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
-import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
@@ -64,6 +62,8 @@ public class Controller{
                       float[] usData,
                       SampleProvider csValue,
                       float[] csData,
+                      SampleProvider blockCsValue,
+                      float[] blockCsData,
                       EV3LargeRegulatedMotor leftMotor,
                       EV3LargeRegulatedMotor rightMotor,
                       EV3LargeRegulatedMotor ziplineMotor
@@ -73,7 +73,7 @@ public class Controller{
 
     	this.odometer = odometer;
 
-        this.usl = new FallingEdgeUSLocalization(odometer, usValue, usData, FallingEdgeUSLocalization.LocalizationType.FALLING_EDGE, leftMotor, rightMotor, navigation);
+        this.usl = new FallingEdgeUSLocalization(odometer, usValue, usData, leftMotor, rightMotor, navigation);
 
         this.lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
 
@@ -81,10 +81,8 @@ public class Controller{
         
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor);
 
-      //TODO: implement block detection
-        this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, csValue, csData, lightLocalization);
+        this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, blockCsValue, blockCsData, lightLocalization);
         
-        //TODO: implement river traversal
 	    this.riverTraversal = new RiverTraversal(navigation, odometer, leftMotor, rightMotor);
 
     }
@@ -101,27 +99,21 @@ public class Controller{
     	// perform initial light localization
         lightLocalization.doLocalization();
 
-       // blockDetection.findFlag();
-
         if(CaptureFlagMain.teamColor == "Green"){
         	// travel to zipline and traverse it
         	ziplineTraversal.doTraversal();
         	// find flag
-        	// TODO: complete findFlag method
         	blockDetection.findFlag();
         	// traverse the river
-        	// TODO: complete the doTraversal method
         	riverTraversal.doTraversal();
-        	//then go back to origin
-        	//navigation.returnToOrigin();
         }
         else {
         	riverTraversal.doTraversal();
 	        blockDetection.findFlag();
 	        ziplineTraversal.doTraversal();
         }
-
-        navigation.returnToOrigin();
+		//then go back to origin
+		navigation.returnToOrigin();
     }
 
 }

@@ -32,13 +32,6 @@ public class OdometryDisplay extends Thread{
 	    this.odometer = odometer;
 	    this.t = t;
 	  }
-	  
-	  //TODO: uncomment this once we create an ultrasonic controller
-/*	  public OdometryDisplay(Odometer odometer, TextLCD t, UltrasonicController cont) {
-		this.odometer = odometer;
-		this.cont = cont;
-	    this.t = t;
-	  }*/
 
 	  /**
 	   * Run method required for thread.
@@ -65,10 +58,6 @@ public class OdometryDisplay extends Thread{
 	      for (int i = 0; i < 3; i++) {
 	        t.drawString(formattedDoubleToString(position[i], 2), 3, i);
 	      }
-	      //TODO: uncomment this once US controller is created.
-/*	      if(cont != null){
-	    	  t.drawString("US Distance: " + cont.readUSDistance(), 0, 3); // print last US reading
-	      }*/
 
 	      // throttle the OdometryDisplay
 	      displayEnd = System.currentTimeMillis();

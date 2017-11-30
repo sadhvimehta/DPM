@@ -1,17 +1,12 @@
 package ca.mcgill.ecse211.finalproject.controller;
 
-//import javafx.scene.effect.Light;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.geometry.Point2D;
-
 import java.util.ArrayList;
-
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
-import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
 
 /**
  * Class responsible for the moving of the robot throughout the competition. This means that it contains all methods
@@ -33,7 +28,6 @@ public class Navigation{
     private EV3LargeRegulatedMotor leftMotor;
     private EV3LargeRegulatedMotor rightMotor;
     private Odometer odometer;
-    private ArrayList<Integer[]> map = new ArrayList<>();
 	private SampleProvider csValue;
 	private float[] csData;
 
@@ -113,11 +107,7 @@ public class Navigation{
         rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
         leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), true);
         rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), false);
-
-        /*leftMotor.stop(true);
-        rightMotor.stop(false);*/
-        
-        isNavigating = false; 
+        isNavigating = false;
     }
     /**
      * Method that converts distance to travel to required wheel rotations.
@@ -190,38 +180,6 @@ public class Navigation{
                         false);
             }
         }
-        //leftMotor.stop(true);
-        //rightMotor.stop(false);
-    }
-    
-    /**
-     * Method that determines if robot is still navigating.
-     * @return isNavigating boolean that is either true or false.
-     */
-    public boolean isNavigating() {
-        return isNavigating;
-    }
-    
-    /**
-     * Method that rotates robot clockwise by certain degrees.
-     * @param degree angle to rotate by.
-     */
-    public void turnCW(long degree) {
-        leftMotor.rotate(
-                convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
-        rightMotor.rotate(
-                -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
-    }
-    
-    /**
-     * Method that rotates robot counterclockwise by certain degrees.
-     * @param degree angle to rotate by.
-     */
-    public void turnCCW(long degree) {
-        leftMotor.rotate(
-                -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
-        rightMotor.rotate(
-                convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, degree), true);
     }
     
     /**
@@ -247,20 +205,6 @@ public class Navigation{
 	    double premountpointX = CaptureFlagMain.ziplineOther_green_x;
 	    double premountpointY = CaptureFlagMain.ziplineOther_green_y;
 
-	    boolean isVertical = false;
-	    boolean isHorizontal = false;
-	    boolean isDiagonal = false;
-
-    	if(CaptureFlagMain.ziplineOther_green_x == CaptureFlagMain.ziplineEndPoint_green_x) {
-		    isVertical = true;
-        }
-        else if(CaptureFlagMain.ziplineOther_green_y == CaptureFlagMain.ziplineEndPoint_green_y) {
-		    isHorizontal = true;
-	    }
-	    else {
-    		//case where the zipline is at an angle
-	        isDiagonal = true;
-    	}
     	// takes care of avoiding home search zone
     	if(CaptureFlagMain.LL_mysearch_x <= premountpointX && premountpointX <= CaptureFlagMain.UR_mysearch_x){
     		travelTo(odometer.getX()/SIDE_SQUARE, premountpointY);

@@ -27,10 +27,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	 */
 	public enum AngleType {ALPHA, BETA}
 	/**
-	 * Degrees corresponding to a full circle.
-	 */
-	public static int FULL_CIRCLE = 360;
-	/**
 	 * Distance between robot and wall.
 	 */
 	private static final double DISTANCE_WALL = 30;
@@ -55,10 +51,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	 */
 	private float[] usData;
 	/**
-	 * Variable which dictates which type of edge is used to localize.
-	 */
-	private LocalizationType locType;
-	/**
 	 * Navigation which contains basic methods of moving our robot.
 	 */
 	private Navigation navigation;
@@ -73,14 +65,12 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	public FallingEdgeUSLocalization(Odometer odo,
 	                                 SampleProvider usSensor,
 	                                 float[] usData,
-	                                 LocalizationType locType,
 	                                 EV3LargeRegulatedMotor leftMotor,
 	                                 EV3LargeRegulatedMotor rightMotor,
 	                                 Navigation navigation) {
 		this.odometer = odo;
 		this.usSensor = usSensor;
 		this.usData = usData;
-		this.locType = locType;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.navigation = navigation;
@@ -159,7 +149,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	 * @return heading to add to current theta.
 	 */
 	private double calculateHeading( double angleA, double angleB ) {
-		double deltaHeading = 0;
+		double deltaHeading;
 		if(angleA > angleB){
 			deltaHeading = Math.abs(220 - ((angleA + angleB)/2.0));
 		} else {
@@ -193,17 +183,6 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 			this.leftMotor.stop(true);
 			this.rightMotor.stop(false);
 		}
-
-
-	/**
-	 * Performs any processing of ultrasonic sensor data.
-	 *
-	 * @param usData ultrasonic sensor reading.
-	 */
-	@Override
-	public void processUSData(float usData) {
-		//TODO: add body
-	}
 
 	/**
 	 * Retrieves distance read by ultrasonic sensor.

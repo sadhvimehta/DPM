@@ -13,11 +13,6 @@ public class RiverTraversal {
 	/**
 	 * left motor of robot.
 	 */
-    private EV3LargeRegulatedMotor leftMotor;
-    /**
-     * right motor of robot.
-     */
-    private EV3LargeRegulatedMotor rightMotor;
     /**
      * Odometer which is responsible for calculating robot's current position using odometry.
      */
@@ -26,9 +21,6 @@ public class RiverTraversal {
 	 * Navigation which contains basic methods of moving our robot.
 	 */
     private Navigation navigation;
-    
-    private double xMiddle;
-    private double yMiddle;
     private double cornerZero_x;
     private double cornerZero_y;
     private double cornerOne_x;
@@ -47,13 +39,9 @@ public class RiverTraversal {
 	 * Constructor for the class RiverTraversal which links parameters to class variables.
      */
     public RiverTraversal(Navigation navigation,
-                            Odometer odometer,
-                            EV3LargeRegulatedMotor leftMotor,
-                            EV3LargeRegulatedMotor rightMotor) {
+                            Odometer odometer) {
         this.navigation = navigation;
         this.odometer = odometer;
-        this.leftMotor = leftMotor;
-        this.rightMotor = rightMotor;
     }
     
     /**
@@ -145,22 +133,18 @@ public class RiverTraversal {
 	    if (horizontalFirst) {
 		    // travel to entry point of shallow water in square like fashion
 		    navigation.travelToUpdate(odometer.getX() / 30.48, entryPoint_y);
-		    // TODO: add localization here
 		    navigation.travelToUpdate(entryPoint_x, entryPoint_y);
 	    }
 	    else {
 		    // travel to entry point of shallow water in square like fashion
 		    navigation.travelToUpdate(entryPoint_x, odometer.getY() / 30.48);
-		    // TODO: add localization here
 		    navigation.travelToUpdate(entryPoint_x, entryPoint_y);
 	    }
     	
-    	// TODO: add travel to end of first segment of bridge
 	    double[] bridgeMiddle = {((CaptureFlagMain.LL_verticalShallow_x + CaptureFlagMain.UR_verticalShallow_x) * 0.5), ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y) * 0.5)};
 
 	    navigation.travelToUpdate(bridgeMiddle[0], bridgeMiddle[1]);
 
-    	//TODO: add travel to end of second segment of bridge
 	    if (horizontalFirst) {
 		    navigation.travelToUpdate(bridgeMiddle[0], farthestPoint(bridgeMiddle[1], CaptureFlagMain.UR_verticalShallow_y, CaptureFlagMain.LL_verticalShallow_y));
 	    }

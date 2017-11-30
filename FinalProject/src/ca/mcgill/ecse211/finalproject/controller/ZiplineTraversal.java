@@ -1,13 +1,7 @@
 package ca.mcgill.ecse211.finalproject.controller;
-
-import com.sun.org.apache.bcel.internal.classfile.Constant;
-
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
-import ca.mcgill.ecse211.finalproject.sensor.UltrasonicController;
-import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.robotics.SampleProvider;
 
 /**
  * Responsible for handling traversal of zipline by arriving to premount point, localizing at premount point,

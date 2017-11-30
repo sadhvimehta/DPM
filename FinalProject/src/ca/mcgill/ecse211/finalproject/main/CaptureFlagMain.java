@@ -1,22 +1,16 @@
 package ca.mcgill.ecse211.finalproject.main;
 
 import ca.mcgill.ecse211.finalproject.controller.Controller;
-import ca.mcgill.ecse211.finalproject.controller.FallingEdgeUSLocalization;
-import ca.mcgill.ecse211.finalproject.controller.LightLocalization;
-import ca.mcgill.ecse211.finalproject.controller.Navigation;
 import ca.mcgill.ecse211.finalproject.display.OdometryDisplay;
 import ca.mcgill.ecse211.finalproject.display.WiFiConnect;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.Button;
-import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
-import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
-import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
 
@@ -88,14 +82,6 @@ public class CaptureFlagMain {
      * Tested constant responsible for making right wheel go faster to balance drift in wheels.
      */
     public static final double balanceConstant = 1.0072; // constant to balance out wheel imbalance
-    /**
-     * Slow motor speed in deg/sec
-     */
-    public static final int motorLow = 100; 
-    /**
-     * Fast motor speed in deg/sec
-     */
-    public static final int motorHigh = 200;
     /**
      * Starting corner
      */
@@ -243,10 +229,9 @@ public class CaptureFlagMain {
 	public static int UR_greenZone_y;
     
     public static void main(String[] args) {
-        int buttonChoice;
         final TextLCD t = LocalEV3.get().getTextLCD();
 
-        Odometer odometer = new Odometer(leftMotor, rightMotor, ziplineMotor);
+        Odometer odometer = new Odometer(leftMotor, rightMotor);
         OdometryDisplay odometryDisplay = new OdometryDisplay(odometer, t);
 
 
@@ -262,7 +247,7 @@ public class CaptureFlagMain {
         SampleProvider blockcsValue = blockcsSensor.getRGBMode();
         float[] blockcsData = new float[blockcsValue.sampleSize()];
 
-        Controller controller = new Controller(odometer, usValue, usData, csValue, csData, leftMotor, rightMotor, ziplineMotor);
+        Controller controller = new Controller(odometer, usValue, usData, csValue, csData, blockcsValue, blockcsData, leftMotor, rightMotor, ziplineMotor);
 
         WiFiConnect wifiConnection = new WiFiConnect(serverIP, teamNumber, false); // get input from server
 
