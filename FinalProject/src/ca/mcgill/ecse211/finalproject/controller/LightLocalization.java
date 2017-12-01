@@ -90,14 +90,28 @@ public class LightLocalization implements LightController {
 	 * This boolean is used to communicate between ZiplineTraversal class and LightLocalization class.
 	 */
 	public boolean endZipLineLocalization = false;
-	
+	/**
+	 * Boolean indicating whether the robot is localizing between two destination points. <br>
+	 * This boolean is used to communicate between ZiplineTraversal class and LightLocalization class.
+	 */
 	public boolean localizeOnTheMove = false;
-
+	/**
+	 * Variables which hold the highest and smallest derivative of the light value seen. These variables help the robot
+	 * detect lines while offsets of light not posing a problem.
+	 */
 	private double biggest, smallest;
-
+	/**
+	 * Variable which holds the last seen brightness to calculate the differentiation
+	 */
 	private float lastBrightness = 0;
+	/**
+	 * Variable which holds the current brightness to calculate the differentiation
+	 */
 	private float currentBrightness = 0;
-	private float dbdt = 0; // the instantaneous differentiation of the brightness d/dt(brightness)
+	/**
+	 * Variable which holds the instantaneous differentiation of the brightness d/dt(brightness)
+	 */
+	private float dbdt = 0;
 
 
 	/**
@@ -119,13 +133,16 @@ public class LightLocalization implements LightController {
 	}
 
 	/**
-	 * Main method which localizes the robot through the line detection algorithm that relies on light intensity differentiation.
+	 * Main method which localizes the robot through the line detection algorithm that relies on light intensity
+	 * differentiation. The robot goes to the origin if initial localization, and spins until four lines are caught.
+	 * This ensures that the robot does not simply freeze if not all four lines are caught. Finally, the robot
+	 * calculates its offset in position and orientation to update the odometer.
 	 */
 	public void doLocalization() {
 		// do not perform odometry correction when light localizing
 		CaptureFlagMain.doCorrection = false;
-		// if either ziplineLocalization or endZiplineLocalizatioin are true, don't go to the origin
 
+		// if either ziplineLocalization or endZiplineLocalizatioin are true, don't go to the origin
 		if ((!zipLineLocalization) && (!endZipLineLocalization) && (!localizeOnTheMove)) {
 			// get the robot close to where the origin is
 			goToEstimateOrigin();
@@ -142,7 +159,8 @@ public class LightLocalization implements LightController {
 	}
 
 	/**
-	 * Method that moves robot to origin to commence light localization.
+	 * Method that moves robot to origin to commence light localization to ensure the capture of all four lines. If not
+	 * all four lines, the robot has a safeguard as to not get weird numbers.
 	 */
 	private void goToEstimateOrigin() {
 		//turn 45 degrees to face origin (0,0)
@@ -176,7 +194,7 @@ public class LightLocalization implements LightController {
 	}
 
 	/**
-	 * Method responsible for robot to rotate and detect lines to be able to calcualte positional offset.
+	 * Method responsible for robot to rotate and detect lines to be able to calculate the positional offset.
 	 */
 	private void checkLines() {
 		//it turns anti clockwise, so 1st line it sees in neg y, then pos x, then pos y, then neg x
@@ -269,8 +287,11 @@ public class LightLocalization implements LightController {
 		}
 	}
 
+
 	/**
-	 * Method adds in values to the {@link #} with logic.
+	 * So as not to slow down the already slow processor, only the biggest and smallest derivatives are kept in memory.
+	 *
+	 * @param value the derivative of the current light value
 	 */
 	public void lastNValueAdd(double value) {
 
@@ -283,7 +304,10 @@ public class LightLocalization implements LightController {
 
 
 	/**
-	 * Method responsible for performing line detection algorithm
+	 * Method responsible for performing line detection algorithm. If the biggest differentiation has passed a certain
+	 * threshold and the smallest as well, then a line has been crossed.
+	 *
+	 * @return boolean which indicates if a line has been crossed or not
 	 */
 	public boolean pastline() { // the idea of this filter is to only look at an N number of previous values
 		// only considers a line crossed if the biggest value is higher than some threshold
@@ -304,7 +328,8 @@ public class LightLocalization implements LightController {
 
 
 	/**
-	 * Retrieves intensity read by light sensor.
+	 * Retrieves intensity read by light sensor. This method also imposes a maximum frequency as to not take up too much
+	 * compuational power and clock cycles.
 	 *
 	 * @return light sensor reading
 	 */
@@ -327,10 +352,20 @@ public class LightLocalization implements LightController {
 		return color;
 	}
 
+	/**
+	 * This method calculates the closest square side multiple along the X axis to the robot
+	 * 
+	 * @return double closest square side multiple along the X axis to the robot
+	 */
 	public double closestX() {
 		return Math.round(odometer.getX() / navigation.SIDE_SQUARE) * navigation.SIDE_SQUARE;
 	}
 
+	/**
+	 * This method calculates the closest square side multiple along the Y axis to the robot
+	 *
+	 * @return double closest square side multiple along the Y axis to the robot
+	 */
 	public double closestY() {
 		return Math.round(odometer.getY() / navigation.SIDE_SQUARE) * navigation.SIDE_SQUARE;
 
