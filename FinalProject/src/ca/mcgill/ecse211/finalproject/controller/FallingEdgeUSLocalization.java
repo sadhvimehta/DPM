@@ -19,10 +19,6 @@ import lejos.robotics.SampleProvider;
 public class FallingEdgeUSLocalization implements UltrasonicController{ 
 
 	/**
-	 * List of localization types.
-	 */
-	public enum LocalizationType { FALLING_EDGE, RISING_EDGE}
-	/**
 	 *  List of angles detected: alpha is first angle detected, beta is second angle detected.
 	 */
 	public enum AngleType {ALPHA, BETA}
@@ -78,7 +74,9 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 
 	/**
 	 * Performs actual US localization by telling robot to spin, detect the position of the walls relative to itself,
-	 * and calculate the positional offset.
+	 * and calculate the positional offset. By placing the robot on the 45 degree line from the corner, we are able to
+	 * determine the orientation by detection the angle at which a threshold is crossed with the distances to the two
+	 * walls.
 	 */
 	public void doLocalization() {
 		double angleA, angleB;
@@ -143,7 +141,7 @@ public class FallingEdgeUSLocalization implements UltrasonicController{
 	}
 	
 	/**
-	 * Calculates deltaTheta
+	 * Calculates deltaTheta which is the offset of the odometer's orientation relative to the actual orientation
 	 * @param angleA back wall angle (alpha).
 	 * @param angleB front wall angle (beta).
 	 * @return heading to add to current theta.
