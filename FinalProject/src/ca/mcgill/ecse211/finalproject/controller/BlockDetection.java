@@ -266,13 +266,13 @@ public class BlockDetection{
 		}
 		// below, travels to nearest block detection point.
 		if (closestCorner == 0) {
-			navigation.travelToUpdate(this.cornerZero_x, this.cornerZero_y);
+			navigation.travelTo(this.cornerZero_x, this.cornerZero_y);
 		} else if (closestCorner == 1) {
-			navigation.travelToUpdate(this.cornerOne_x, this.cornerOne_y);
+			navigation.travelTo(this.cornerOne_x, this.cornerOne_y);
 		} else if (closestCorner == 2) {
-			navigation.travelToUpdate(this.cornerTwo_x, this.cornerTwo_y);
+			navigation.travelTo(this.cornerTwo_x, this.cornerTwo_y);
 		} else {
-			navigation.travelToUpdate(this.cornerThree_x, this.cornerThree_y);
+			navigation.travelTo(this.cornerThree_x, this.cornerThree_y);
 		}
 
 		//localise to correct our angle and position
@@ -304,11 +304,11 @@ public class BlockDetection{
 
 			// a travel method that does not block allowing for searching while the motors turn
 			if (vector[0] == 0) {
-				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.turnTo(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
 				navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
 			} else if (vector[1] == 0) {
 				System.out.println("turning to " + navigation.turnToAngle(nextPoint[0], nextPoint[1]));
-				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
+				navigation.turnTo(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
 				navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
 			}
 

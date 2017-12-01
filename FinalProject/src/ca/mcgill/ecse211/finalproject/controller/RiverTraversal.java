@@ -2,17 +2,14 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
  * Responsible for finding a path through shallow water and actual traversal of river using shallow water crossing.
  * This class mainly contains the doTrversal method which takes care of this river traversal to go to the green side.
+ * The traversal implemented makes sure to cross the river in the middle of the squares so as to not fall in the water.
  *
  */
 public class RiverTraversal {
-	/**
-	 * left motor of robot.
-	 */
     /**
      * Odometer which is responsible for calculating robot's current position using odometry.
      */
@@ -21,17 +18,54 @@ public class RiverTraversal {
 	 * Navigation which contains basic methods of moving our robot.
 	 */
     private Navigation navigation;
-    private double cornerZero_x;
-    private double cornerZero_y;
-    private double cornerOne_x;
-    private double cornerOne_y;
-    private double cornerTwo_x;
-    private double cornerTwo_y;
-    private double cornerThree_x;
-    private double cornerThree_y;
-    private double entryPoint_x;
-    private double entryPoint_y;
-
+	/**
+	 * The corner zero is lower left corner of search region.
+	 * This variable corresponds to the X value.
+	 */
+	private double cornerZero_x;
+	/**
+	 * The corner zero is lower left corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
+	private double cornerZero_y;
+	/**
+	 * The corner one is lower right corner of search region.
+	 * This variable corresponds to the X value.
+	 */
+	private double cornerOne_x;
+	/**
+	 * The corner one is lower right corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
+	private double cornerOne_y;
+	/**
+	 * The corner two is upper right corner of search region.
+	 * This variable corresponds to the X value.
+	 */
+	private double cornerTwo_x;
+	/**
+	 * The corner two is upper right corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
+	private double cornerTwo_y;
+	/**
+	 * The corner three is upper left corner of search region.
+	 * This variable corresponds to the X value.
+	 */
+	private double cornerThree_x;
+	/**
+	 * The corner three is upper left corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
+	private double cornerThree_y;
+	/**
+	 * Variables which denote the X and Y of the entry point from the red zone to the shallow river to cross it.
+	 */
+	private double entryPoint_x, entryPoint_y;
+	/**
+	 * Boolean which indicates the orientation of the part of the shallow river that touches the red zone, this helps
+	 * in getting to the river without traveling on the shoreline.
+	 */
     private boolean horizontalFirst = false;
     
     
@@ -45,7 +79,8 @@ public class RiverTraversal {
     }
     
     /**
-     * Method responsible for seeing if point is within red zone boundaries
+     * Method responsible for seeing if point is within red zone boundaries. This is done by comparing the X and Y of
+     * the point in question to the X and Y of the redzone.
      */
     private boolean isContainedInRed(int x, int y){
     	
@@ -77,7 +112,11 @@ public class RiverTraversal {
     }
 
 	/**
-	 *
+	 * Method which finds which point is farthest from the position
+	 * @param position  the current position of the robot
+	 * @param point1    a point
+	 * @param point2    a second point
+	 * @return the point which is the farthest from the position
 	 */
 	private double farthestPoint(double position, double point1, double point2) {
 		if (Math.abs(position - point1) > Math.abs(position - point2)) {
@@ -88,7 +127,9 @@ public class RiverTraversal {
 		}
 	}
 	/**
-	 * Method responsible to determine entry point of river.
+	 * Method responsible to determine entry point of river. This method goes through the X and Y of the vertical and
+	 * horizontal shallow rectangles. If a corner is along the border of the red zone, then that is the starting shallow
+	 * piece to cross.
      */
     private void entryPointRiver(){
     	// initialize corners
@@ -132,24 +173,24 @@ public class RiverTraversal {
 
 	    if (horizontalFirst) {
 		    // travel to entry point of shallow water in square like fashion
-		    navigation.travelToUpdate(odometer.getX() / 30.48, entryPoint_y);
-		    navigation.travelToUpdate(entryPoint_x, entryPoint_y);
+		    navigation.travelTo(odometer.getX() / 30.48, entryPoint_y);
+		    navigation.travelTo(entryPoint_x, entryPoint_y);
 	    }
 	    else {
 		    // travel to entry point of shallow water in square like fashion
-		    navigation.travelToUpdate(entryPoint_x, odometer.getY() / 30.48);
-		    navigation.travelToUpdate(entryPoint_x, entryPoint_y);
+		    navigation.travelTo(entryPoint_x, odometer.getY() / 30.48);
+		    navigation.travelTo(entryPoint_x, entryPoint_y);
 	    }
     	
 	    double[] bridgeMiddle = {((CaptureFlagMain.LL_verticalShallow_x + CaptureFlagMain.UR_verticalShallow_x) * 0.5), ((CaptureFlagMain.LL_horizontalShallow_y + CaptureFlagMain.UR_horizontalShallow_y) * 0.5)};
 
-	    navigation.travelToUpdate(bridgeMiddle[0], bridgeMiddle[1]);
+	    navigation.travelTo(bridgeMiddle[0], bridgeMiddle[1]);
 
 	    if (horizontalFirst) {
-		    navigation.travelToUpdate(bridgeMiddle[0], farthestPoint(bridgeMiddle[1], CaptureFlagMain.UR_verticalShallow_y, CaptureFlagMain.LL_verticalShallow_y));
+		    navigation.travelTo(bridgeMiddle[0], farthestPoint(bridgeMiddle[1], CaptureFlagMain.UR_verticalShallow_y, CaptureFlagMain.LL_verticalShallow_y));
 	    }
 	    else {
-	    	navigation.travelToUpdate(farthestPoint(bridgeMiddle[0], CaptureFlagMain.UR_horizontalShallow_x, CaptureFlagMain.LL_horizontalShallow_y), bridgeMiddle[1]);
+	    	navigation.travelTo(farthestPoint(bridgeMiddle[0], CaptureFlagMain.UR_horizontalShallow_x, CaptureFlagMain.LL_horizontalShallow_y), bridgeMiddle[1]);
 	    }
     	//end of traversal
     }

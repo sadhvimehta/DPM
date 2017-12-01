@@ -4,7 +4,6 @@ import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.geometry.Point2D;
-import java.util.ArrayList;
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 
@@ -19,16 +18,46 @@ import ca.mcgill.ecse211.finalproject.odometry.Odometer;
  */
 public class Navigation{
 
+	/**
+	 * Constant which is the size of a tile of the game board in centimeters
+	 */
     public static final double SIDE_SQUARE = 30.48;
-    public static final int FORWARD_SPEED = 250;
+	/**
+	 * Constant which is the forward speed assigned to the motors throughout the run of the competition
+	 */
+	public static final int FORWARD_SPEED = 250;
+	/**
+	 * Constant which is the rotating speed assigned to the motors throughout the run of the competition
+	 */
     public static final int ROTATE_SPEED = 200;
+	/**
+	 * Constant which is the number of block after which relocalization should be done to ensure precision in our
+	 * odometer
+	 */
     public static final int SECURE_BLOCK_LENGTH = 4;
-    private double theta;
-    private boolean isNavigating;
+	/**
+	 * Variable which is the angle the robot must cover to aim to the intended destination
+	 */
+	private double theta;
+	/**
+	 * EV3LargeRegulatedMotor which is the left motor of the robot
+	 */
     private EV3LargeRegulatedMotor leftMotor;
+	/**
+	 * EV3LargeRegulatedMotor which is the right motor of the robot
+	 */
     private EV3LargeRegulatedMotor rightMotor;
+	/**
+	 * Variable which is the odometer of the robot
+	 */
     private Odometer odometer;
+	/**
+	 * Sample provider of the color sensor used to fetch light sensor's readings.
+	 */
 	private SampleProvider csValue;
+	/**
+	 * Array containing data obtained from light sensor.
+	 */
 	private float[] csData;
 
     /**
@@ -52,62 +81,27 @@ public class Navigation{
         
     }
     /**
-     * Method responsible to make robot travel to a certain point.
+     * Method responsible to make robot travel to a certain point. This method takes care of turning towards the right
+     * angle to travel to the intended destination. The method even takes care of taking the smallest angle needed.
      * @param x x-coordinate to travel to.
      * @param y y-coordinate to travel to.
      */
     public void travelTo(double x, double y) {
-        isNavigating = true;
-        // this finds the change in x and y necessary to get to the target point
-        double deltax = x * SIDE_SQUARE - odometer.getX();
-        double deltay = y * SIDE_SQUARE - odometer.getY();
+	    x = x * SIDE_SQUARE;
+	    y = y * SIDE_SQUARE;
+	    double currentX = odometer.getX();
+	    double currentY = odometer.getY();
+	    Point2D.Double currentPosition = new Point2D.Double(currentX, currentY);
+	    Point2D.Double desiredPosition = new Point2D.Double(x, y);
+	    double distanceToTravel = currentPosition.distance(desiredPosition); // calculates distance between the two points
+	    double differenceInTheta = turnToAngle(x, y);
+	    turnTo(differenceInTheta);
 
-        // this finds the longs side which is the distance the robot must travel
-        double h = Math.sqrt(Math.pow(deltax, 2) + Math.pow(deltay, 2));
-
-        // this part creates a triangle and finds the angle which the robot must face to get to its
-        // point
-        if (deltax == 0 || deltay == 0) {
-            if (deltax == 0) {
-                if (deltay < 0) {
-                    theta = Math.PI;
-                } else if (deltay > 0) {
-                    theta = 0;
-                }
-            } else if (deltay == 0) {
-                if (deltax < 0) {
-                    theta = 3 * Math.PI / 2;
-                } else if (deltax > 0) {
-                    theta = Math.PI / 2;
-                }
-            }
-        } else if (deltay > 0) {
-            if (deltax > 0) {
-                theta = Math.PI / 2 - Math.asin(deltay / h);
-            } else if (deltax < 0) {
-                theta = 3 * Math.PI / 2 + Math.asin(deltay / h);
-            }
-        } else if (deltay < 0) {
-            if (deltax > 0) {
-                theta = Math.PI - Math.asin(deltax / h);
-            } else if (deltax < 0) {
-                theta = Math.PI + Math.asin(Math.abs(deltax) / h);
-            }
-        }
-        
-
-        // the robot will only turn if it is not facing the angle it must face to get to the point
-        if (odometer.getTheta() != theta) {
-            turnTo(theta);
-        }
-
-        // the robot then rolls forward to get to the point
-        leftMotor.setSpeed(FORWARD_SPEED);
-
-        rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
-        leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), true);
-        rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, h), false);
-        isNavigating = false;
+	    // drive forward required distance
+	    leftMotor.setSpeed(FORWARD_SPEED);
+	    rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
+	    leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distanceToTravel), true);
+	    rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distanceToTravel), false);
     }
     /**
      * Method that converts distance to travel to required wheel rotations.
@@ -132,54 +126,35 @@ public class Navigation{
     
     /**
      * Method responsible to rotate robot by minimal angle to face a certain orientation.
-     * @param theta angle to rotate by in radians.
+     * @param differenceInTheta angle to rotate by in radians.
      */
-    public void turnTo(double theta) {
-        // the robot checks the angle it must travel to
-        double travelangle = theta - odometer.getTheta();
-
-        leftMotor.setSpeed(ROTATE_SPEED);
-        rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-
-        // this is just to make sure that the robot takes the most optimal route, thus always turning
-        // 180 or less
-        if (Math.abs(travelangle) < Math.PI) {
-            if (travelangle > 0) {
-                leftMotor.rotate(
-                        convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), true);
-                rightMotor.rotate(
-                        -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), false);
-            } else if (travelangle < 0) {
-                leftMotor.rotate(
-                        -convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), true);
-                rightMotor.rotate(
-                        convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(Math.abs(travelangle))), false);
-            }
-        } else if (Math.abs(travelangle) > Math.PI) {
-            if (travelangle > Math.PI) {
-                leftMotor.rotate(
-                        -convertAngle(
-                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
-                                Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
-                        true);
-                rightMotor.rotate(
-                        convertAngle(
-                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
-                                Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
-                        false);
-            } else if (travelangle < -Math.PI) {
-                leftMotor.rotate(
-                        convertAngle(
-                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
-                                Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
-                        true);
-                rightMotor.rotate(
-                        -convertAngle(
-                                CaptureFlagMain.WHEEL_RADIUS,  CaptureFlagMain.TRACK,
-                                Math.toDegrees(Math.abs(2 * Math.PI - Math.abs(travelangle)))),
-                        false);
-            }
-        }
+    public void turnTo(double differenceInTheta) {
+	    // makes robot turn by the minimal angle (in radians)
+	    if ((differenceInTheta >= -(Math.PI)) && (differenceInTheta <= Math.PI)) {
+		    if (differenceInTheta < 0) {
+			    leftMotor.setSpeed(ROTATE_SPEED);
+			    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+			    leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(-differenceInTheta))), true);
+			    rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(-differenceInTheta)), false);
+		    } else {
+			    leftMotor.setSpeed(ROTATE_SPEED);
+			    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+			    rightMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(differenceInTheta))), true);
+			    leftMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(differenceInTheta)), false);
+		    }
+	    } else if (differenceInTheta < -(Math.PI)) {
+		    differenceInTheta = differenceInTheta + (2 * Math.PI);
+		    leftMotor.setSpeed(ROTATE_SPEED);
+		    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+		    leftMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(differenceInTheta)), true);
+		    rightMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(differenceInTheta))), false);
+	    } else if (differenceInTheta > (Math.PI)) {
+		    differenceInTheta = (2 * Math.PI) - differenceInTheta;
+		    leftMotor.setSpeed(ROTATE_SPEED);
+		    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
+		    rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(differenceInTheta)), true);
+		    leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(differenceInTheta))), false);
+	    }
     }
     
     /**
@@ -192,8 +167,6 @@ public class Navigation{
     	rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant)); 
         leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distance), true);
         rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distance), immediateReturn);
-        //leftMotor.stop(true);
-        //rightMotor.stop(false);
     }
     
     /**
@@ -223,7 +196,8 @@ public class Navigation{
     }
     
     /**
-     * Method responsible to return robot to its starting corner after it has located enemy's flag.
+     * Method responsible to return robot to its starting corner after it has located enemy's flag. This is the final
+     * piece in the puzzle to complete the challenge of capturing a flag while crossing obstacles.
      */
     public void returnToOrigin(){
     	
@@ -244,56 +218,8 @@ public class Navigation{
         	
     	
     }
-    
-	public void travelToUpdate(double x, double y){
-				x = x * SIDE_SQUARE;
-				y = y * SIDE_SQUARE;
-				double currentX = odometer.getX();
-				double currentY = odometer.getY();
-				Point2D.Double currentPosition = new Point2D.Double(currentX, currentY);
-				Point2D.Double desiredPosition = new Point2D.Double(x, y);
-				double distanceToTravel = currentPosition.distance(desiredPosition); // calculates distance between the two points
-				double differenceInTheta = turnToAngle(x,y);
-				turnToUpdate(differenceInTheta);
-				
-				// drive forward required distance
-			    leftMotor.setSpeed(FORWARD_SPEED);
-			    rightMotor.setSpeed((int) (FORWARD_SPEED * CaptureFlagMain.balanceConstant));
-			    leftMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distanceToTravel), true);
-			    rightMotor.rotate(convertDistance(CaptureFlagMain.WHEEL_RADIUS, distanceToTravel), false);
-	}
-	
-	void turnToUpdate(double differenceInTheta){ // makes robot turn by the minimal angle (in radians)
-		if((differenceInTheta >= -(Math.PI)) && (differenceInTheta <= Math.PI)){
-			if(differenceInTheta < 0){
-				leftMotor.setSpeed(ROTATE_SPEED);
-			    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-				leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(-differenceInTheta))), true);
-				rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK, Math.toDegrees(-differenceInTheta)), false);
-			}
-			else{
-				leftMotor.setSpeed(ROTATE_SPEED);
-			    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-				rightMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), true);
-				leftMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), false);
-			}
-		}
-		else if(differenceInTheta < -(Math.PI)){
-			differenceInTheta = differenceInTheta + (2*Math.PI);
-			leftMotor.setSpeed(ROTATE_SPEED);
-		    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-			leftMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), true);
-			rightMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), false);
-		}
-		else if(differenceInTheta > (Math.PI)){
-			differenceInTheta = (2*Math.PI) - differenceInTheta;
-			leftMotor.setSpeed(ROTATE_SPEED);
-		    rightMotor.setSpeed((int) (ROTATE_SPEED * CaptureFlagMain.balanceConstant));
-			rightMotor.rotate(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta)), true);
-			leftMotor.rotate(-(convertAngle(CaptureFlagMain.WHEEL_RADIUS, CaptureFlagMain.TRACK,  Math.toDegrees(differenceInTheta))), false);
-		}
-	}
-	
+
+
 	/**
 	 * Calculates angle to turn to for when wanting to travel to a specific point
 	 * @param x x-coordinate of desired point
@@ -315,7 +241,13 @@ public class Navigation{
 	}
 
 	/**
+	 * Method which implements the travelling, but relocalizes every specified block length to ensure that the odometer is
+	 * correct throughout the competition. This method only works with X and Y where either one is zero in relation to
+	 * the current position of the robot. Thus, this method only works when the robot is travelling along the grid lines
+	 * as it needs the lines to localize.
 	 *
+	 * @param x the X position of the final destination
+	 * @param y the Y position of the final destination
 	 */
 	public void travelToWLocalize(double x, double y) {
 		double dx = x - Math.round(odometer.getX() / Navigation.SIDE_SQUARE);
@@ -327,7 +259,7 @@ public class Navigation{
 			if (Math.abs(dx) > Math.abs(dy)) {    // moves horizontally
 				if (dx > 0) {                     // moves to the right
 					for (int i = 0; i < Math.floor( dx / Navigation.SECURE_BLOCK_LENGTH); i++) {
-						travelToUpdate(Math.round(odometer.getX() / Navigation.SIDE_SQUARE) + Navigation.SECURE_BLOCK_LENGTH, y);
+						travelTo(Math.round(odometer.getX() / Navigation.SIDE_SQUARE) + Navigation.SECURE_BLOCK_LENGTH, y);
 						lightLocalization.localizeOnTheMove = true;
 						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
@@ -335,7 +267,7 @@ public class Navigation{
 					}
 				} else {                           // moves to the left
 					for (int i = 0; i < Math.floor(dx / Navigation.SECURE_BLOCK_LENGTH); i++) {
-						travelToUpdate(Math.round(odometer.getX() / Navigation.SIDE_SQUARE) - Navigation.SECURE_BLOCK_LENGTH, y);
+						travelTo(Math.round(odometer.getX() / Navigation.SIDE_SQUARE) - Navigation.SECURE_BLOCK_LENGTH, y);
 						lightLocalization.localizeOnTheMove = true;
 						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
@@ -346,7 +278,7 @@ public class Navigation{
 				if (dy > 0) {                     // moves to the right
 					for (int i = 0; i < Math.floor(dy / Navigation.SECURE_BLOCK_LENGTH); i++) {
 						System.out.println(dy/ Navigation.SECURE_BLOCK_LENGTH); //check going there
-						travelToUpdate(x, Math.round(odometer.getY() / Navigation.SIDE_SQUARE) + Navigation.SECURE_BLOCK_LENGTH);
+						travelTo(x, Math.round(odometer.getY() / Navigation.SIDE_SQUARE) + Navigation.SECURE_BLOCK_LENGTH);
 						lightLocalization.localizeOnTheMove = true;
 						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
@@ -354,7 +286,7 @@ public class Navigation{
 					}
 				} else {                           // moves to the left
 					for (int i = 0; i < Math.floor(dy / Navigation.SECURE_BLOCK_LENGTH); i++) {
-						travelToUpdate(x, Math.round(odometer.getY() / Navigation.SIDE_SQUARE) - Navigation.SECURE_BLOCK_LENGTH);
+						travelTo(x, Math.round(odometer.getY() / Navigation.SIDE_SQUARE) - Navigation.SECURE_BLOCK_LENGTH);
 						lightLocalization.localizeOnTheMove = true;
 						turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
 						lightLocalization.doLocalization();
@@ -366,6 +298,6 @@ public class Navigation{
 		}
 		Sound.setVolume(30);
 		Sound.beep();
-		travelToUpdate(x, y);
+		travelTo(x, y);
 	}
 }

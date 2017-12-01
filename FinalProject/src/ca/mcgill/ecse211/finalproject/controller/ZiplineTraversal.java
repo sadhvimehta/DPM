@@ -1,11 +1,13 @@
 package ca.mcgill.ecse211.finalproject.controller;
+
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
 /**
  * Responsible for handling traversal of zipline by arriving to premount point, localizing at premount point,
- * mounting zipline, traversing it, and localize after dismount.
+ * mounting zipline, traversing it, and localize after dismount. This class is quite crucial as it is the only to cross
+ * from the green zone to the red zone. Furthermore, this part is highly susceptible to errors as it is quite finicky.
  */
 public class ZiplineTraversal{
 	/**
@@ -36,6 +38,7 @@ public class ZiplineTraversal{
      * length of zipline in cm.
      */
     private double ZIPLINE_LENGTH = 123.4;
+
     /**
 	 * Constructor for the class ZiplineTraversal which links parameters to class variables.
      */
@@ -54,7 +57,11 @@ public class ZiplineTraversal{
     }
     
     /**
-     * Method responsible for going to zipline and performing zipline traversal.
+     * Method responsible for going to zipline and performing zipline traversal. <br>
+     * The method first bring the robot to the point denoted as premount point. This point is chosen as it is far enough
+     * from the zipline to perform a localization without hitting the pole. The robot then activates the zipline motor
+     * while still spinning the bottom wheel motors to advance when hitting back the ground. As the robot is disoriented
+     * about its position, a localization is performed immediately.
      */
     public void doTraversal() {
 
