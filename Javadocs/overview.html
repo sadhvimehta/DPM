@@ -26,11 +26,8 @@
     the
     status of the robot, another thread was used in <i>OdometryDisplay</i> class as we want the screen to be
     constantly
-    updated whilst the robot performs other actions. Next, our third thread is dedicated to the class <i>OdometryCorrection</i>. This class takes care of
-    correcting the odometer of the robot as the competition unfolds. Odometry correction occurs through the detection of grid lines drawn on the arena.
-    This
-    class must absolutely be a thread as we would not want to miss a line capture whilst the robot moves along the tiles.
-	These three class make up the threads implemented in our software.
+    updated whilst the robot performs other actions.
+	These two classes make up the threads implemented in our software.
 </p>
 <p style="text-indent: 30px">
     Apart from the previously mentioned threads, the class that controls the sequences of actions of the robot is the <i>Controller</i> class.
@@ -47,9 +44,7 @@
     from
     one side of the map to the other. The class, <i>BlockDetection</i>, then helps with finding blocks and
     identifying which of them is the opponents flag. Once the flag has been captured, the robot must return to its side with
-    the help of the <i>Navigation</i> class once again. All along, the <i>Controller</i> makes sure that the robot is
-    not
-    running into anything with the help of <i>ObstacleAvoidance</i> class in case the robot gets too close to any object.
+    the help of the <i>Navigation</i> class once again.
 </p>
 <p style="text-indent: 30px">
     The last part of the structure of this project are the interfaces: <i>LightController</i> and
@@ -62,24 +57,18 @@
 	<ul>
 		<li> CaptureFlagMain </li>
 		<li> Odometer </li>
-		<li> OdometryCorrection </li>
 		<li> OdometryDisplay </li>
 	</ul>
 	
 	<b> Enumeration of Capture The Flag Threads' Shared Variables: </b>
 	<ul>
 		<li> Odometer's Position </li>
-		<li> isLocalizing </li>
-		<li> lineEncountered </li>
 	</ul>
 	
 	Below explains the usage of the shared variable amongst the threads followed by a diagram showing their communication. <br> <br>
 	<b> Odometer's position: </b> <br>
 	<i> OdometryDisplay Thread</i> needs to talk to the
 	<i> Odometer Thread</i> to get its position to display it. <br>
-	<i> OdometryCorrection Thread</i> sets the odometer's position during correction (when a line is encountered). <br> <br>
-	<b> lineEncountered & isLocalizing: </b> <br>
-	<i> OdometryCorrection Thread</i> is constantly checking if <i>lineEcountered</i> is true AND if <i>isLocalizing</i> is false. Only then will it set the odometer's position. <br> <br>
 	<img src="./threadCommunication.jpg">
 </p>
 </body>
