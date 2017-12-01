@@ -20,15 +20,12 @@ public class BlockDetection{
 	 * Period for which sensor reading must be taken.
 	 */
 	private static final long LOOP_TIME = 5;
-	private double DIST_FAULT = 0.165;  // about 5 cm
-	private double INCREMENT = 0.328; // about 10 cm
 	/**
 	 * Navigation which contains basic methods of moving our robot.
 	 */
 	private Navigation navigation;
 	/**
 	 * Odometer which calculates robot's position using odometry.
-
 	 */
 	private Odometer odometer;
 	/**
@@ -47,35 +44,73 @@ public class BlockDetection{
 	 * Array containing data obtained from light sensor.
 	 */
     private float[] csData;
-    
-    private LightLocalization lightLocalization;
-
-    // below correspond to corners of search region.
-    // corner zero is lower left corner
-    // corner one is lower right corner
-    // corner two is upper right corner
-    // corner three is upper left corner
-    private double cornerZero_x;
+	/**
+	 * Lightlocalization which is needed to update position throughout run
+	 */
+	private LightLocalization lightLocalization;
+	/**
+	 * The corner zero is lower left corner of search region.
+	 * This variable corresponds to the X value.
+	 */
+	private double cornerZero_x;
+	/**
+	 * The corner zero is lower left corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
     private double cornerZero_y;
+	/**
+	 * The corner one is lower right corner of search region.
+	 * This variable corresponds to the X value.
+	 */
     private double cornerOne_x;
+	/**
+	 * The corner one is lower right corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
     private double cornerOne_y;
+	/**
+	 * The corner two is upper right corner of search region.
+	 * This variable corresponds to the X value.
+	 */
     private double cornerTwo_x;
+	/**
+	 * The corner two is upper right corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
     private double cornerTwo_y;
+	/**
+	 * The corner three is upper left corner of search region.
+	 * This variable corresponds to the X value.
+	 */
     private double cornerThree_x;
+	/**
+	 * The corner three is upper left corner of search region.
+	 * This variable corresponds to the Y value.
+	 */
     private double cornerThree_y;
-
-    private double[][] corners = new double[4][2];
-
+	/**
+	 * This is a 2D array for the X and Y of the corners
+	 */
+	private double[][] corners = new double[4][2];
+	/**
+	 * Array of length three for the color data returned from the light sensor as there are three channels: RGB
+	 */
     private double[] colorData = new double[3];
-
+	/**
+	 * Variable to keep track of the closest corner to the current position on the map
+	 */
 	private int closestCorner = 0;
-
+	/**
+	 * Variable to determine which is the color of the opponent's flag
+	 */
 	private String color;
 	/**
 	 * Variables that hold the values of the start and end of sensor polling.
 	 */
 	private long correctionStart, correctionEnd;
-
+	/**
+	 * Variable which indicates if the flag has been found yet
+	 */
 	private boolean hasflagfound = false;
     
 	/**
@@ -102,7 +137,6 @@ public class BlockDetection{
 	 * It navigates robot to the flag zone and then instructs it to looks for blocks and identify enemy flag.
 	 * This method also represents one of the states that controller will be in along the competition.
 	 */
-	//TODO: complete this method
 	public void findFlag() {
 		gotoSearch();
 		search();
@@ -147,6 +181,11 @@ public class BlockDetection{
 		}
 	}
 
+	/**
+	 * This method polls the color sensor on the side of the robot, with a maximum frequency, to determine if the block
+	 * to the left of the robot is indeed the flag that we must find
+	 * @return hasflagfound which tells if the flag has been found yet
+	 */
 	public boolean foundFlag() {
 		correctionStart = System.currentTimeMillis();
 
@@ -155,6 +194,7 @@ public class BlockDetection{
 		double g = colorData[1] * 100;
 		double b = colorData[2] * 100;
 
+		// check to cap the frequency of the polling for color
 		correctionEnd = System.currentTimeMillis();
 		if (correctionEnd - correctionStart < LOOP_TIME) {
 			try {
@@ -163,6 +203,8 @@ public class BlockDetection{
 			catch (InterruptedException e) {}
 		}
 
+		// cases for the color that is being looked for with the RGB values which correspond to the specific color,
+		// which have been found through testing
 		switch (color) {
 			case "Red":
 				if (g > 0.1 && b > 0.1 && r >= g * 4) {
@@ -188,6 +230,10 @@ public class BlockDetection{
 		return hasflagfound;
 	}
 
+	/**
+	 * This method brings the robot to the closest corner of the search zone relative to its current position as to not
+	 * waste time. The method also localizes at that corner to ensure accuracy with our odometer.
+	 */
 	public void gotoSearch() {
 		// initialize corners of search zone (do it inside method in order to ensure LL_search_x etc were initialsied by wifi for sure)
 		cornerZero_x = CaptureFlagMain.LL_search_x;
@@ -216,11 +262,9 @@ public class BlockDetection{
 			closestCorner = 2;
 		}
 		if ((distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y) < shortestDistance)) {
-			//shortestDistance = distanceBetweenPoint(CaptureFlagMain.ziplineOther_red_x, CaptureFlagMain.ziplineOther_red_y, cornerThree_x, cornerThree_y);
 			closestCorner = 3;
 		}
 		// below, travels to nearest block detection point.
-		// if distance >= 4.5 tiles, localizes once during travel to search area.
 		if (closestCorner == 0) {
 			navigation.travelToUpdate(this.cornerZero_x, this.cornerZero_y);
 		} else if (closestCorner == 1) {
@@ -233,22 +277,32 @@ public class BlockDetection{
 
 		//localise to correct our angle and position
 		lightLocalization.localizeOnTheMove = true;
-		navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+		//turn to 45 to ensure we cross the correct lines during localization
+		navigation.turnTo(Math.toRadians(45));
 		lightLocalization.doLocalization();
 		lightLocalization.localizeOnTheMove = false;
 	}
 
+	/**
+	 * This is the method that actually implements the logic of the flag searching amongst the blocks in the search
+	 * zone. To accomplish this task, the robot drives from corner to corner while looking if the block if the flag.
+	 * This method is quite easy however, it covers quite a few cases while only failing in a few cases. The whole
+	 * search algorithm also has a timeout in case the search takes too long.
+	 */
 	public void search() {
+		// inital time when the searching has started
 		double starttime = System.currentTimeMillis();
+		// calculating of the starting corner and the next corner
 		double[] startPoint = corners[closestCorner];
 		double[] nextPoint = corners[(closestCorner + 1) % 4];
 
-		//from og point to other point
+		// vector denoting distance from current point to next point
 		double[] vector = {nextPoint[0] - corners[closestCorner][0], nextPoint[1] - corners[closestCorner][1]};
 
-		//double[] alignedPoint = corners[closestCorner];
-
+		// a simple check to stop if the next point runs into the wall or if the next point was the starting point
 		while (nextPoint[0] == CaptureFlagMain.MAP_SIZE || nextPoint[0] == 0 || nextPoint[1] == CaptureFlagMain.MAP_SIZE || nextPoint[1] == 0 || nextPoint == startPoint) {
+
+			// a travel method that does not block allowing for searching while the motors turn
 			if (vector[0] == 0) {
 				navigation.turnToUpdate(navigation.turnToAngle(nextPoint[0], nextPoint[1]));
 				navigation.advance((long) (vector[1] * Navigation.SIDE_SQUARE), false);
@@ -258,21 +312,25 @@ public class BlockDetection{
 				navigation.advance((long) (vector[0] * Navigation.SIDE_SQUARE), false);
 			}
 
+			// make sure to keep checking while the motor are still in movement
 			while (leftMotor.isMoving() || rightMotor.isMoving()) {
+				// when the flag is found, we stop, beep, and localize
 				if (foundFlag()) {
 					hasflagfound = true;
 					leftMotor.stop();
 					rightMotor.stop();
-					lightLocalization.localizeOnTheMove = true;
-					navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
-					lightLocalization.doLocalization();
-					lightLocalization.localizeOnTheMove = false;
 					Sound.setVolume(30);
 					Sound.beep();
 					Sound.beep();
 					Sound.beep();
+					lightLocalization.localizeOnTheMove = true;
+					navigation.turnTo(Math.toRadians(45)); //turn to 45 to ensure we cross the correct lines during localization
+					lightLocalization.doLocalization();
+					lightLocalization.localizeOnTheMove = false;
 					return;
-				} else if (System.currentTimeMillis() - starttime > (60 * 1000)) {
+				}
+				// if the max time has been reached, we stop to keep going with the rest of the course
+				else if (System.currentTimeMillis() - starttime > (60 * 1000)) {
 					Sound.setVolume(30);
 					Sound.beep();
 					Sound.beep();
@@ -281,6 +339,7 @@ public class BlockDetection{
 				}
 			}
 
+			// calculating the next point to travel to and calculating the vector
 			nextPoint = corners[(closestCorner + 1) % 4];
 
 			vector[0] = nextPoint[0] - corners[closestCorner][0];
