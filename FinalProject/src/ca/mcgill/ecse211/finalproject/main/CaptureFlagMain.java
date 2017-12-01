@@ -46,10 +46,12 @@ public class CaptureFlagMain {
     public static final Port usPort = LocalEV3.get().getPort("S1");
     
     /**
-     * Color sensors port.
+     * Color sensor port for light localization.
      */
     public static final Port csPort = LocalEV3.get().getPort("S2");
-    
+    /**
+     * Color sensor port for block detection.
+     */
     public static final Port blockcsPort = LocalEV3.get().getPort("S4");
     
     /**
@@ -74,7 +76,7 @@ public class CaptureFlagMain {
     public static double TRACK = 15.90; //DO NOT CHANGE TRACK WHATSOEVER
 
 	/**
-	 *
+	 * Number of tiles within map.
 	 */
 	public static int MAP_SIZE = 12;
     
@@ -211,20 +213,43 @@ public class CaptureFlagMain {
 	 * Search upper right corner in our zone (y)
 	 */
 	public static int UR_mysearch_y;
-
+	/**
+	 * Lower left corner of red zone (x)
+	 */
 	public static int LL_redZone_x;
+	/**
+	 * Lower left corner of red zone (y)
+	 */
 
 	public static int LL_redZone_y;
+	/**
+	 * Upper right corner of red zone (x)
+	 */
 
 	public static int UR_redZone_x;
+	/**
+	 * Upper right corner of red zone (y)
+	 */
 
 	public static int UR_redZone_y;
+	/**
+	 * Lower left corner of green zone (x)
+	 */
 
 	public static int LL_greenZone_x;
+	/**
+	 * Lower left corner of green zone (y)
+	 */
 
 	public static int LL_greenZone_y;
+	/**
+	 * Upper right corner of green zone (x)
+	 */
 
 	public static int UR_greenZone_x;
+	/**
+	 * Upper right corner of green zone (y)
+	 */
 
 	public static int UR_greenZone_y;
     
