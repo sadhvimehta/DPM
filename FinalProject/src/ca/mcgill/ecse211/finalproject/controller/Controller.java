@@ -63,7 +63,7 @@ public class Controller{
 
         this.lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
 
-        this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor);
+        this.ziplineTraversal = new ZiplineTraversal(navigation, lightLocalization, leftMotor, rightMotor, ziplineMotor);
 
         this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, blockCsValue, blockCsData, lightLocalization);
         

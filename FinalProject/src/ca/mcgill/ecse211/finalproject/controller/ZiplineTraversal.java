@@ -19,10 +19,6 @@ public class ZiplineTraversal{
      */
     private EV3LargeRegulatedMotor rightMotor;
     /**
-     * Odometer which is responsible for calculating robot's current position using odometry.
-     */
-    private Odometer odometer;
-    /**
      * LightLocalization which is responsible for mounting at premount point postdismount point.
      */
     private LightLocalization lightLocalization;
@@ -43,14 +39,12 @@ public class ZiplineTraversal{
 	 * Constructor for the class ZiplineTraversal which links parameters to class variables.
      */
     public ZiplineTraversal(Navigation navigation,
-                            Odometer odometer,
                             LightLocalization lightLocalization,
                             EV3LargeRegulatedMotor leftMotor,
                             EV3LargeRegulatedMotor rightMotor,
                             EV3LargeRegulatedMotor ziplineMotor) {
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
-        this.odometer = odometer;
         this.lightLocalization = lightLocalization;
         this.ziplineMotor = ziplineMotor;
         this.navigation = navigation;
