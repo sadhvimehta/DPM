@@ -2,7 +2,6 @@ package ca.mcgill.ecse211.finalproject.controller;
 
 import ca.mcgill.ecse211.finalproject.main.CaptureFlagMain;
 import ca.mcgill.ecse211.finalproject.odometry.Odometer;
-import ca.mcgill.ecse211.finalproject.odometry.OdometryCorrection;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 
@@ -24,15 +23,6 @@ public class Controller{
 	 */
 	private Navigation navigation;
 	/**
-	 * Odometer which calculates robot's position using odometry.
-	 */
-	
-	private Odometer odometer;
-	/**
-	 * OdometryCorrection which corrects the odometer through line detection as the robot is moving to ensure  odometer is correct.
-	 */
-	private OdometryCorrection odometryCorrection;
-	/**
 	 * FallingEdgeUSLocalization which localizes with an ultrasonic sensor at the start of obstacle course.
 	 */
     private FallingEdgeUSLocalization usl;
@@ -52,8 +42,6 @@ public class Controller{
 	 * BlockDetection which helps robot eliminate blocks that are not the enemy's flag and help detect enemy's flag.
 	 */
 	private BlockDetection blockDetection;
-	
-
 	/**
 	 * Constructor of the class Controller which uses the parameters to instantiate the classes which will be controlled.
 	 */
@@ -71,19 +59,15 @@ public class Controller{
 
         this.navigation = new Navigation(odometer, leftMotor, rightMotor, csValue, csData);
 
-    	this.odometer = odometer;
-
         this.usl = new FallingEdgeUSLocalization(odometer, usValue, usData, leftMotor, rightMotor, navigation);
 
         this.lightLocalization = new LightLocalization(navigation, odometer, leftMotor, rightMotor, csValue, csData);
 
-        this.odometryCorrection = new OdometryCorrection(odometer, lightLocalization);
-        
         this.ziplineTraversal = new ZiplineTraversal(navigation, odometer, lightLocalization, leftMotor, rightMotor, ziplineMotor);
 
         this.blockDetection = new BlockDetection(navigation, odometer, leftMotor, rightMotor, blockCsValue, blockCsData, lightLocalization);
         
-	    this.riverTraversal = new RiverTraversal(navigation, odometer, leftMotor, rightMotor);
+	    this.riverTraversal = new RiverTraversal(navigation, odometer);
 
     }
 
